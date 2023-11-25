@@ -207,7 +207,7 @@ export const imaginaryUpgrades = [
     checkRequirement: () => Replicanti.galaxies.total + player.galaxies +
       player.dilation.totalTachyonGalaxies >= 80000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    description: "Unlock the 4th Dark Matter Dimension",
+    description: "Unlock the 4th Dark Matter Dimension and disable remote Antimatter Galaxy scaling!",
   },
   {
     name: "Deterministic Radiation",

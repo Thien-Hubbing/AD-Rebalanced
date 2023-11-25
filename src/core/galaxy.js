@@ -2,6 +2,13 @@ export const GALAXY_TYPE = {
   NORMAL: 0,
   DISTANT: 1,
   REMOTE: 2
+  /*
+  FURTHER: 2,
+  REMOTE: 3,
+  DARKLY: 4,
+  GHOSTLY: 5,
+  EXTREME 6,
+  */
 };
 
 class GalaxyRequirement {
@@ -16,10 +23,13 @@ class GalaxyRequirement {
   }
 }
 
+
+
 export class Galaxy {
   static get remoteStart() {
     let start = RealityUpgrade(21).effectOrDefault(800) + TimeStudy(302).effectOrDefault(0);
     if (EternityChallenge(5).isRunning) return 0;
+    if (ImaginaryUpgrade(18).canBeApplied) return Number.MAX_VALUE
     return start
   }
 

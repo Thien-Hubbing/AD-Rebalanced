@@ -96,7 +96,7 @@ export const infinityUpgrades = {
     charged: {
       description: () => `The multiplier for buying ${formatInt(10)} Antimatter Dimensions gains ` +
         "a power effect based on Teresa level",
-      effect: () => 1 + Ra.pets.teresa.level / 20,
+      effect: () => 1 + Ra.pets.teresa.level / 4,
       formatEffect: value => formatPow(value, 3, 3)
     }
   },
@@ -136,7 +136,7 @@ export const infinityUpgrades = {
     formatEffect: value => formatX(value, 2, 2),
     charged: {
       description: "Multiplier to 1st Antimatter Dimension based on unspent Infinity Points, powered by Teresa level",
-      effect: () => Currency.infinityPoints.value.dividedBy(2).pow(Math.cbrt(Ra.pets.teresa.level)).plus(1),
+      effect: () => Currency.infinityPoints.value.dividedBy(2).pow(Math.sqrt(Ra.pets.teresa.level)).plus(1),
       formatEffect: value => formatX(value, 2, 2)
     }
   },

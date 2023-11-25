@@ -525,10 +525,10 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("effarig")
       ? `Buy ${formatInt(10)} mult. ^{value}, Dimboost mult. ^{value2}`
       : `Buy ${formatInt(10)} mult. ^{value}`),
-    effect: (level, strength) => 1 + 2.3 * Math.pow(level, 0.28) * Math.pow(strength, 0.5),
+    effect: (level, strength) => 1 + (level * (strength / 3.4)),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
-    conversion: x => Math.pow(x, 0.5),
+    conversion: x => Math.pow((x / 2.5) + 1, 0.1),
     formatSecondaryEffect: x => format(x, 2, 2),
     alteredColor: () => GlyphAlteration.getAdditionColor("effarig"),
     alterationType: ALTERATION_TYPE.ADDITION

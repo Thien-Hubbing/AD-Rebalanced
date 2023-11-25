@@ -210,7 +210,7 @@ export function replicantiLoop(diff) {
     }
 
     // Note that remainingGain is in log10 terms.
-    let remainingGain = tickCount.times(Decimal.ln(getReplicantChance())).times(LOG10_E);
+    let remainingGain = tickCount.times(Decimal.log10(getReplicantChance())).times(LOG10_E);
     // It is intended to be possible for both of the below conditionals to trigger.
     if (!isUncapped || Replicanti.amount.lte(replicantiCap())) {
       // Some of the gain is "used up" below e308, but if replicanti are uncapped

@@ -156,6 +156,9 @@ class InfinityDimensionState extends DimensionState {
       mult = mult.times(PelleRifts.decay.milestones[0].effectOrDefault(1));
     }
 
+    if (tier === 8 && TimeStudy(227).canBeApplied) {
+      mult = mult.times(TimeStudy(227).effectValue.infinity)
+    }
 
     mult = mult.pow(getAdjustedGlyphEffect("infinitypow"));
     mult = mult.pow(getAdjustedGlyphEffect("effarigdimensions"));

@@ -119,7 +119,7 @@ export function timeDimensionCommonMultiplier() {
       Pelle.isDoomed ? null : RealityUpgrade(22),
       AlchemyResource.dimensionality,
       PelleRifts.chaos
-    );
+    ).times(500);
 
   if (EternityChallenge(9).isRunning) {
     mult = mult.times(
@@ -210,7 +210,6 @@ class TimeDimensionState extends DimensionState {
       .timesEffectsOf(
         tier === 1 ? TimeStudy(11) : null,
         tier === 3 ? TimeStudy(73) : null,
-        tier === 4 ? TimeStudy(227) : null
       );
 
     const dim = TimeDimension(tier);
@@ -218,6 +217,10 @@ class TimeDimensionState extends DimensionState {
 
     if (bought > 1e8) {
       bought = (bought * 0.4321 + 1e8)
+    }
+
+    if (tier === 8 && TimeStudy(227).canBeApplied) {
+      mult = mult.times(TimeStudy(227).effectValue.time)
     }
 
     mult = mult.times(Decimal.pow(dim.powerMultiplier, bought));

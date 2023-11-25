@@ -362,7 +362,7 @@ export const normalTimeStudies = [
       : "Multiplier to Infinity Points, which decays over this Infinity"),
     effect: () => (Perk.studyActiveEP.isBought
       ? DC.E45
-      : DC.E45.divide(thisInfinityMult(Time.thisInfinity.totalSeconds)).clampMin(1)),
+      : DC.E45.divide(thisInfinityMult(getProperDeltaTime(Time.thisInfinity.totalSeconds, 2))).clampMin(1)),
     formatEffect: value => (Perk.studyActiveEP.isBought ? undefined : formatX(value, 2, 1))
   },
   {
@@ -596,9 +596,17 @@ export const normalTimeStudies = [
     requirement: [214],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     requiresST: [228],
-    description: "Dimensional Sacrifice affects 4th Time Dimension with reduced effect",
-    effect: () => Math.max(Math.pow(Sacrifice.totalBoost.pLog10(), 5), 1),
-    formatEffect: value => formatX(value, 2, 2)
+    description: () => {
+      if (TimeStudy(227).isBought) return `DS affects 8th dimensions types`
+      return "Dimensional Sacrifice affects 8th Infinity and Time Dimensions with reduced effect"
+    },
+    effect: () => {
+      return {
+        infinity: Sacrifice.totalBoost.plus(1).pow(0.001),
+        time: Sacrifice.totalBoost.plus(1).pow(0.0002)
+      }
+    },
+    formatEffect: obj => `${formatX(obj.infinity, 2, 2)} to infinity, ${formatX(obj.time, 2, 2)} to time`
   },
   {
     id: 228,

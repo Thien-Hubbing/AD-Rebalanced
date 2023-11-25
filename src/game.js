@@ -96,6 +96,7 @@ export function gainedInfinityPoints() {
     return Decimal.pow10(player.records.thisInfinity.maxAM.log10() / div - 0.75)
       .timesEffectsOf(PelleRifts.vacuum)
       .times(Pelle.specialGlyphEffect.infinity)
+      .times(GameCache.totalIPMult.value)
       .floor();
   }
   let ip = player.break
@@ -104,7 +105,6 @@ export function gainedInfinityPoints() {
   if (Effarig.isRunning && Effarig.currentStage === EFFARIG_STAGES.ETERNITY) {
     ip = ip.min(DC.E200);
   }
-  ip = ip.times(GameCache.totalIPMult.value);
   if (Teresa.isRunning) {
     ip = ip.pow(0.55);
   } else if (V.isRunning) {
@@ -121,7 +121,9 @@ export function gainedInfinityPoints() {
 
 function totalEPMult() {
   return Pelle.isDisabled("EPMults")
-    ? Pelle.specialGlyphEffect.time.timesEffectOf(PelleRifts.vacuum.milestones[2])
+    ? Pelle.specialGlyphEffect.time.timesEffectsOf(
+      PelleRifts.vacuum.milestones[2],
+      EternityUpgrade.epMult)
     : getAdjustedGlyphEffect("cursedEP")
       .times(ShopPurchase.EPPurchases.currentMult)
       .timesEffectsOf(
@@ -188,7 +190,7 @@ export function addInfinityTime(time, realTime, ip, infinities) {
   if (player.challenge.normal.current) challenge = `Normal Challenge ${player.challenge.normal.current}`;
   if (player.challenge.infinity.current) challenge = `Infinity Challenge ${player.challenge.infinity.current}`;
   player.records.recentInfinities.pop();
-  player.records.recentInfinities.unshift([time, realTime, ip, infinities, challenge]);
+  player.records.recentInfinities.unshift([getProperDeltaTime(time, 2), realTime, ip, infinities, challenge]);
   GameCache.bestRunIPPM.invalidate();
 }
 
@@ -220,7 +222,7 @@ export function addEternityTime(time, realTime, ep, eternities) {
   // If we call this function outside of dilation, it uses the existing AM and produces an erroneous number
   const gainedTP = player.dilation.active ? getTachyonGain() : DC.D0;
   player.records.recentEternities.pop();
-  player.records.recentEternities.unshift([time, realTime, ep, eternities, challenge, gainedTP]);
+  player.records.recentEternities.unshift([getProperDeltaTime(time, 2), realTime, ep, eternities, challenge, gainedTP]);
   GameCache.averageRealTimePerEternity.invalidate();
 }
 
@@ -261,7 +263,7 @@ export function addRealityTime(time, realTime, rm, level, realities, ampFactor, 
   }
   const shards = Effarig.shardsGained;
   player.records.recentRealities.pop();
-  player.records.recentRealities.unshift([time, realTime, rm.times(ampFactor),
+  player.records.recentRealities.unshift([getProperDeltaTime(time, 2), realTime, rm.times(ampFactor),
     realities, reality, level, shards * ampFactor, projIM]);
 }
 
@@ -391,15 +393,18 @@ export function getGameSpeedupForDisplay() {
 export function realTimeMechanics(realDiff) {
   // Ra memory generation bypasses stored real time, but memory chunk generation is disabled when storing real time.
   // This is in order to prevent players from using time inside of Ra's reality for amplification as well
-  Ra.memoryTick(realDiff, !Enslaved.isStoringRealTime);
+  Ra.memoryTick(getProperDeltaTime(realDiff, 3), !Enslaved.isStoringRealTime);
   if (AlchemyResource.momentum.isUnlocked) {
     player.celestials.ra.momentumTime += realDiff * Achievement(175).effectOrDefault(1);
   }
 
-  DarkMatterDimensions.tick(realDiff);
+  DarkMatterDimensions.tick(realDiff / Math.sqrt(getDeltaMultiplier()));
 
   // When storing real time, skip everything else having to do with production once stats are updated
   if (Enslaved.isStoringRealTime) {
+
+    realDiff = getProperDeltaTime(realDiff, 2)
+
     player.records.realTimePlayed += realDiff;
     player.records.thisInfinity.realTime += realDiff;
     player.records.thisEternity.realTime += realDiff;
@@ -434,10 +439,11 @@ export function gameLoop(passDiff, options = {}) {
 
   let diff = passDiff;
   const thisUpdate = Date.now();
-  const realDiff = diff === undefined
+  const realDiffBefore = diff === undefined
     ? Math.clamp(thisUpdate - player.lastUpdate, 1, 8.64e7)
-    : diff;
-  if (!GameStorage.ignoreBackupTimer) player.backupTimer += realDiff;
+    : diff
+  const realDiff = getProperDeltaTime(realDiffBefore, 4);
+  if (!GameStorage.ignoreBackupTimer) player.backupTimer += getProperDeltaTime(realDiff, 2);
 
   // For single ticks longer than a minute from the GameInterval loop, we assume that the device has gone to sleep or
   // hibernation - in those cases we stop the interval and simulate time instead. The gameLoop interval automatically
@@ -445,9 +451,9 @@ export function gameLoop(passDiff, options = {}) {
   // result in a ~1 second tick rate for browsers.
   // Note that we have to explicitly call all the real-time mechanics with the existing value of realDiff, because
   // simply letting it run through simulateTime seems to result in it using zero
-  if (player.options.hibernationCatchup && passDiff === undefined && realDiff > 6e4) {
+  if (player.options.hibernationCatchup && passDiff === undefined && realDiff > (6e4 * getDeltaMultiplier())) {
     GameIntervals.gameLoop.stop();
-    simulateTime(realDiff / 1000, true);
+    simulateTime(realDiff / (1000 * getDeltaMultiplier()), true);
     realTimeMechanics(realDiff);
     return;
   }
@@ -469,6 +475,7 @@ export function gameLoop(passDiff, options = {}) {
   if (diff === undefined) {
     diff = Enslaved.nextTickDiff;
   }
+  else diff = getProperDeltaTime(diff, 4)
 
   Autobuyers.tick();
   Tutorial.tutorialLoop();
@@ -485,7 +492,7 @@ export function gameLoop(passDiff, options = {}) {
   GameCache.timeDimensionCommonMultiplier.invalidate();
   GameCache.totalIPMult.invalidate();
 
-  const blackHoleDiff = realDiff;
+  const blackHoleDiff = getProperDeltaTime(realDiff, 3)
   const fixedSpeedActive = EternityChallenge(12).isRunning;
   if (!Enslaved.isReleaseTick && !fixedSpeedActive) {
     let speedFactor;
@@ -521,18 +528,18 @@ export function gameLoop(passDiff, options = {}) {
   // updating and game time updating. This is only particularly noticeable when game speed is 1 and the player
   // expects to see identical numbers. We also don't increment the timers if the game has been beaten (Achievement 188)
   if (!Achievement(188).isUnlocked) {
-    player.records.realTimeDoomed += realDiff;
-    player.records.realTimePlayed += realDiff;
+    player.records.realTimeDoomed += getProperDeltaTime(realDiff, 2);
+    player.records.realTimePlayed += getProperDeltaTime(realDiff, 2);
     player.records.totalTimePlayed += diff;
-    player.records.thisInfinity.realTime += realDiff;
+    player.records.thisInfinity.realTime += getProperDeltaTime(realDiff, 2);
     player.records.thisInfinity.time += diff;
-    player.records.thisEternity.realTime += realDiff;
+    player.records.thisEternity.realTime += getProperDeltaTime(realDiff, 2);
     if (Enslaved.isRunning && Enslaved.feltEternity && !EternityChallenge(12).isRunning) {
       player.records.thisEternity.time += diff * (1 + Currency.eternities.value.clampMax(1e66).toNumber());
     } else {
       player.records.thisEternity.time += diff;
     }
-    player.records.thisReality.realTime += realDiff;
+    player.records.thisReality.realTime += getProperDeltaTime(realDiff, 2);
     player.records.thisReality.time += diff;
   }
 
@@ -549,7 +556,7 @@ export function gameLoop(passDiff, options = {}) {
   }
 
 
-  applyAutoprestige(realDiff);
+  applyAutoprestige(getProperDeltaTime(realDiff, 2));
   updateImaginaryMachines(realDiff);
 
   const uncountabilityGain = AlchemyResource.uncountability.effectValue * Time.unscaledDeltaTime.totalSeconds;
@@ -613,13 +620,13 @@ export function gameLoop(passDiff, options = {}) {
     }
   }
 
-  laitelaRealityTick(realDiff);
+  laitelaRealityTick(getProperDeltaTime(realDiff, 2));
   Achievements.autoAchieveUpdate(diff);
   V.checkForUnlocks();
-  AutomatorBackend.update(realDiff);
+  AutomatorBackend.update(getProperDeltaTime(realDiff, 2));
   Pelle.gameLoop(realDiff);
   GalaxyGenerator.loop(realDiff);
-  GameEnd.gameLoop(realDiff);
+  GameEnd.gameLoop(getProperDeltaTime(realDiff, 2));
 
   if (!Enslaved.canAmplify) {
     Enslaved.boostReality = false;
@@ -892,6 +899,7 @@ function afterSimulation(seconds, playerBefore) {
 }
 
 export function simulateTime(seconds, real, fast) {
+  seconds = getProperDeltaTime(seconds, 4)
   // The game is simulated at a base 50ms update rate, with a maximum tick count based on the values of real and fast
   // - Calling with real === true will always simulate at full accuracy with no tick count reduction unless it would
   //   otherwise simulate with more ticks than offline progress would allow
@@ -899,11 +907,11 @@ export function simulateTime(seconds, real, fast) {
   // - Otherwise, tick count will be limited to the offline tick count (which may be set externally during save import)
   // Tick count is never *increased*, and only ever decreased if needed.
   if (seconds < 0) return;
-  let ticks = Math.floor(seconds * 20);
+  let ticks = Math.floor(getProperDeltaTime(seconds, 2) * 20);
   GameUI.notify.showBlackHoles = false;
 
   // Limit the tick count (this also applies if the black hole is unlocked)
-  const maxTicks = GameStorage.maxOfflineTicks(1000 * seconds, GameStorage.offlineTicks ?? player.options.offlineTicks);
+  const maxTicks = GameStorage.maxOfflineTicks(1000 * getProperDeltaTime(seconds, 2), GameStorage.offlineTicks ?? player.options.offlineTicks);
   if (ticks > maxTicks && !fast) {
     ticks = maxTicks;
   } else if (ticks > 50 && !real && fast) {
@@ -937,7 +945,7 @@ export function simulateTime(seconds, real, fast) {
 
   EventHub.dispatch(GAME_EVENT.OFFLINE_CURRENCY_GAINED);
 
-  let remainingRealSeconds = seconds;
+  let remainingRealSeconds = getProperDeltaTime(seconds, 2);
   // During async code the number of ticks remaining can go down suddenly
   // from "Speed up" which means tick length needs to go up, and thus
   // you can't just divide total time by total ticks to get tick length.
@@ -1095,6 +1103,27 @@ export function checkAndLoadSave() {
     GlobalErrorHandler.cleanStart = true;
     player.gotError.type = name;
     player.gotError.catched = true;
+  }
+}
+
+export function getDeltaMultiplier() {
+  return player.globalSpeed === undefined ? 1 : player.globalSpeed
+}
+
+export function getProperDeltaTime(diff, type) {
+  if (!isFinite(diff)) return 0;
+  else {
+    if (type < 1 || type > 4) throw new Error("Unimplemented diff calcuation type")
+    switch (type) {
+      case 1:
+        return diff
+      case 2:
+        return diff / getDeltaMultiplier()
+      case 3:
+        return diff / Math.sqrt(getDeltaMultiplier())
+      case 4:
+        return diff * getDeltaMultiplier()
+    }
   }
 }
 

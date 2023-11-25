@@ -5,7 +5,7 @@ import { DimensionState } from "./dimension";
 // Multiplier applied to all Antimatter Dimensions, regardless of tier. This is cached using a Lazy
 // and invalidated every update.
 export function antimatterDimensionCommonMultiplier() {
-  let multiplier = DC.E1;
+  let multiplier = DC.D1;
 
   multiplier = multiplier.times(Achievements.power);
   multiplier = multiplier.times(ShopPurchase.dimPurchases.currentMult);
@@ -85,10 +85,6 @@ export function getDimensionFinalMultiplierUncached(tier) {
     multiplier = multiplier.pow(1.05);
   }
 
-  if (multiplier.gte(DC.E1E11)) {
-    multiplier = multiplier.pow(0.1).times(DC.E1E11)
-  }
-
   return multiplier;
 }
 
@@ -126,11 +122,6 @@ function applyNDMultipliers(mult, tier) {
   }
   if (tier === 8) {
     multiplier = multiplier.times(Sacrifice.totalBoost);
-    multiplier = multiplier.timesEffectOf(Achievement(71))
-  }
-
-  if (tier === 2) {
-    multiplier = multiplier.timesEffectOf(Achievement(71))
   }
 
   multiplier = multiplier.timesEffectsOf(
@@ -142,7 +133,7 @@ function applyNDMultipliers(mult, tier) {
     tier > 1 && tier < 8 ? InfinityChallenge(8).reward : null
   );
   if (Achievement(43).isUnlocked) {
-    multiplier = multiplier.times(1 + tier / 10);
+    multiplier = multiplier.times(1 + tier / 100);
   }
 
   multiplier = multiplier.clampMin(1);

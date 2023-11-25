@@ -1,13 +1,10 @@
 <script>
-import { getReplicantChance } from '../../../core/replicanti';
-
 export default {
   name: "ReplicantiGainText",
   data() {
     return {
       remainingTimeText: "",
-      galaxyText: "",
-      intevalText: ""
+      galaxyText: ""
     };
   },
   methods: {
@@ -15,16 +12,15 @@ export default {
       const updateRateMs = player.options.updateRate;
       const ticksPerSecond = 1000 / updateRateMs;
       const logGainFactorPerTick = Decimal.divide(getGameSpeedupForDisplay() * updateRateMs *
-        (Decimal.ln(getReplicantChance())), getReplicantiInterval());
+        (Math.log(player.replicanti.chance + 1)), getReplicantiInterval());
       const log10GainFactorPerTick = logGainFactorPerTick.dividedBy(Math.LN10);
 
       // The uncapped factor is needed for galaxy speed calculations
       const log10GainFactorPerTickUncapped = Decimal.divide(getGameSpeedupForDisplay() * updateRateMs *
-        (Decimal.ln(getReplicantChance())), getReplicantiInterval(false)).dividedBy(Math.LN10);
+        (Math.log(player.replicanti.chance + 1)), getReplicantiInterval(false)).dividedBy(Math.LN10);
 
       const replicantiAmount = Replicanti.amount;
       const isAbove308 = Replicanti.isUncapped && replicantiAmount.log10() > LOG10_MAX_VALUE;
-      const baseInterval = getReplicantiInterval(false)
 
       if (isAbove308) {
         const postScale = Math.log10(ReplicantiGrowth.scaleFactor) / ReplicantiGrowth.scaleLog10;
@@ -128,22 +124,13 @@ export default {
       } else {
         this.galaxyText = ``;
       }
-
-      this.intevalText = `Your current base replicanti interval is `;
-      if (baseInterval.lt(1)) {
-        this.intevalText += `1 / ${format(baseInterval.reciprocal(), 2, 2)} ms`
-      } else if (baseInterval.lt(1000) && baseInterval.gte(1)) {
-        this.intevalText += `${format(baseInterval, 2, 2)} ms`
-      } else if (baseInterval.gte(1000)) {
-        this.intevalText += `${format(baseInterval.div(1000), 2, 2)} s`
-      }
     }
   }
 };
 </script>
 
 <template>
-  <p>{{ remainingTimeText }}<br>{{ galaxyText }}<br>{{ intevalText }}</p>
+  <p>{{ remainingTimeText }}<br>{{ galaxyText }}</p>
 </template>
 
 <style scoped>

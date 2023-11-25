@@ -22,14 +22,11 @@ export const MachineHandler = {
       if (log10FinalEP > 8000) log10FinalEP = 8000;
       if (log10FinalEP > 6000) log10FinalEP -= (log10FinalEP - 6000) * 0.75;
     }
-    //return rmGain.floor();
-    let base = 2
-    if (log10FinalEP > 50000) base -= 0.5
-    if (log10FinalEP > 5e5) base -= 0.2
-    if (log10FinalEP > 2e6) base -= 0.05
-    if (log10FinalEP > 1e7) base -= 0.05
-    let rmGain = Decimal.floor(Decimal.pow(base, log10FinalEP / 4000))
-    return rmGain.times(this.realityMachineMultiplier).floor()
+    let rmGain = DC.E3.pow(log10FinalEP / 4000 - 1);
+    // Increase base RM gain if <10 RM
+    if (rmGain.gte(1) && rmGain.lt(10)) rmGain = new Decimal(27 / 4000 * log10FinalEP - 26);
+    rmGain = rmGain.times(this.realityMachineMultiplier);
+    return rmGain.floor();
   },
 
   get gainedRealityMachines() {

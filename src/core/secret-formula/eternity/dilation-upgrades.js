@@ -87,15 +87,27 @@ export const dilationUpgrades = {
   doubleGalaxies: {
     id: 4,
     cost: 5e6,
-    description: () => `Gain ${formatX(20)} as many Tachyon Galaxies, up to ${formatInt(500)} base Galaxies`,
-    effect: 20
+    description: () => `Gain twice as many Tachyon Galaxies, up to ${formatInt(500)} base Galaxies`,
+    effect: 2
   },
   tdMultReplicanti: {
     id: 5,
     cost: 1e9,
-    description: () => `Time Dimensions are affected by Replicanti multiplier ${formatPow(0.1, 1, 3)}`,
+    description: () => {
+      const rep10 = replicantiMult().pLog10();
+      let multiplier = "0.1";
+      if (rep10 > 9000) {
+        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10() / rep10;
+        if (ratio < 0.095) {
+          multiplier = ratio.toFixed(2);
+        }
+      }
+      return `Time Dimensions are affected by Replicanti multiplier ${formatPow(multiplier, 1, 3)}, reduced
+        effect above ${formatX(DC.E9000)}`;
+    },
     effect: () => {
       let rep10 = replicantiMult().pLog10() * 0.1;
+      rep10 = rep10 > 9000 ? 9000 + 0.5 * (rep10 - 9000) : rep10;
       return Decimal.pow10(rep10);
     },
     formatEffect: value => formatX(value, 2, 1)
@@ -110,7 +122,7 @@ export const dilationUpgrades = {
   ipMultDT: {
     id: 7,
     cost: 2e12,
-    description: "Gain a multiplier to Infinity Points based on Dilated Time and improve the IP mult upgrade",
+    description: "Gain a multiplier to Infinity Points based on Dilated Time",
     effect: () => Currency.dilatedTime.value.pow(1000).clampMin(1),
     formatEffect: value => formatX(value, 2, 1),
     cap: () => Effarig.eternityCap
@@ -123,8 +135,8 @@ export const dilationUpgrades = {
   dilationPenalty: {
     id: 9,
     cost: 1e11,
-    description: () => `Reduce the Dilation penalty (${formatPow(1.12, 2, 2)} after reduction)`,
-    effect: 1.12,
+    description: () => `Reduce the Dilation penalty (${formatPow(1.05, 2, 2)} after reduction)`,
+    effect: 1.05,
   },
   ttGenerator: {
     id: 10,
@@ -170,8 +182,8 @@ export const dilationUpgrades = {
     id: 14,
     cost: 1e45,
     pelleOnly: true,
-    description: "Apply a 10th root to the Tachyon Galaxy threshold",
-    effect: 1 / 10
+    description: "Apply a cube root to the Tachyon Galaxy threshold",
+    effect: 1 / 3
   },
   flatDilationMult: {
     id: 15,

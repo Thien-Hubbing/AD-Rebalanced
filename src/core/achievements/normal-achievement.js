@@ -167,10 +167,9 @@ export const Achievements = {
   _power: new Lazy(() => {
     const unlockedRows = Achievements.allRows
       .countWhere(row => row.every(ach => ach.isUnlocked));
-    const basePower = Math.pow(3, unlockedRows) * Math.pow(1.12, Achievements.effectiveCount);
+    const basePower = Math.pow(1.25, unlockedRows) * Math.pow(1.03, Achievements.effectiveCount);
     const exponent = getAdjustedGlyphEffect("effarigachievement") * Ra.unlocks.achievementPower.effectOrDefault(1);
-    if (GlyphAlteration.isAdded("effarig")) return Math.pow(basePower, Ra.unlocks.achievementPower.effectOrDefault(1));
-    else return Math.pow(basePower, exponent)
+    return Math.pow(basePower, exponent);
   }),
 
   get power() {

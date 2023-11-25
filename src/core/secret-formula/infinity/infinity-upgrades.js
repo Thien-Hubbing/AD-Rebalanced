@@ -1,10 +1,10 @@
 import { DC } from "../../constants";
 
 function dimInfinityMult() {
-  return Currency.infinitiesTotal.value.times(0.33).plus(1);
+  return Currency.infinitiesTotal.value.times(0.2).plus(1);
 }
 function chargedDimInfinityMult() {
-  return 1 + Math.log10(Math.max(1, Currency.infinitiesTotal.value.pLog10()) * Math.max(1, Currency.eternities.value.pLog10())) * Math.sqrt(Ra.pets.teresa.level) / 150;
+  return 1 + Math.log10(Math.max(1, Currency.infinitiesTotal.value.pLog10())) * Math.sqrt(Ra.pets.teresa.level) / 150;
 }
 
 export const infinityUpgrades = {
@@ -30,7 +30,7 @@ export const infinityUpgrades = {
     effect: () => dimInfinityMult(),
     formatEffect: value => formatX(value, 1, 1),
     charged: {
-      description: "1st and 8th Antimatter Dimensions gain a power effect based on Infinities, Eternities and Teresa level",
+      description: "1st and 8th Antimatter Dimensions gain a power effect based on Infinities and Teresa level",
       effect: () => chargedDimInfinityMult(),
       formatEffect: value => formatPow(value, 4, 4)
     }
@@ -43,7 +43,7 @@ export const infinityUpgrades = {
     effect: () => dimInfinityMult(),
     formatEffect: value => formatX(value, 1, 1),
     charged: {
-      description: "2nd and 7th Antimatter Dimensions gain a power effect based on Infinities, Eternities and Teresa level",
+      description: "2nd and 7th Antimatter Dimensions gain a power effect based on Infinities and Teresa level",
       effect: () => chargedDimInfinityMult(),
       formatEffect: value => formatPow(value, 4, 4)
     }
@@ -56,7 +56,7 @@ export const infinityUpgrades = {
     effect: () => dimInfinityMult(),
     formatEffect: value => formatX(value, 1, 1),
     charged: {
-      description: "3rd and 6th Antimatter Dimensions gain a power effect based on Infinities, Eternities and Teresa level",
+      description: "3rd and 6th Antimatter Dimensions gain a power effect based on Infinities and Teresa level",
       effect: () => chargedDimInfinityMult(),
       formatEffect: value => formatPow(value, 4, 4)
     }
@@ -69,7 +69,7 @@ export const infinityUpgrades = {
     effect: () => dimInfinityMult(),
     formatEffect: value => formatX(value, 1, 1),
     charged: {
-      description: "4th and 5th Antimatter Dimensions gain a power effect based on Infinities, Eternities and Teresa level",
+      description: "4th and 5th Antimatter Dimensions gain a power effect based on Infinities and Teresa level",
       effect: () => chargedDimInfinityMult(),
       formatEffect: value => formatPow(value, 4, 4)
     }
@@ -91,12 +91,12 @@ export const infinityUpgrades = {
     id: "dimMult",
     cost: 1,
     description: () => `Increase the multiplier for buying ${formatInt(10)} Antimatter Dimensions`,
-    effect: () => 2,
-    formatEffect: () => `${formatX(2, 0, 1)} ➜ ${formatX(3, 0, 1)}`,
+    effect: () => 1.1,
+    formatEffect: () => `${formatX(2, 0, 1)} ➜ ${formatX(2.2, 0, 1)}`,
     charged: {
       description: () => `The multiplier for buying ${formatInt(10)} Antimatter Dimensions gains ` +
         "a power effect based on Teresa level",
-      effect: () => 1 + Ra.pets.teresa.level / 4,
+      effect: () => 1 + Ra.pets.teresa.level / 200,
       formatEffect: value => formatPow(value, 3, 3)
     }
   },
@@ -108,7 +108,7 @@ export const infinityUpgrades = {
     effect: 2,
     charged: {
       description: "All Galaxies are stronger based on Teresa level",
-      effect: () => 2 + Ra.pets.teresa.level / 75,
+      effect: () => 2 + Math.sqrt(Ra.pets.teresa.level) / 100,
       formatEffect: value => `+${formatPercents(value - 1)}`
     }
   },
@@ -123,7 +123,7 @@ export const infinityUpgrades = {
         "Antimatter Dimensions gain a power effect based on time spent in current Infinity and Teresa level",
       effect: () => 1 +
         Math.log10(Math.log10(Time.thisInfinity.totalMilliseconds + 100)) *
-        Math.cbrt(Ra.pets.teresa.level) / 40,
+        Math.sqrt(Ra.pets.teresa.level) / 150,
       formatEffect: value => formatPow(value, 4, 4)
     }
   },
@@ -136,7 +136,7 @@ export const infinityUpgrades = {
     formatEffect: value => formatX(value, 2, 2),
     charged: {
       description: "Multiplier to 1st Antimatter Dimension based on unspent Infinity Points, powered by Teresa level",
-      effect: () => Currency.infinityPoints.value.dividedBy(2).pow(Math.sqrt(Ra.pets.teresa.level)).plus(1),
+      effect: () => Currency.infinityPoints.value.dividedBy(2).pow(Math.sqrt(Ra.pets.teresa.level) * 1.5).plus(1),
       formatEffect: value => formatX(value, 2, 2)
     }
   },
@@ -145,11 +145,11 @@ export const infinityUpgrades = {
     cost: 7,
     checkRequirement: () => InfinityUpgrade.unspentIPMult.isBought,
     description: "Increase Dimension Boost multiplier",
-    effect: () => 4,
-    formatEffect: () => `${formatX(3, 0, 1)} ➜ ${formatX(4, 0, 1)}`,
+    effect: () => 2.5,
+    formatEffect: () => `${formatX(2, 0, 1)} ➜ ${formatX(2.5, 0, 1)}`,
     charged: {
       description: "Dimension Boost multiplier gains a power effect based on Teresa level",
-      effect: () => 1 + Ra.pets.teresa.level / 65,
+      effect: () => 1 + Ra.pets.teresa.level / 200,
       formatEffect: value => formatPow(value, 3, 3)
     }
   },
@@ -170,7 +170,7 @@ export const infinityUpgrades = {
       description: () =>
         `Gain Reality Machines each real-time second proportional to amount gained on Reality,
         increasing with Teresa level`,
-      effect: () => Math.pow(Ra.pets.teresa.level, 3) *
+      effect: () => Math.pow(Ra.pets.teresa.level, 2) *
         Ra.unlocks.continuousTTBoost.effects.autoPrestige.effectOrDefault(1),
       formatEffect: value => formatX(value, 2, 1)
     }
@@ -220,17 +220,13 @@ export const infinityUpgrades = {
     id: "ipMult",
     cost: () => InfinityUpgrade.ipMult.cost,
     checkRequirement: () => Achievement(41).isUnlocked,
-    costCap: DC.E9E15,
-    costIncreaseThreshold: DC.E3E9,
-    description: () => `Multiply Infinity Points from all sources by ${(player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
-      ? formatX(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0))
-      : formatX(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), 2, 2)}`,
+    costCap: DC.E6E6,
+    costIncreaseThreshold: DC.E3E6,
+    description: () => `Multiply Infinity Points from all sources by ${formatX(2)}`,
     // Normally the multiplier caps at e993k or so with 3300000 purchases, but if the cost is capped then we just give
     // an extra e7k to make the multiplier look nice
-    effect: () => (player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
-      ? Decimal.pow(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0), player.IPMultPurchases)
-      : Decimal.pow(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), player.IPMultPurchases),
-    cap: () => Effarig.eternityCap ?? DC.E9E15,
+    effect: () => (player.IPMultPurchases >= 3300000 ? DC.E1E6 : DC.D2.pow(player.IPMultPurchases)),
+    cap: () => Effarig.eternityCap ?? DC.E1E6,
     formatEffect: value => formatX(value, 2, 2),
   }
 };

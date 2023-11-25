@@ -257,14 +257,10 @@ export const Ra = {
     for (const pet of Ra.pets.all) {
       if (pet.isUnlocked) res *= pet.memoryProductionMultiplier;
     }
-    res *= 200
     return res;
   },
   get memoryBoostResources() {
     const boostList = [];
-
-    boostList.push("Thien's Rebalancing Modification")
-
     for (const pet of Ra.pets.all) {
       if (pet.memoryProductionMultiplier !== 1) boostList.push(pet.memoryGain);
     }
@@ -377,7 +373,7 @@ export const Ra = {
     this.updateAlchemyFlow(realityRealTime);
   },
   get alchemyResourceCap() {
-    return 25000 * (GlyphAlteration.isAdded("effarig") ? getAdjustedGlyphEffect("effarigachievement") : 1);
+    return 25000;
   },
   get momentumValue() {
     const hoursFromUnlock = TimeSpan.fromMilliseconds(player.celestials.ra.momentumTime).totalHours;

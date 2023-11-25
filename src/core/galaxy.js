@@ -2,13 +2,6 @@ export const GALAXY_TYPE = {
   NORMAL: 0,
   DISTANT: 1,
   REMOTE: 2
-  /*
-  FURTHER: 2,
-  REMOTE: 3,
-  DARKLY: 4,
-  GHOSTLY: 5,
-  EXTREME 6,
-  */
 };
 
 class GalaxyRequirement {
@@ -23,14 +16,9 @@ class GalaxyRequirement {
   }
 }
 
-
-
 export class Galaxy {
   static get remoteStart() {
-    let start = RealityUpgrade(21).effectOrDefault(800) + TimeStudy(302).effectOrDefault(0);
-    if (EternityChallenge(5).isRunning) return 0;
-    if (ImaginaryUpgrade(18).canBeApplied) return Number.MAX_VALUE
-    return start
+    return RealityUpgrade(21).effectOrDefault(800);
   }
 
   static get requirement() {
@@ -65,11 +53,7 @@ export class Galaxy {
     }
 
     if (type === GALAXY_TYPE.REMOTE) {
-      amount *= Math.pow(1.0045, galaxies - (Galaxy.remoteStart - 1));
-    }
-
-    if (EternityChallenge(5).isRunning) {
-      amount *= Math.pow(1.015, galaxies - (Galaxy.remoteStart - 1))
+      amount *= Math.pow(1.002, galaxies - (Galaxy.remoteStart - 1));
     }
 
     amount -= Effects.sum(InfinityUpgrade.resetBoost);
@@ -97,7 +81,6 @@ export class Galaxy {
   static get canBeBought() {
     if (EternityChallenge(6).isRunning && !Enslaved.isRunning) return false;
     if (NormalChallenge(8).isRunning || InfinityChallenge(7).isRunning) return false;
-    if (EternityChallenge(7).isRunning) return false;
     if (player.records.thisInfinity.maxAM.gt(Player.infinityGoal) &&
        (!player.break || Player.isInAntimatterChallenge)) return false;
     return true;
@@ -106,7 +89,6 @@ export class Galaxy {
   static get lockText() {
     if (this.canBeBought) return null;
     if (EternityChallenge(6).isRunning) return "Locked (Eternity Challenge 6)";
-    if (EternityChallenge(7).isRunning) return "Locked (Eternity Challenge 7)";
     if (InfinityChallenge(7).isRunning) return "Locked (Infinity Challenge 7)";
     if (InfinityChallenge(1).isRunning) return "Locked (Infinity Challenge 1)";
     if (NormalChallenge(8).isRunning) return "Locked (8th Antimatter Dimension Autobuyer Challenge)";
@@ -114,14 +96,12 @@ export class Galaxy {
   }
 
   static get costScalingStart() {
-    let start = 100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
+    return 100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
       TimeStudy(223),
       TimeStudy(224),
       EternityChallenge(5).reward,
       GlyphSacrifice.power
     );
-    if (EternityChallenge(5).isRunning) return 0;
-    return start
   }
 
   static get type() {

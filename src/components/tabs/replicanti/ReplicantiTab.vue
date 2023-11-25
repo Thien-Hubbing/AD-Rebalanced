@@ -41,23 +41,15 @@ export default {
       scrambledText: "",
       maxReplicanti: new Decimal(),
       estimateToMax: 0,
-      nextPercent: 0,
-      baseInterval: 0,
     };
   },
   computed: {
     isDoomed: () => Pelle.isDoomed,
     replicantiChanceSetup() {
-      const display = (value) => {
-        const powers = TimeStudy(213).effectValue * getAdjustedGlyphEffect("replicationpow") * (getSecondaryGlyphEffect("replicationspeed") + 1)
-        let string = `Replicate chance: ${formatPercents(value)}`
-        if (TimeStudy(213).isBought) string = `Replicanti chance: ${format(Decimal.pow(value, powers), 2, 2)}%`
-        return string;
-      }
       return new ReplicantiUpgradeButtonSetup(
         ReplicantiUpgrade.chance,
-        value => display(value),
-        cost => `+${formatPercents(this.nextPercent)} Costs: ${format(cost)} IP`
+        value => `Replicate chance: ${formatPercents(value)}`,
+        cost => `+${formatPercents(0.01)} Costs: ${format(cost)} IP`
       );
     },
     replicantiIntervalSetup() {
@@ -73,7 +65,7 @@ export default {
           // Checking isCapped() prevents text overflow when formatted as "__ ➜ __"
           return TimeSpan.fromMilliseconds(intervalNum).toStringShort(false);
         }
-        if (actualInterval.lt(0.01)) return `1 / ${format(intervalNum.toDecimal().recip(), 2, 2)}ms`;
+        if (actualInterval.lt(0.01)) return `< ${format(0.01, 2, 2)}ms`;
         if (actualInterval.gt(1000))
           return `${format(actualInterval.div(1000), 2, 2)}s`;
         return `${format(actualInterval, 2, 2)}ms`;
@@ -176,7 +168,6 @@ export default {
         Replicanti.galaxies.max >= 1 || PlayerProgress.eternityUnlocked();
       this.maxReplicanti.copyFrom(player.records.thisReality.maxReplicanti);
       this.estimateToMax = this.calculateEstimate();
-      this.nextPercent = ReplicantiUpgrade.chance.nearestPercent(ReplicantiUpgrade.chance.increase)
     },
     vacuumText() {
       return wordShift.wordCycle(PelleRifts.vacuum.name);
@@ -259,7 +250,7 @@ export default {
         more rapidly above {{ formatInt(distantRG) }} Replicanti Galaxies
         and even more so above {{ formatInt(remoteRG) }} Replicanti Galaxies.
       </div>
-      <br>
+      <br><br>
       <ReplicantiGainText />
       <br>
       <ReplicantiGalaxyButton v-if="canSeeGalaxyButton" />

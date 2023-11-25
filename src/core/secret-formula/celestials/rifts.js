@@ -20,7 +20,7 @@ export const pelleRifts = {
         const goal = chall.goalAtCompletions(chall.gainedCompletionStatus.totalCompletions);
         return totalFill.plus(1).pow(0.1).min(goal.pow(0.15));
       }
-      return totalFill.plus(1).pow(0.5);
+      return totalFill.plus(1).pow(0.33);
     },
     currency: () => Currency.infinityPoints,
     galaxyGeneratorThreshold: 1000,
@@ -60,7 +60,7 @@ export const pelleRifts = {
     // 0 - 1
     percentageToFill: percentage => Decimal.pow(10, 20 * percentage * 100).minus(1),
     effect: totalFill => (PelleRifts.chaos.milestones[0].canBeApplied
-      ? Decimal.sqrt(20000 + 1) : Decimal.sqrt(totalFill.plus(1).log10() * 10 + 1)),
+      ? Decimal.sqrt(2000 + 1) : Decimal.sqrt(totalFill.plus(1).log10() + 1)),
     currency: () => Currency.replicanti,
     galaxyGeneratorThreshold: 1e7,
     milestones: [
@@ -78,8 +78,8 @@ export const pelleRifts = {
         resource: "decay",
         requirement: 0.6,
         description: () => `When Replicanti exceeds ${format(DC.E1300)},
-          all Galaxies are ${formatPercents(0.5)} more effective`,
-        effect: () => (Replicanti.amount.gt(DC.E1300) ? 1.5 : 1)
+          all Galaxies are ${formatPercents(0.1)} more effective`,
+        effect: () => (Replicanti.amount.gt(DC.E1300) ? 1.1 : 1)
       },
       {
         resource: "decay",
@@ -87,7 +87,7 @@ export const pelleRifts = {
         description: "Increase max Replicanti Galaxies based on total Rift milestones",
         effect: () => {
           const x = PelleRifts.totalMilestones();
-          return x ** 2;
+          return x ** 2 - 2 * x;
         },
         formatEffect: x => `Max RG count +${formatInt(x)}`
       },
@@ -160,14 +160,14 @@ export const pelleRifts = {
         requirement: 0.10,
         description: "Dimensional Boosts are more powerful based on EC completions",
         effect: () => Math.max(100 * EternityChallenges.completions ** 2, 1) *
-          Math.max(1e4 ** (EternityChallenges.completions), 1),
+          Math.max(1e4 ** (EternityChallenges.completions - 40), 1),
         formatEffect: x => `Dimension Boost power ${formatX(x, 2, 2)}`
       },
       {
         resource: "recursion",
         requirement: 0.15,
         description: "Infinity Dimensions are stronger based on EC completions",
-        effect: () => Decimal.pow("1e1500", ((EternityChallenges.completions) / 20) ** 1.7).max(1),
+        effect: () => Decimal.pow("1e1500", ((EternityChallenges.completions - 25) / 20) ** 1.7).max(1),
         formatEffect: x => `Infinity Dimensions ${formatX(x)}`
       },
       {
@@ -204,14 +204,17 @@ export const pelleRifts = {
       {
         resource: "paradox",
         requirement: 0.25,
-        description: () => `Dilated Time gain becomes Tachyon Particles ${formatPow(1.5, 1, 1)}`,
-        effect: 1.5
+        description: () => `Dilated Time gain becomes Tachyon Particles ${formatPow(1.4, 1, 1)}`,
+        effect: 1.4
       },
       {
         resource: "paradox",
         requirement: 0.5,
         description: "Dilation rebuyable purchase count improves Infinity Power conversion rate",
-        effect: () => 1.06 ** (Object.values(player.dilation.rebuyables).sum()),
+        effect: () => Math.min(
+          1.1 ** (Object.values(player.dilation.rebuyables).sum() - 90),
+          712
+        ),
         formatEffect: x => `Infinity Power Conversion ${formatX(x, 2, 2)}`
       },
     ],

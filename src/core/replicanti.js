@@ -7,7 +7,7 @@ export const ReplicantiGrowth = {
     return Math.log10(Number.MAX_VALUE);
   },
   get scaleFactor() {
-    if (PelleStrikes.eternity.hasStrike) return 10;
+    if (PelleStrikes.eternity.hasStrike && Replicanti.amount.gte(DC.E2000)) return 10;
     if (Pelle.isDoomed) return 2;
     return AlchemyResource.cardinality.effectValue;
   }
@@ -138,6 +138,7 @@ export function totalReplicantiSpeedMult(overCap) {
 
   const preCelestialEffects = Effects.product(
     TimeStudy(62),
+    TimeStudy(213),
     RealityUpgrade(2),
     RealityUpgrade(6),
     RealityUpgrade(23),
@@ -163,19 +164,10 @@ export function totalReplicantiSpeedMult(overCap) {
 export function replicantiCap() {
   return EffarigUnlock.infinity.canBeApplied
     ? Currency.infinitiesTotal.value
-      .pow(TimeStudy(31).isBought ? 1080 : 30)
+      .pow(TimeStudy(31).isBought ? 120 : 30)
       .clampMin(1)
       .times(Decimal.NUMBER_MAX_VALUE)
     : Decimal.NUMBER_MAX_VALUE;
-}
-
-/**
- * @returns {DecimalSource}
- */
-
-export function getReplicantChance() {
-  const chancePowers = (getSecondaryGlyphEffect("replicationspeed") + 1) * TimeStudy(213).effectOrDefault(1) * getAdjustedGlyphEffect("replicationpow")
-  return Decimal.pow(player.replicanti.chance, chancePowers).clampMin(1)
 }
 
 // eslint-disable-next-line complexity
@@ -196,7 +188,7 @@ export function replicantiLoop(diff) {
   else player.replicanti.timer = 0;
   tickCount = tickCount.floor();
 
-  const singleTickAvg = Replicanti.amount.times(getReplicantChance());
+  const singleTickAvg = Replicanti.amount.times(player.replicanti.chance);
   // Note that code inside this conditional won't necessarily run every game tick; when game ticks are slower than
   // replicanti ticks, then tickCount will look like [0, 0, 0, 1, 0, 0, ...] on successive game ticks
   if (tickCount.gte(100) || (singleTickAvg.gte(10) && tickCount.gte(1))) {
@@ -210,7 +202,7 @@ export function replicantiLoop(diff) {
     }
 
     // Note that remainingGain is in log10 terms.
-    let remainingGain = tickCount.times(Decimal.log10(getReplicantChance())).times(LOG10_E);
+    let remainingGain = tickCount.times(Math.log(player.replicanti.chance + 1)).times(LOG10_E);
     // It is intended to be possible for both of the below conditionals to trigger.
     if (!isUncapped || Replicanti.amount.lte(replicantiCap())) {
       // Some of the gain is "used up" below e308, but if replicanti are uncapped
@@ -239,7 +231,7 @@ export function replicantiLoop(diff) {
 
     Replicanti.amount = Replicanti.amount.times(DC.D2.pow(poissonDistribution(batchTicks)));
     for (let t = 0; t < Math.floor(binomialTicks); t++) {
-      const reproduced = binomialDistribution(Replicanti.amount, getReplicantChance());
+      const reproduced = binomialDistribution(Replicanti.amount, player.replicanti.chance);
       Replicanti.amount = Replicanti.amount.plus(reproduced);
     }
 
@@ -248,7 +240,7 @@ export function replicantiLoop(diff) {
     player.replicanti.timer += interval.times(leftover).toNumber();
   } else if (tickCount.eq(1)) {
     // Single tick: Take a single binomial sample to properly simulate replicanti growth with randomness
-    const reproduced = binomialDistribution(Replicanti.amount, getReplicantChance());
+    const reproduced = binomialDistribution(Replicanti.amount, player.replicanti.chance);
     Replicanti.amount = Replicanti.amount.plus(reproduced);
   }
 
@@ -272,10 +264,9 @@ export function replicantiLoop(diff) {
 }
 
 export function replicantiMult() {
-  return (RealityUpgrade(24).isBought
-    ? Decimal.pow(Replicanti.amount.clampMin(1), 0.323)
-    : Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2).plusEffectOf(TimeStudy(21))
-    ).timesEffectOf(TimeStudy(102))
+  return Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2)
+    .plusEffectOf(TimeStudy(21))
+    .timesEffectOf(TimeStudy(102))
     .clampMin(1)
     .pow(getAdjustedGlyphEffect("replicationpow"));
 }
@@ -339,11 +330,7 @@ export const ReplicantiUpgrade = {
     set value(value) { player.replicanti.chance = value; }
 
     get nextValue() {
-      return this.nearestPercent(this.value + this.increase);
-    }
-
-    get increase() {
-      return 0.01 * (getSecondaryGlyphEffect("replicationdtgain") * (Decimal.log10(Replicanti.amount.plus(1)) / 10000)) + 0.01
+      return this.nearestPercent(this.value + 0.01);
     }
 
     get cost() {
@@ -357,7 +344,7 @@ export const ReplicantiUpgrade = {
 
     get cap() {
       // Chance never goes over 100%.
-      return TimeStudy(213).isBought ? Number.MAX_VALUE : 1;
+      return 1;
     }
 
     get isCapped() {
@@ -374,12 +361,12 @@ export const ReplicantiUpgrade = {
       // N = log(IP * (1e15 - 1) / cost + 1) / log(1e15)
       let N = Currency.infinityPoints.value.times(this.costIncrease - 1)
         .dividedBy(this.cost).plus(1).log(this.costIncrease);
-      N = Math.round((Math.min(this.value + (0.01 * Math.floor(N)), this.cap) - this.value) * 100);
+      N = Math.round((Math.min(this.value + 0.01 * Math.floor(N), this.cap) - this.value) * 100);
       if (N <= 0) return;
       const totalCost = this.cost.times(Decimal.pow(this.costIncrease, N).minus(1).dividedBy(this.costIncrease - 1));
       Currency.infinityPoints.subtract(totalCost);
       this.baseCost = this.baseCost.times(Decimal.pow(this.costIncrease, N));
-      this.value = this.nearestPercent(this.value + (this.increase * N));
+      this.value = this.nearestPercent(this.value + 0.01 * N);
     }
 
     // Rounding errors suck
@@ -404,13 +391,10 @@ export const ReplicantiUpgrade = {
     get baseCost() { return player.replicanti.intervalCost; }
     set baseCost(value) { player.replicanti.intervalCost = value; }
 
-    get costIncrease() {
-      const fastScale = Decimal.pow(1e10, this.value.toDecimal().div(10000).recip().pow(0.8))
-      return TimeStudy(22).isBought ? fastScale : 1e10;
-    }
+    get costIncrease() { return 1e10; }
 
     get cap() {
-      return Effects.min(1, TimeStudy(22));
+      return Effects.min(50, TimeStudy(22));
     }
 
     get isCapped() {

@@ -104,23 +104,15 @@ export function buyDilationUpgrade(id, bulk = 1) {
   return true;
 }
 
-export function getTachyonGalaxyScale() {
-  return Math.max((Pelle.isDoomed
-    ? 1 + Math.log10(Currency.dilatedTime.value.plus(1).log10() ** 2.5 + 1)
-    : 1 + (Math.log10(Currency.dilatedTime.value.plus(1).log10() ** 1.4 + 1) - Math.log10(DC.E10000.log10() + 1))
-  ), 1)
-}
-
 export function getTachyonGalaxyMult(thresholdUpgrade) {
   // This specifically needs to be an undefined check because sometimes thresholdUpgrade is zero
   const upgrade = thresholdUpgrade === undefined ? DilationUpgrade.galaxyThreshold.effectValue : thresholdUpgrade;
   const thresholdMult = 3.65 * upgrade + 0.35;
   const glyphEffect = getAdjustedGlyphEffect("dilationgalaxyThreshold");
-  const glyphReduction = glyphEffect <= 0 ? 1 : glyphEffect;
+  const glyphReduction = glyphEffect === 0 ? 1 : glyphEffect;
   const power = DilationUpgrade.galaxyThresholdPelle.canBeApplied
     ? DilationUpgrade.galaxyThresholdPelle.effectValue : 1;
-  const scaling = getTachyonGalaxyScale();
-  return (1 + thresholdMult * glyphReduction) ** power * scaling;
+  return (1 + thresholdMult * glyphReduction) ** power;
 }
 
 export function getDilationGainPerSecond() {

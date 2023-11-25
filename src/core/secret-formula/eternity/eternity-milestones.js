@@ -2,6 +2,7 @@ export const eternityMilestones = {
   autobuyerIPMult: {
     eternities: 1,
     reward: "Unlock the Infinity Point multiplier autobuyer",
+    pelleUseless: true
   },
   keepAutobuyers: {
     eternities: 2,

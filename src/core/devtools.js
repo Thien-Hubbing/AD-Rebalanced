@@ -528,24 +528,3 @@ dev.forceCloudSave = async function() {
 dev.unlockAllCosmeticSets = function() {
   player.reality.glyphs.cosmetics.unlockedFromNG = Object.keys(GameDatabase.reality.glyphCosmeticSets);
 };
-
-dev.completeChallenges = function(type = "all") {
-  switch (type) {
-    case "all":
-      player.challenge.normal.completedBits = 2 ** 13 - 1
-      player.challenge.infinity.completedBits = 2 ** 9 - 1
-      for (let i = 1; i <= 12; i++) {
-        EternityChallenge(i).completions = 5
-      }
-    case "normal":
-      player.challenge.normal.completedBits = 2 ** 13 - 1
-    case "infinity":
-      player.challenge.infinity.completedBits = 2 ** 9 - 1
-    case "eternity":
-      for (let i = 1; i <= 12; i++) {
-        EternityChallenge(i).completions = 5
-      }
-    default:
-      throw new Error("Not a challenge type")
-  }
-}

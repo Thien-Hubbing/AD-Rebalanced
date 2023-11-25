@@ -19,7 +19,7 @@ export class DimBoost {
     }
 
     let boost = Effects.max(
-      3,
+      2,
       InfinityUpgrade.dimboostMult,
       InfinityChallenge(7).reward,
       InfinityChallenge(7),
@@ -35,9 +35,6 @@ export class DimBoost {
         PelleRifts.recursion.milestones[0]
       ).powEffectsOf(InfinityUpgrade.dimboostMult.chargedEffect);
     if (GlyphAlteration.isAdded("effarig")) boost = boost.pow(getSecondaryGlyphEffect("effarigforgotten"));
-
-    if (boost.gte("1e10000")) boost = boost.pow(1/9).times("1e10000")
-
     return boost;
   }
 
@@ -62,11 +59,6 @@ export class DimBoost {
       // when giving initial boosts, so the player will still get those.
       return 0;
     }
-
-    if (EternityChallenge(7).isRunning || EternityChallenge(3).isRunning) {
-      return 0;
-    }
-
     if (InfinityChallenge(1).isRunning) {
       // Usually, in Challenge 8, the only boosts that are useful are the first 5
       // (the fifth unlocks sacrifice). In IC1 (Challenge 8 and Challenge 10
@@ -94,8 +86,6 @@ export class DimBoost {
   static get lockText() {
     if (DimBoost.purchasedBoosts >= this.maxBoosts) {
       if (Ra.isRunning) return "Locked (Ra's Reality)";
-      if (EternityChallenge(3).isRunning) return "Locked (Eternity Challenge 3)";
-      if (EternityChallenge(7).isRunning) return "Locked (Eternity Challenge 7)";
       if (InfinityChallenge(1).isRunning) return "Locked (Infinity Challenge 1)";
       if (NormalChallenge(8).isRunning) return "Locked (8th Antimatter Dimension Autobuyer Challenge)";
     }

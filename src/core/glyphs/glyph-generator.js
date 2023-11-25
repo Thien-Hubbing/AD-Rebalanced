@@ -151,8 +151,8 @@ export const GlyphGenerator = {
       idx: null,
       type: "cursed",
       strength: str,
-      level: 666666,
-      rawLevel: 666666,
+      level: 6666,
+      rawLevel: 6666,
       effects: effectBitmask,
     };
   },

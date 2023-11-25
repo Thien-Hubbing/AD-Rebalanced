@@ -22,7 +22,6 @@ export default {
       maxDT: new Decimal(),
       toMaxTooltip: "",
       isHovering: false,
-      galaxyThresholdScale: 0,
     };
   },
   computed: {
@@ -119,7 +118,6 @@ export default {
       const estimateText = getDilationTimeEstimate(this.maxDT);
       if (this.dilatedTimeIncome.lte(0)) this.toMaxTooltip = "No DT gain";
       else this.toMaxTooltip = estimateText.startsWith("<") ? "Currently Increasing" : estimateText;
-      this.galaxyThresholdScale = getTachyonGalaxyScale();
     }
   }
 };
@@ -166,12 +164,6 @@ export default {
         class="max-accent"
       >{{ format(maxDT, 2, 1) }}</span>.
     </span>
-    <span v-if="galaxyThresholdScale > 1.4">
-      Your Tachyon Galaxies are getting rarer. Your Tachyon Galaxy threshold is being multiplied by
-      <span class="max-accent">
-        {{ formatX(galaxyThresholdScale, 4, 4) }}
-      </span>
-   </span>
     <div class="l-dilation-upgrades-grid">
       <div
         v-for="(upgradeRow, row) in allRebuyables"

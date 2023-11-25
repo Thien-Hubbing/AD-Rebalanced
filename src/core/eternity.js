@@ -273,11 +273,11 @@ class EPMultiplierState extends GameMechanicState {
   constructor() {
     super({});
     this.cachedCost = new Lazy(() => this.costAfterCount(player.epmultUpgrades));
-    this.cachedEffectValue = new Lazy(() => Decimal.pow(this.base, player.epmultUpgrades));
+    this.cachedEffectValue = new Lazy(() => DC.D5.pow(player.epmultUpgrades));
   }
 
   get isAffordable() {
-    return Currency.eternityPoints.gte(this.cost);
+    return !Pelle.isDoomed && Currency.eternityPoints.gte(this.cost);
   }
 
   get cost() {
@@ -304,11 +304,6 @@ class EPMultiplierState extends GameMechanicState {
 
   get effectValue() {
     return this.cachedEffectValue.value;
-  }
-
-  get base() {
-    if (RealityUpgrade(9).isBought) return 20
-      else return 5
   }
 
   purchase() {
@@ -345,12 +340,12 @@ class EPMultiplierState extends GameMechanicState {
 
   costAfterCount(count) {
     const costThresholds = EternityUpgrade.epMult.costIncreaseThresholds;
-    const multPerUpgrade = [20, 30, 40, 50];
+    const multPerUpgrade = [50, 100, 500, 1000];
     for (let i = 0; i < costThresholds.length; i++) {
       const cost = Decimal.pow(multPerUpgrade[i], count).times(500);
       if (cost.lt(costThresholds[i])) return cost;
     }
-    return DC.E3.pow(count).times(500);
+    return DC.E3.pow(count + Math.pow(Math.clampMin(count - 1334, 0), 1.2)).times(500);
   }
 }
 

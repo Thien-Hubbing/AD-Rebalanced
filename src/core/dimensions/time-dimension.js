@@ -119,7 +119,7 @@ export function timeDimensionCommonMultiplier() {
       Pelle.isDoomed ? null : RealityUpgrade(22),
       AlchemyResource.dimensionality,
       PelleRifts.chaos
-    ).times(500);
+    );
 
   if (EternityChallenge(9).isRunning) {
     mult = mult.times(
@@ -128,11 +128,6 @@ export function timeDimensionCommonMultiplier() {
         4)
         .clampMin(1));
   }
-
-  if (EternityChallenge(2).isRunning) {
-    mult = mult.powEffectOf(EternityChallenge(10))
-  }
-
   return mult;
 }
 
@@ -210,19 +205,11 @@ class TimeDimensionState extends DimensionState {
       .timesEffectsOf(
         tier === 1 ? TimeStudy(11) : null,
         tier === 3 ? TimeStudy(73) : null,
+        tier === 4 ? TimeStudy(227) : null
       );
 
     const dim = TimeDimension(tier);
-    let bought = tier === 8 ? Math.clampMax(dim.bought, 1e8) : dim.bought;
-
-    if (bought > 1e8) {
-      bought = (bought * 0.4321 + 1e8)
-    }
-
-    if (tier === 8 && TimeStudy(227).canBeApplied) {
-      mult = mult.times(TimeStudy(227).effectValue.time)
-    }
-
+    const bought = tier === 8 ? Math.clampMax(dim.bought, 1e8) : dim.bought;
     mult = mult.times(Decimal.pow(dim.powerMultiplier, bought));
 
     mult = mult.pow(getAdjustedGlyphEffect("timepow"));
@@ -241,10 +228,6 @@ class TimeDimensionState extends DimensionState {
       mult = Effarig.multiplier(mult);
     } else if (V.isRunning) {
       mult = mult.pow(0.5);
-    }
-
-    if (mult.gte(DC.E1E9)) {
-      mult = mult.pow(0.1).times(DC.E1E9)
     }
 
     return mult;

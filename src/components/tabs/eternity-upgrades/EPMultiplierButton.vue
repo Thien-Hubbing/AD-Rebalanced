@@ -14,8 +14,7 @@ export default {
       isAutoUnlocked: false,
       isAffordable: false,
       multiplier: new Decimal(),
-      cost: new Decimal(),
-      base: 5,
+      cost: new Decimal()
     };
   },
   computed: {
@@ -30,8 +29,8 @@ export default {
         return {
           "o-eternity-upgrade": true,
           "o-eternity-upgrade--useless": !this.isAffordable,
-          "o-pelle-disabled-pointer": false,
-          "o-pelle-disabled": false,
+          "o-pelle-disabled-pointer": true,
+          "o-pelle-disabled": true,
         };
       }
       return {
@@ -55,7 +54,6 @@ export default {
       this.multiplier.copyFrom(upgrade.effectValue);
       this.cost.copyFrom(upgrade.cost);
       this.isAffordable = upgrade.isAffordable;
-      this.base = upgrade.base
     },
     purchaseUpgrade() {
       if (RealityUpgrade(15).isLockingMechanics) RealityUpgrade(15).tryShowWarningModal();
@@ -72,7 +70,7 @@ export default {
       @click="purchaseUpgrade"
     >
       <div :class="{ 'o-pelle-disabled': isDoomed }">
-        Multiply Eternity Points from all sources by {{ formatX(base) }}
+        Multiply Eternity Points from all sources by {{ formatX(5) }}
         <br>
         Currently: {{ formatX(multiplier, 2, 0) }}
       </div>

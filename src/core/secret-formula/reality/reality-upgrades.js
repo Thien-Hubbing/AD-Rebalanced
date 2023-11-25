@@ -32,7 +32,7 @@ export const realityUpgrades = [
     initialCost: 1,
     costMult: 30,
     textTemplate: "You gain Dilated Time {value} times faster",
-    effect: 5
+    effect: 3
   }),
   rebuyable({
     name: "Replicative Amplifier",
@@ -40,7 +40,7 @@ export const realityUpgrades = [
     initialCost: 1,
     costMult: 30,
     textTemplate: "You gain Replicanti {value} times faster",
-    effect: 4
+    effect: 3
   }),
   rebuyable({
     name: "Eternal Amplifier",
@@ -56,7 +56,7 @@ export const realityUpgrades = [
     initialCost: 2,
     costMult: 30,
     textTemplate: "You gain {value} times more Tachyon Particles",
-    effect: 4
+    effect: 3
   }),
   rebuyable({
     name: "Boundless Amplifier",
@@ -79,7 +79,7 @@ export const realityUpgrades = [
     canLock: true,
     lockEvent: "gain a Replicanti Galaxy",
     description: "Replicanti speed is multiplied based on Replicanti Galaxies",
-    effect: () => 1 + Replicanti.galaxies.total ** 2,
+    effect: () => 1 + Replicanti.galaxies.total / 50,
     formatEffect: value => formatX(value, 2, 2)
   },
   {
@@ -92,8 +92,8 @@ export const realityUpgrades = [
     checkEvent: GAME_EVENT.BIG_CRUNCH_BEFORE,
     canLock: true,
     lockEvent: "gain another Antimatter Galaxy",
-    description: () => `Infinity gain is boosted from Antimatter Galaxy count and the IP mult upgrade multiplies by ${formatX(5)} beyond ${format(DC.E3E9, 2, 2)}`,
-    effect: () => 1 + player.galaxies ** 1.6,
+    description: "Infinity gain is boosted from Antimatter Galaxy count",
+    effect: () => 1 + player.galaxies / 30,
     formatEffect: value => formatX(value, 2, 2)
   },
   {
@@ -127,7 +127,7 @@ export const realityUpgrades = [
     checkEvent: GAME_EVENT.ETERNITY_RESET_AFTER,
     canLock: true,
     // There are two locking events - equipping a glyph with too low a level, and equipping a second glyph
-    description: "Gain another Glyph slot and improve the EP mult upgrade",
+    description: "Gain another Glyph slot",
     effect: () => 1
   },
   {
@@ -142,10 +142,10 @@ export const realityUpgrades = [
     canLock: true,
     lockEvent: "Eternity",
     bypassLock: () => Currency.infinityPoints.exponent >= 400,
-    description: () => `Start every Reality with ${formatInt(100000)} Eternities (also applies to current Reality)`,
+    description: () => `Start every Reality with ${formatInt(100)} Eternities (also applies to current Reality)`,
     automatorPoints: 15,
-    shortDescription: () => `Start with ${formatInt(100000)} Eternities`,
-    effect: () => 100000
+    shortDescription: () => `Start with ${formatInt(100)} Eternities`,
+    effect: () => 100
   },
   {
     name: "The Boundless Flow",
@@ -154,10 +154,10 @@ export const realityUpgrades = [
     requirement: () => `${format(Currency.infinitiesBanked.value, 2)}/${format(DC.E12)} Banked Infinities`,
     checkRequirement: () => Currency.infinitiesBanked.exponent >= 12,
     checkEvent: [GAME_EVENT.ETERNITY_RESET_AFTER, GAME_EVENT.REALITY_FIRST_UNLOCKED],
-    description: "Every second, gain 100% of the Infinities you would normally gain by Infinitying",
+    description: "Every second, gain 10% of the Infinities you would normally gain by Infinitying",
     automatorPoints: 5,
     shortDescription: () => `Continuous Infinity generation`,
-    effect: () => gainedInfinities(),
+    effect: () => gainedInfinities().times(0.1),
     formatEffect: value => `${format(value)} per second`
   },
   {
@@ -173,7 +173,7 @@ export const realityUpgrades = [
     description: "Eternity Point multiplier based on Reality and Time Theorem count",
     effect: () => Currency.timeTheorems.value
       .minus(DC.E3).clampMin(2)
-      .pow(Math.log2(Currency.realities.value)).clampMin(1),
+      .pow(Math.log2(Math.min(Currency.realities.value, 1e4))).clampMin(1),
     formatEffect: value => formatX(value, 2, 2)
   },
   {
@@ -216,7 +216,7 @@ export const realityUpgrades = [
     canLock: true,
     lockEvent: () => `purchase a ${formatX(5)} EP upgrade`,
     description: () => `Boost Tachyon Particle gain based on ${formatX(5)} Eternity Point multiplier`,
-    effect: () => Math.max(Math.sqrt(Decimal.log10(EternityUpgrade.epMult.effectValue)), 1),
+    effect: () => Math.max(Math.sqrt(Decimal.log10(EternityUpgrade.epMult.effectValue)) / 9, 1),
     formatEffect: value => formatX(value, 2, 2)
   },
   {
@@ -234,7 +234,7 @@ export const realityUpgrades = [
     checkRequirement: () => Glyphs.activeWithoutCompanion.countWhere(g => g.strength >= 1.5) === 4,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
     description: "Improve the Glyph rarity formula",
-    effect: 1.4,
+    effect: 1.3,
     formatCost: value => format(value, 1, 0)
   },
   {
@@ -252,8 +252,8 @@ export const realityUpgrades = [
     },
     checkRequirement: () => Glyphs.activeWithoutCompanion.countWhere(g => countValuesFromBitmask(g.effects) >= 2) === 4,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
-    description: () => `${formatPercents(0.75)} chance to get an additional effect on Glyphs`,
-    effect: 0.75,
+    description: () => `${formatPercents(0.5)} chance to get an additional effect on Glyphs`,
+    effect: 0.5,
     formatCost: value => format(value, 1, 0)
   },
   {
@@ -271,7 +271,7 @@ export const realityUpgrades = [
     checkRequirement: () => Glyphs.activeWithoutCompanion.countWhere(g => g.level >= 10) === 4,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
     description: "Eternity count boosts Glyph level",
-    effect: () => Math.max(Math.sqrt(Currency.eternities.value.plus(1).log10()) * 0.6, 1),
+    effect: () => Math.max(Math.sqrt(Currency.eternities.value.plus(1).log10()) * 0.45, 1),
     formatCost: value => format(value, 1, 0)
   },
   {
@@ -309,7 +309,7 @@ export const realityUpgrades = [
     checkRequirement: () =>
       Replicanti.galaxies.total + player.galaxies + player.dilation.totalTachyonGalaxies >= 2800,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    description: () => `Remote Antimatter Galaxy scaling is moved to ${format(1e5)} galaxies`,
+    description: () => `Remote Antimatter Galaxy scaling is moved to ${formatInt(1e5)} galaxies`,
     effect: 1e5
   },
   {
@@ -320,7 +320,7 @@ export const realityUpgrades = [
     checkRequirement: () => Currency.timeShards.exponent >= 28000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: "Time Dimension multiplier based on days spent in this Reality",
-    effect: () => Decimal.pow10(Math.pow(1 + 2 * Math.log10(Time.thisReality.totalDays + 1), 2.5)),
+    effect: () => Decimal.pow10(Math.pow(1 + 2 * Math.log10(Time.thisReality.totalDays + 1), 1.6)),
     formatEffect: value => formatX(value, 2, 2)
   },
   {
@@ -348,7 +348,7 @@ export const realityUpgrades = [
     canLock: true,
     lockEvent: "equip a non-Companion Glyph",
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
-    description: "Gain another Glyph slot and improve the replicanti formula further, but disable timestudy 21 (ReP^0.323)",
+    description: "Gain another Glyph slot",
     effect: () => 1
   },
   {
@@ -358,17 +358,8 @@ export const realityUpgrades = [
     requirement: () => `Reach ${format(DC.E11111)} EP (Best: ${format(player.records.bestReality.bestEP, 2)} EP)`,
     checkRequirement: () => player.records.bestReality.bestEP.exponent >= 11111,
     checkEvent: GAME_EVENT.ETERNITY_RESET_AFTER,
-    description: "Unlock the Reality autobuyer and Automator command; Tickspeed affects all other dimensions with reduced effect",
+    description: "Unlock the Reality autobuyer and Automator command",
     automatorPoints: 100,
-    shortDescription: () => `Reality Autobuyer; Tickspeed affects other dimension types`,
-    effect: () => {
-      const tick = Tickspeed.perSecond.div(10000)
-      const first = Decimal.pow(tick.log2(), 8192)
-      const second = Decimal.pow(tick.log10(), 1024)
-      const third = Math.cbrt(player.galaxies + 1)
-      return first.times(second).pow(third)
-    },
-    cap: undefined,
-    formatEffect: value => formatX(value, 2, 2)
+    shortDescription: () => `Reality Autobuyer`,
   },
 ];

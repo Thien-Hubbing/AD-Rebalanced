@@ -48,7 +48,7 @@ export default {
     update() {
       this.isDoomed = Pelle.isDoomed;
       this.darkMatter.copyFrom(Currency.darkMatter);
-      this.isDMCapped = this.darkMatter.eq(Decimal.NUMBER_MAX_VALUE);
+      this.isDMCapped = this.darkMatter.eq(Number.MAX_VALUE);
       this.maxDarkMatter.copyFrom(Currency.darkMatter.max);
       this.darkEnergy = player.celestials.laitela.darkEnergy;
       this.matterExtraPurchasePercentage = Laitela.matterExtraPurchaseFactor - 1;

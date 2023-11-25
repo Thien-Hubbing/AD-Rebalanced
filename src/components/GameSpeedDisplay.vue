@@ -7,7 +7,6 @@ export default {
     return {
       baseSpeed: 0,
       pulsedSpeed: 0,
-      realTimeSpeed: 0,
       hasSeenAlteredSpeed: false,
       isStopped: false,
       isEC12: false,
@@ -23,9 +22,6 @@ export default {
       if (this.isEC12) {
         return `${speed} (fixed)`;
       }
-      if (this.realTimeSpeed !== 1) {
-        return `${speed} (game-time); ${this.formatNumber(this.realTimeSpeed)} (real-time)`
-      }
       return `${speed}`;
     },
     pulseSpeedText() {
@@ -33,7 +29,7 @@ export default {
     },
     baseText() {
       if (!this.hasSeenAlteredSpeed) return null;
-      return this.baseSpeed === 1 && this.realTimeSpeed === 1
+      return this.baseSpeed === 1
         ? "The game is running at normal speed."
         : `Game speed is altered: ${this.baseSpeedText}`;
     }
@@ -42,7 +38,6 @@ export default {
     update() {
       this.baseSpeed = getGameSpeedupFactor();
       this.pulsedSpeed = getGameSpeedupForDisplay();
-      this.realTimeSpeed = getDeltaMultiplier();
       this.hasSeenAlteredSpeed = PlayerProgress.seenAlteredSpeed();
       this.isStopped = Enslaved.isStoringRealTime;
       this.isEC12 = EternityChallenge(12).isRunning;

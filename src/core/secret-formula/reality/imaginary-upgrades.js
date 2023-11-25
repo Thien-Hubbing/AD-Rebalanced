@@ -56,8 +56,8 @@ export const imaginaryUpgrades = [
     id: 6,
     initialCost: 1e4,
     costMult: 500,
-    description: () => `Increase the Reality Machine cap by ${formatX(1e300)}`,
-    effect: 1e300,
+    description: () => `Increase the Reality Machine cap by ${formatX(1e100)}`,
+    effect: 1e100,
     formatEffect: value => `${formatX(value)}`,
     isDecimal: true
   }),
@@ -66,8 +66,8 @@ export const imaginaryUpgrades = [
     id: 7,
     initialCost: 2e5,
     costMult: 500,
-    description: () => `Delay Glyph Instability starting level by ${formatInt(500)}`,
-    effect: 500,
+    description: () => `Delay Glyph Instability starting level by ${formatInt(200)}`,
+    effect: 200,
     formatEffect: value => `+${formatInt(value)} levels`
   }),
   rebuyable({
@@ -75,8 +75,8 @@ export const imaginaryUpgrades = [
     id: 8,
     initialCost: 1e7,
     costMult: 800,
-    description: () => `Multiply Infinity Dimensions by ${format("1e1000000")}`,
-    effect: DC.E1E6,
+    description: () => `Multiply Infinity Dimensions by ${format("1e100000")}`,
+    effect: DC.E100000,
     formatEffect: value => `${formatX(value)}`,
     isDecimal: true
   }),
@@ -86,7 +86,7 @@ export const imaginaryUpgrades = [
     initialCost: 1e9,
     costMult: 1000,
     description: () => `Increase Galaxy strength`,
-    effect: 0.15,
+    effect: 0.03,
     formatEffect: value => `+${formatPercents(value)}`,
   }),
   rebuyable({
@@ -95,7 +95,7 @@ export const imaginaryUpgrades = [
     initialCost: 8e9,
     costMult: 2000,
     description: () => `Increase Singularity gain`,
-    effect: 50,
+    effect: 1,
     formatEffect: value => `${formatX(1 + value, 2)}`
   }),
   {
@@ -207,7 +207,7 @@ export const imaginaryUpgrades = [
     checkRequirement: () => Replicanti.galaxies.total + player.galaxies +
       player.dilation.totalTachyonGalaxies >= 80000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    description: "Unlock the 4th Dark Matter Dimension and disable remote Antimatter Galaxy scaling!",
+    description: "Unlock the 4th Dark Matter Dimension",
   },
   {
     name: "Deterministic Radiation",
@@ -222,7 +222,7 @@ export const imaginaryUpgrades = [
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     canLock: true,
     lockEvent: () => `purchase more than ${formatInt(8)} Time Studies`,
-    description: () => `Unlock Dark Matter Annihilation but weaken the tickspeed (tickspeed is always dilated)`
+    description: "Unlock Dark Matter Annihilation"
   },
   {
     name: "Vacuum Acceleration",
@@ -249,7 +249,7 @@ export const imaginaryUpgrades = [
     canLock: true,
     lockEvent: "enable Continuum",
     description: "Annihilation multiplier gain is improved based on Imaginary Machines",
-    effect: () => Math.clampMin(Math.pow(Math.log10(Currency.imaginaryMachines.value), 5.5), 1),
+    effect: () => Math.clampMin(Math.pow(Math.log10(Currency.imaginaryMachines.value) - 10, 3), 1),
     formatEffect: value => `${formatX(value, 2, 1)}`,
     isDisabledInDoomed: true
   },

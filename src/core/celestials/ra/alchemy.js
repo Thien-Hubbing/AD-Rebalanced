@@ -198,7 +198,7 @@ class AlchemyReaction {
   }
 
   get reactionEfficiency() {
-    return AlchemyResource.synergism.effectValue;
+    return this.isReality ? 1 : AlchemyResource.synergism.effectValue;
   }
 
   get reactionProduction() {

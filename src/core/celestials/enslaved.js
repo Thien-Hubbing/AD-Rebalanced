@@ -8,7 +8,7 @@ export const ENSLAVED_UNLOCKS = {
     id: 0,
     price: TimeSpan.fromYears(1e35).totalMilliseconds,
     secondaryRequirement: () => true,
-    description: () => `Increase the softcap to Tickspeed upgrades from Time Dimensions by ${formatInt(1e6)}`,
+    description: () => `Increase the softcap to Tickspeed upgrades from Time Dimensions by ${formatInt(1e5)}`,
   },
   RUN: {
     id: 1,
@@ -74,7 +74,7 @@ export const Enslaved = {
     return this.canModifyRealTimeStorage && player.celestials.enslaved.isStoringReal;
   },
   get storedRealTimeEfficiency() {
-    return 0.7 + (Math.log10(Decimal.log10(Currency.timeShards.value)));
+    return 0.7;
   },
   get storedRealTimeCap() {
     const addedCap = Ra.unlocks.improvedStoredTime.effects.realTimeCap.effectOrDefault(0);

@@ -232,9 +232,9 @@ export const v = {
     },
     achievementBH: {
       id: 5,
-      reward: "Achievement multiplier affects Black Hole power at a reduced rate.",
+      reward: "Achievement multiplier affects Black Hole power.",
       description: () => `Have ${formatInt(30)} V-Achievements`,
-      effect: () => Math.pow(Achievements.power, 0.68),
+      effect: () => Achievements.power,
       format: x => formatX(x, 2, 0),
       requirement: () => V.spaceTheorems >= 30
     },

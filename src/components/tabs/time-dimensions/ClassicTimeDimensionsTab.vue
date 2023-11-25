@@ -67,7 +67,7 @@ export default {
     <div>
       <p>
         You have gained
-        <span class="c-time-dim-description__accent">{{ format(totalUpgrades, 2, 1) }}</span> Tickspeed upgrades from
+        <span class="c-time-dim-description__accent">{{ formatInt(totalUpgrades) }}</span> Tickspeed upgrades from
         <span class="c-time-dim-description__accent">{{ format(timeShards, 2, 1) }}</span> Time Shards.
       </p>
       <p>
@@ -79,8 +79,7 @@ export default {
     </div>
     <div>
       The amount each additional upgrade requires will start
-      increasing above {{ formatInt(tickspeedSoftcap) }} Tickspeed upgrades
-      <br>and even more drastically beyond {{ formatInt(1e8) }} upgrades.
+      increasing above {{ formatInt(tickspeedSoftcap) }} Tickspeed upgrades.
     </div>
     <div>
       You are getting {{ format(shardsPerSecond, 2, 0) }} {{ incomeType }} per second.
@@ -103,8 +102,6 @@ export default {
         Hold shift to see the Eternity Point cost for locked Time Dimensions.
       </div>
       Any 8th Time Dimensions purchased above {{ format(1e8) }} will not further increase the multiplier.
-      <br>
-      For all other tiers, any dimensions purchased above {{ format(1e8) }} will have it's purchase count reduced by /{{ format(2.3142791020597087, 3, 3) }}
     </div>
   </div>
 </template>

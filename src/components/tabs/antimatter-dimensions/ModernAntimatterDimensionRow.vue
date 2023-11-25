@@ -1,5 +1,6 @@
 <script>
 import GenericDimensionRowText from "@/components/GenericDimensionRowText";
+
 export default {
   name: "ModernAntimatterDimensionRow",
   components: {
@@ -87,7 +88,7 @@ export default {
       this.howManyCanBuy = buyUntil10 ? dimension.howManyCanBuy : Math.min(dimension.howManyCanBuy, 1);
       this.singleCost.copyFrom(dimension.cost);
       this.until10Cost.copyFrom(dimension.cost.times(Math.max(dimension.howManyCanBuy, 1)));
-      if (tier < 8 || EternityChallenge(7).isRunning) {
+      if (tier < 8) {
         this.rateOfChange.copyFrom(dimension.rateOfChange);
       }
       this.isAffordable = dimension.isAffordable;
@@ -97,7 +98,7 @@ export default {
       this.isShown =
         (DimBoost.totalBoosts > 0 && DimBoost.totalBoosts + 3 >= tier) || PlayerProgress.infinityUnlocked();
       this.isCostsAD = NormalChallenge(6).isRunning && tier > 2 && !this.isContinuumActive;
-      this.amountDisplay = format(this.amount, 2)
+      this.amountDisplay = this.tier < 8 ? format(this.amount, 2) : formatInt(this.amount);
       this.hasTutorial = (tier === 1 && Tutorial.isActive(TUTORIAL_STATE.DIM1)) ||
         (tier === 2 && Tutorial.isActive(TUTORIAL_STATE.DIM2));
     },

@@ -146,8 +146,7 @@ class InfinityDimensionState extends DimensionState {
       .timesEffectsOf(
         tier === 1 ? Achievement(94) : null,
         tier === 4 ? TimeStudy(72) : null,
-        tier === 1 ? EternityChallenge(2).reward : null,
-        RealityUpgrade(25).canBeApplied ? RealityUpgrade(25) : null
+        tier === 1 ? EternityChallenge(2).reward : null
       );
     mult = mult.times(Decimal.pow(this.powerMultiplier, Math.floor(this.baseAmount / 10)));
 
@@ -156,9 +155,6 @@ class InfinityDimensionState extends DimensionState {
       mult = mult.times(PelleRifts.decay.milestones[0].effectOrDefault(1));
     }
 
-    if (tier === 8 && TimeStudy(227).canBeApplied) {
-      mult = mult.times(TimeStudy(227).effectValue.infinity)
-    }
 
     mult = mult.pow(getAdjustedGlyphEffect("infinitypow"));
     mult = mult.pow(getAdjustedGlyphEffect("effarigdimensions"));
@@ -359,26 +355,6 @@ export const InfinityDimensions = {
     return Math.floor(Tesseracts.capIncrease());
   },
 
-  get convSoftcapStart() {
-    return Pelle.isDoomed ? DC.D0 : DC.E2E9.pow(Math.log10(this.capIncrease + 1) + 1)
-  },
-
-  get convSoftcapEffect() {
-    let equation = ( Pelle.isDoomed
-      ? Math.log10(Decimal.log10(Currency.infinityPower.value.plus(1).pow(12)))
-      : Math.max(
-        Math.log10(Decimal.log10(Currency.infinityPower.value.plus(1))) - Math.log10(this.convSoftcapStart.log10()),
-        1
-        )
-    )
-    const formula = (equation
-      * (1.25 + (equation > 3.4
-    ? (equation > 5 ? equation * (equation / 1.4) : equation * 1.3)
-    : equation * 0.45)) - 0.7)
-    if (PlayerProgress.eternityUnlocked()) return Math.max(formula, 1) * (Pelle.isDoomed ? equation ** 2 : 1)
-    else return 1;
-  },
-
   get totalDimCap() {
     return this.HARDCAP_PURCHASES + this.capIncrease;
   },
@@ -400,7 +376,7 @@ export const InfinityDimensions = {
 
     if (EternityChallenge(7).isRunning) {
       if (!NormalChallenge(10).isRunning) {
-        InfinityDimension(1).produceDimensions(AntimatterDimension(8), diff);
+        InfinityDimension(1).produceDimensions(AntimatterDimension(7), diff);
       }
     } else {
       InfinityDimension(1).produceCurrency(Currency.infinityPower, diff);
@@ -434,7 +410,6 @@ export const InfinityDimensions = {
 
   get powerConversionRate() {
     const multiplier = PelleRifts.paradox.milestones[2].effectOrDefault(1);
-    return ((7 + getAdjustedGlyphEffect("infinityrate") + PelleUpgrade.infConversion.effectOrDefault(0))
-      * multiplier) / this.convSoftcapEffect;
+    return (7 + getAdjustedGlyphEffect("infinityrate") + PelleUpgrade.infConversion.effectOrDefault(0)) * multiplier;
   }
 };

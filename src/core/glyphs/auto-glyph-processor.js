@@ -336,8 +336,8 @@ export function getGlyphLevelInputs() {
     const excess = (level - begin) / rate;
     return begin + 0.5 * rate * (Math.sqrt(1 + 4 * excess) - 1);
   };
-  scaledLevel = instabilitySoftcap(scaledLevel, staticFactors.instability, 1000);
-  scaledLevel = instabilitySoftcap(scaledLevel, staticFactors.hyperInstability, 750);
+  scaledLevel = instabilitySoftcap(scaledLevel, staticFactors.instability, 500);
+  scaledLevel = instabilitySoftcap(scaledLevel, staticFactors.hyperInstability, 400);
 
   const scalePenalty = scaledLevel > 0 ? baseLevel / scaledLevel : 1;
   const incAfterInstability = staticFactors.realityUpgrades + staticFactors.achievements;

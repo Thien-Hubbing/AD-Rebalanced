@@ -36,7 +36,7 @@ export const glyphEffects = {
     singleDesc: "Time Dimension power +{value}",
     totalDesc: "Time Dimension multipliers ^{value}",
     shortDesc: "TD power +{value}",
-    effect: (level, strength) => 1.025 + Math.pow(level, 0.35) * Math.pow(strength, 0.6) / 70,
+    effect: (level, strength) => 1.01 + Math.pow(level, 0.32) * Math.pow(strength, 0.45) / 75,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
@@ -52,8 +52,8 @@ export const glyphEffects = {
     genericDesc: "Game speed multiplier",
     shortDesc: "Game speed ×{value}",
     effect: (level, strength) => (GlyphAlteration.isEmpowered("time")
-      ? 1 + Math.pow(level, 0.4) * Math.pow(strength, 4)
-      : 1 + Math.pow(level, 0.32) * Math.pow(strength, 2 / 3) / 20),
+      ? 1 + Math.pow(level, 0.35)
+      : 1 + Math.pow(level, 0.3) * Math.pow(strength, 0.65) / 20),
     formatEffect: x => format(x, 3, 3),
     combine: GlyphCombiner.multiply,
     alteredColor: () => GlyphAlteration.getEmpowermentColor("time"),
@@ -69,7 +69,7 @@ export const glyphEffects = {
     totalDesc: "Eternity gain ×{value}",
     genericDesc: "Eternity gain multiplier",
     shortDesc: "Eternities ×{value}",
-    effect: (level, strength) => Math.pow((strength ** 3) * level, 0.87) *
+    effect: (level, strength) => Math.pow((strength + 3) * level, 0.9) *
       Math.pow(3, GlyphAlteration.sacrificeBoost("time")),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
@@ -93,10 +93,10 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("time")
       ? "EP ×{value} and ^{value2}"
       : "EP ×{value}"),
-    effect: (level, strength) => Math.pow(level * strength, strength) ** 1.16,
+    effect: (level, strength) => Math.pow(level * strength, 3) * 100,
     formatEffect: x => format(x, 2, 3),
     combine: GlyphCombiner.multiply,
-    conversion: x => 1 + Math.log10(x) / 60,
+    conversion: x => 1 + Math.log10(x) / 1000,
     formatSecondaryEffect: x => format(x, 4, 4),
     alteredColor: () => GlyphAlteration.getAdditionColor("time"),
     alterationType: ALTERATION_TYPE.ADDITION
@@ -110,7 +110,7 @@ export const glyphEffects = {
     totalDesc: "Dilated Time gain ×{value}",
     shortDesc: "DT ×{value}",
     effect: (level, strength) => (GlyphAlteration.isEmpowered("dilation")
-      ? DC.D1_05.pow(level * strength).times(15)
+      ? DC.D1_005.pow(level).times(15)
       : Decimal.pow(level * strength, 1.5).times(2)),
     formatEffect: x => format(x, 2, 1),
     combine: GlyphCombiner.multiplyDecimal,
@@ -125,8 +125,8 @@ export const glyphEffects = {
     singleDesc: "Tachyon Galaxy threshold multiplier ×{value}",
     genericDesc: "Tachyon Galaxy cost multiplier",
     shortDesc: "TG threshold ×{value}",
-    effect: (level, strength) => 1 - Math.pow(level, 0.2) * Math.pow(strength, 0.4) / 60 -
-      GlyphAlteration.sacrificeBoost("dilation") / 35,
+    effect: (level, strength) => 1 - Math.pow(level, 0.17) * Math.pow(strength, 0.35) / 100 -
+      GlyphAlteration.sacrificeBoost("dilation") / 50,
     formatEffect: x => format(x, 3, 3),
     alteredColor: () => GlyphAlteration.getBoostColor("dilation"),
     alterationType: ALTERATION_TYPE.BOOST,
@@ -156,15 +156,14 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("dilation")
       ? "{value} TT/hr and TTgen ×{value2}"
       : "{value} TT/hr"),
-    effect: (level, strength) => Math.pow(level * strength, 0.5),
+    effect: (level, strength) => Math.pow(level * strength, 0.5) / 10000,
     /** @type {function(number): string} */
     formatEffect: x => format(3600 * x, 2, 2),
     combine: GlyphCombiner.add,
     conversion: x => Math.clampMin(Math.pow(10000 * x, 1.6), 1),
     formatSecondaryEffect: x => format(x, 2, 2),
     alteredColor: () => GlyphAlteration.getAdditionColor("dilation"),
-    alterationType: ALTERATION_TYPE.ADDITION,
-    enabledInDoomed: true
+    alterationType: ALTERATION_TYPE.ADDITION
   },
   dilationpow: {
     id: "dilationpow",
@@ -175,7 +174,7 @@ export const glyphEffects = {
     totalDesc: "Antimatter Dimension multipliers ^{value} while Dilated",
     genericDesc: "Antimatter Dimensions ^x while Dilated",
     shortDesc: "Dilated AD power +{value}",
-    effect: (level, strength) => 1.1 + Math.pow(level, 0.85) * (strength / 20),
+    effect: (level, strength) => 1.1 + Math.pow(level, 0.7) * Math.pow(strength, 0.7) / 25,
     formatEffect: x => format(x, 2, 2),
     formatSingleEffect: x => format(x - 1, 2, 2),
     combine: GlyphCombiner.addExponents,
@@ -186,32 +185,16 @@ export const glyphEffects = {
     bitmaskIndex: 8,
     isGenerated: true,
     glyphTypes: ["replication"],
-    singleDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-      ? `Multiply Replication speed by ×{value}\n[ and Replicanti chance exponent] by ×{value2}`
-      : `Multiply Replication speed by ×{value}`
-    ),
-    totalDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed ×{value} and Replicanti chance exponent ×{value2}`
-    : `Replication speed ×{value}`
-    ),
-    genericDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed and chance exponent multiplier`
-    : `Replication speed multiplier`
-    ),
-    shortDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed ×{value}, chance exponent multiplier ×{value2}`
-    : `Replication speed ×{value}`
-    ),
+    singleDesc: "Multiply Replication speed by {value}",
+    totalDesc: "Replication speed ×{value}",
+    genericDesc: "Replication speed multiplier",
+    shortDesc: "Replication speed ×{value}",
     effect: (level, strength) => (GlyphAlteration.isEmpowered("replication")
-      ? DC.D1_3.pow(level * strength).times(10)
+      ? DC.D1_007.pow(level).times(10)
       : Decimal.times(level, strength).times(3)),
     formatEffect: x => format(x, 2, 1),
     combine: GlyphCombiner.multiplyDecimal,
-    conversion: x => Decimal.log10(x.pow(0.025)),
-    formatSecondaryEffect: x => format(x, 2, 3),
-    alteredColor: () => {
-      return GlyphAlteration.getEmpowermentColor("replication")
-    },
+    alteredColor: () => GlyphAlteration.getEmpowermentColor("replication"),
     alterationType: ALTERATION_TYPE.EMPOWER
   },
   replicationpow: {
@@ -219,11 +202,11 @@ export const glyphEffects = {
     bitmaskIndex: 9,
     isGenerated: true,
     glyphTypes: ["replication"],
-    singleDesc: "Replicanti multiplier and chance power +{value}",
-    totalDesc: "Replicanti multiplier and chance ^{value}",
-    shortDesc: "Replicanti mult., chance power +{value}",
-    effect: (level, strength) => 1.1 + Math.pow(level, 0.65) * strength / 18 +
-      GlyphAlteration.sacrificeBoost("replication") * 4,
+    singleDesc: "Replicanti multiplier power +{value}",
+    totalDesc: "Replicanti multiplier ^{value}",
+    shortDesc: "Replicanti mult. power +{value}",
+    effect: (level, strength) => 1.1 + Math.pow(level, 0.5) * strength / 25 +
+      GlyphAlteration.sacrificeBoost("replication") * 3,
     formatEffect: x => format(x, 2, 2),
     formatSingleEffect: x => format(x - 1, 2, 2),
     combine: GlyphCombiner.addExponents,
@@ -237,20 +220,20 @@ export const glyphEffects = {
     isGenerated: true,
     glyphTypes: ["replication"],
     singleDesc: () => (GlyphAlteration.isAdded("replication")
-      ? `Multiply Dilated Time \n[, Replicanti speed, and Replicanti chance bonus] by \n+{value} per ${format(DC.E10000)} replicanti`
-      : `Multiply Dilated Time gain \nand Replicanti chance bonus by \n+{value} per ${format(DC.E10000)} replicanti`),
+      ? `Multiply Dilated Time \n[and Replicanti speed] by \n+{value} per ${format(DC.E10000)} replicanti`
+      : `Multiply Dilated Time gain by \n+{value} per ${format(DC.E10000)} replicanti`),
     totalDesc: () => (GlyphAlteration.isAdded("replication")
-      ? `Multiply Dilated Time, Replication speed, and Replicanti chance bonus by +{value} per ${format(DC.E10000)} replicanti`
-      : `Multiply Dilated Time gain and Replicanti chance bonus by +{value} per ${format(DC.E10000)} replicanti`),
+      ? `Multiply Dilated Time and Replication speed by +{value} per ${format(DC.E10000)} replicanti`
+      : `Multiply Dilated Time gain by +{value} per ${format(DC.E10000)} replicanti`),
     genericDesc: () => (GlyphAlteration.isAdded("replication")
-      ? "Dilated Time, Replicanti speed, and Replicanti chance from replicanti"
-      : "Dilated Time gain and Replicanti chance multiplier from replicanti"),
+      ? "Dilated Time+Replicanti mult from replicanti"
+      : "Dilated Time gain multiplier from replicanti"),
     shortDesc: () => (GlyphAlteration.isAdded("replication")
-      ? `×DT, repl., repl. chance by +{value} per ${format(DC.E10000)} replicanti`
-      : `×DT, repl. chance by +{value} per ${format(DC.E10000)} replicanti`),
-    effect: (level, strength) => Math.pow(level, 0.4) * Math.pow(strength, 0.65),
-    formatEffect: x => format(x, 2, 2),
-    formatSingleEffect: x => format(x, 2, 2),
+      ? `×DT and repl. by +{value} per ${format(DC.E10000)} replicanti`
+      : `×DT by +{value} per ${format(DC.E10000)} replicanti`),
+    effect: (level, strength) => 0.0003 * Math.pow(level, 0.3) * Math.pow(strength, 0.65),
+    formatEffect: x => format(10000 * x, 2, 2),
+    formatSingleEffect: x => format(10000 * x, 2, 2),
     // It's bad to stack this one additively (N glyphs acts as a DT mult of N) or multiplicatively (the raw number is
     // less than 1), so instead we do a multiplicative stacking relative to the "base" effect of a level 1, 0% glyph.
     // We also introduce a 3x mult per glyph after the first, so that stacking level 1, 0% glyphs still has an effect.
@@ -276,7 +259,7 @@ export const glyphEffects = {
       ➜ ^(${format(0.4, 1, 1)} + {value})`,
     genericDesc: "Replicanti factor for Glyph level",
     shortDesc: "Replicanti pow. for level +{value}",
-    effect: (level, strength) => Math.pow(Math.pow(level, 1 / 3) * Math.pow(strength, 0.5), 0.6) / 40,
+    effect: (level, strength) => Math.pow(Math.pow(level, 0.25) * Math.pow(strength, 0.4), 0.5) / 50,
     formatEffect: x => format(x, 3, 3),
     combine: effects => {
       let sum = effects.reduce(Number.sumReducer, 0);
@@ -295,7 +278,7 @@ export const glyphEffects = {
     singleDesc: "Infinity Dimension power +{value}",
     totalDesc: "Infinity Dimension multipliers ^{value}",
     shortDesc: "ID power +{value}",
-    effect: (level, strength) => 1.01 + Math.pow(level, 0.26) * Math.pow(strength, 0.5) / 70 +
+    effect: (level, strength) => 1.007 + Math.pow(level, 0.21) * Math.pow(strength, 0.4) / 75 +
       GlyphAlteration.sacrificeBoost("infinity") / 50,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
@@ -315,7 +298,7 @@ export const glyphEffects = {
       ➜ ^(${formatInt(7)} + {value})`,
     genericDesc: "Infinity Power conversion rate",
     shortDesc: "Infinity Power conversion +{value}",
-    effect: (level, strength) => (Math.pow(level, 0.50) * strength) * 0.02765,
+    effect: (level, strength) => Math.pow(level, 0.2) * Math.pow(strength, 0.4) * 0.04,
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.add,
     enabledInDoomed: true,
@@ -337,12 +320,12 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("infinity")
       ? "IP ×{value} and ^{value2}"
       : "IP ×{value}"),
-    effect: (level, strength) => Math.pow(level * (strength + 1), 6.5) * 10000,
+    effect: (level, strength) => Math.pow(level * (strength + 1), 6) * 10000,
     formatEffect: x => format(x, 2, 3),
     combine: GlyphCombiner.multiply,
     // eslint-disable-next-line no-negated-condition
     softcap: value => ((Effarig.eternityCap !== undefined) ? Math.min(value, Effarig.eternityCap.toNumber()) : value),
-    conversion: x => 1 + Math.log10(x) / 170,
+    conversion: x => 1 + Math.log10(x) / 1800,
     formatSecondaryEffect: x => format(x, 4, 4),
     alteredColor: () => GlyphAlteration.getAdditionColor("infinity"),
     alterationType: ALTERATION_TYPE.ADDITION
@@ -381,11 +364,11 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("power")
       ? "AD power +{value} and AG cost ×{value2}"
       : "AD power +{value}"),
-    effect: (level, strength) => 1.02 + Math.pow(level, 0.3) * Math.pow(strength, 0.5) / 80,
+    effect: (level, strength) => 1.015 + Math.pow(level, 0.2) * Math.pow(strength, 0.4) / 75,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
-    conversion: x => 1.5 / (x + 1),
+    conversion: x => 2 / (x + 1),
     formatSecondaryEffect: x => format(x, 3, 3),
     alteredColor: () => GlyphAlteration.getAdditionColor("power"),
     alterationType: ALTERATION_TYPE.ADDITION,
@@ -399,7 +382,7 @@ export const glyphEffects = {
     singleDesc: "Antimatter Dimension multipliers ×{value}",
     shortDesc: "AD ×{value}",
     effect: (level, strength) => (GlyphAlteration.isEmpowered("power")
-      ? Decimal.clampMax(DC.D11111.pow(Math.pow(level, strength / 1.5)), DC.E3E12)
+      ? DC.D11111.pow(level * 220)
       : Decimal.pow(level * strength * 10, level * strength * 10)),
     formatEffect: x => formatPostBreak(x, 2, 0),
     combine: GlyphCombiner.multiplyDecimal,
@@ -415,8 +398,8 @@ export const glyphEffects = {
     singleDesc: "Dimension Boost multiplier ×{value}",
     genericDesc: "Dimension Boost multiplier",
     shortDesc: "Dimboost mult. ×{value}",
-    effect: (level, strength) => Math.pow(level * strength, 0.667) *
-      Math.pow(1 + GlyphAlteration.sacrificeBoost("power"), 3.5),
+    effect: (level, strength) => Math.pow(level * strength, 0.5) *
+      Math.pow(1 + GlyphAlteration.sacrificeBoost("power"), 3),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
     alteredColor: () => GlyphAlteration.getBoostColor("power"),
@@ -432,7 +415,7 @@ export const glyphEffects = {
     totalDesc: () => `Multiplier from "Buy ${formatInt(10)}" ×{value}`,
     genericDesc: () => `"Buy ${formatInt(10)}" bonus increase`,
     shortDesc: () => `AD "Buy ${formatInt(10)}" mult. ×{value}`,
-    effect: (level, strength) => 1 + level * strength / 9,
+    effect: (level, strength) => 1 + level * strength / 12,
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.addExponents,
     enabledInDoomed: true,
@@ -446,8 +429,8 @@ export const glyphEffects = {
     genericDesc: "Reality Machine multiplier",
     shortDesc: "RM ×{value}",
     effect: (level, strength) => (GlyphAlteration.isEmpowered("effarig")
-      ? Math.pow(level, strength)
-      : Math.pow(level, 0.85) * strength),
+      ? Math.pow(level, 1.5)
+      : Math.pow(level, 0.6) * strength),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
     alteredColor: () => GlyphAlteration.getEmpowermentColor("effarig"),
@@ -461,7 +444,7 @@ export const glyphEffects = {
     singleDesc: "Glyph Instability starting level +{value}",
     genericDesc: "Glyph Instability delay",
     shortDesc: "Instability delay +{value}",
-    effect: (level, strength) => Math.floor(60 * Math.pow(level * strength, 0.52)),
+    effect: (level, strength) => Math.floor(10 * Math.pow(level * strength, 0.5)),
     formatEffect: x => formatInt(x),
     combine: GlyphCombiner.add,
   },
@@ -474,7 +457,7 @@ export const glyphEffects = {
     totalDesc: "Game speed ^{value}",
     genericDesc: "Game speed ^x",
     shortDesc: "Game speed power +{value}",
-    effect: (level, strength) => Math.clampMax(1 + Math.pow(level, 0.25) * Math.pow(strength, 0.4) / 75, 1 + 1 / 3),
+    effect: (level, strength) => 1 + Math.pow(level, 0.25) * Math.pow(strength, 0.4) / 75,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
@@ -484,24 +467,12 @@ export const glyphEffects = {
     bitmaskIndex: 23,
     isGenerated: true,
     glyphTypes: ["effarig"],
-    singleDesc: () => (GlyphAlteration.isAdded("effarig")
-      ? `Multiply the alchemy resource cap by ×{value}`
-      : `Achievement Multiplier power +{value}`),
-    totalDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Multiply the alchemy resource cap by ×{value}`
-    : `Achievement Multiplier ^{value}`),
-    genericDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Alchemy resource cap multiplier`
-    : `Achievement Multiplier ^x`),
-    shortDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Alchemy resource cap ×{value}`
-    : `Achievement Mult. power +{value}`),
-    effect: (level, strength) => {
-      const formula = (1 + Math.pow(level, 0.4) * Math.pow(strength, 0.6) / 60 +
-      GlyphAlteration.sacrificeBoost("effarig") / 10)
-      if (GlyphAlteration.isAdded("effarig")) return formula
-      return formula * 0.6
-    },
+    singleDesc: "Achievement multiplier power +{value}",
+    totalDesc: "Achievement multiplier ^{value}",
+    genericDesc: "Achievement multiplier ^x",
+    shortDesc: "Achievement mult. power +{value}",
+    effect: (level, strength) => 1 + Math.pow(level, 0.4) * Math.pow(strength, 0.6) / 60 +
+      GlyphAlteration.sacrificeBoost("effarig") / 10,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
@@ -525,10 +496,10 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("effarig")
       ? `Buy ${formatInt(10)} mult. ^{value}, Dimboost mult. ^{value2}`
       : `Buy ${formatInt(10)} mult. ^{value}`),
-    effect: (level, strength) => 1 + (level * (strength / 3.4)),
+    effect: (level, strength) => 1 + 2 * Math.pow(level, 0.25) * Math.pow(strength, 0.4),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
-    conversion: x => Math.pow((x / 2.5) + 1, 0.1),
+    conversion: x => Math.pow(x, 0.4),
     formatSecondaryEffect: x => format(x, 2, 2),
     alteredColor: () => GlyphAlteration.getAdditionColor("effarig"),
     alterationType: ALTERATION_TYPE.ADDITION
@@ -542,7 +513,7 @@ export const glyphEffects = {
     totalDesc: "All Dimension multipliers ^{value}",
     genericDesc: "All Dimension multipliers ^x",
     shortDesc: "All Dimension power +{value}",
-    effect: (level, strength) => 1 + Math.pow(level, 1 / 3) * Math.pow(strength, 1 / 3) / 120,
+    effect: (level, strength) => 1 + Math.pow(level, 0.25) * Math.pow(strength, 0.4) / 500,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
@@ -569,7 +540,7 @@ export const glyphEffects = {
     totalDesc: "Time Shard gain ^{value}",
     genericDesc: "Time Shards ^x",
     shortDesc: "Time Shard power +{value}",
-    effect: (level, strength) => 1 + (strength / 2.8) * Math.pow(level, 0.38) / 500,
+    effect: (level, strength) => 1 + (strength / 3.5) * Math.pow(level, 0.35) / 400,
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
     combine: GlyphCombiner.addExponents,
@@ -584,7 +555,7 @@ export const glyphEffects = {
     totalDesc: "All Galaxy strength -{value}",
     shortDesc: "Galaxy Strength -{value}",
     // Multiplies by 0.768 per glyph
-    effect: level => Math.pow(level, -0.04),
+    effect: level => Math.pow(level, -0.03),
     formatEffect: x => formatPercents(1 - x, 2),
     combine: GlyphCombiner.multiply,
   },
@@ -596,7 +567,7 @@ export const glyphEffects = {
     singleDesc: "All Dimension multipliers ^{value}",
     shortDesc: "All Dimensions ^{value}",
     // Multiplies by 0.734 per glyph
-    effect: level => Math.pow(level, -0.05),
+    effect: level => Math.pow(level, -0.035),
     formatEffect: x => format(x, 3, 3),
     combine: GlyphCombiner.multiply,
   },
@@ -634,7 +605,7 @@ export const glyphEffects = {
     singleDesc: "Increase the effective level of equipped basic Glyphs by {value}",
     totalDesc: "Equipped basic Glyph level +{value}",
     shortDesc: "Basic Glyph Level +{value}",
-    effect: level => Math.floor(level ** 1.1),
+    effect: level => Math.floor(Math.sqrt(level * 90)),
     formatEffect: x => formatInt(x),
     combine: GlyphCombiner.add,
   },
@@ -646,7 +617,7 @@ export const glyphEffects = {
     singleDesc: "All Galaxies are {value} stronger",
     totalDesc: "All Galaxy strength +{value}",
     shortDesc: "Galaxy Strength +{value}",
-    effect: level => 1 + Math.pow(level / 50000, 0.516),
+    effect: level => 1 + Math.pow(level / 100000, 0.5),
     formatEffect: x => formatPercents(x - 1, 2),
     combine: GlyphCombiner.multiply,
   },
@@ -674,8 +645,7 @@ export const glyphEffects = {
     genericDesc: "Dilated Time factor for Glyph level",
     shortDesc: "DT pow. for level +{value}",
     // You can only get this effect on level 25000 reality glyphs anyway, might as well make it look nice
-    // Actually, the alchemy resource gets it's cap extended so...
-    effect: level => level / 100000,
+    effect: () => 0.1,
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.add,
   },

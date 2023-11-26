@@ -46,9 +46,15 @@ export default {
   computed: {
     isDoomed: () => Pelle.isDoomed,
     replicantiChanceSetup() {
+      const display = (value) => {
+        const powers = Currency.infinitiesTotal.value.plus(1).log2()
+        let string = `Replicate chance: ${formatPercents(value)}`
+        if (EffarigUnlock.eternity.canBeApplied) string = `Replicanti chance: ${format(Decimal.pow(value, powers), 2, 2)}%`
+        return string;
+      }
       return new ReplicantiUpgradeButtonSetup(
         ReplicantiUpgrade.chance,
-        value => `Replicate chance: ${formatPercents(value)}`,
+        value => display(value),
         cost => `+${formatPercents(0.01)} Costs: ${format(cost)} IP`
       );
     },

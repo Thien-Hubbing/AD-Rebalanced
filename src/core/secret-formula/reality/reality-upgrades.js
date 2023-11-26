@@ -12,7 +12,7 @@ const rebuyable = props => {
     props.initialCost * props.costMult
   );
   const { effect } = props;
-  props.effect = () => Math.pow(
+  props.effect = () => Decimal.pow(
     effect + ImaginaryUpgrade(props.id).effectOrDefault(0),
     player.reality.rebuyables[props.id] * getAdjustedGlyphEffect("realityrow1pow"));
   props.description = () => props.textTemplate.replace("{value}",
@@ -127,7 +127,7 @@ export const realityUpgrades = [
     checkEvent: GAME_EVENT.ETERNITY_RESET_AFTER,
     canLock: true,
     // There are two locking events - equipping a glyph with too low a level, and equipping a second glyph
-    description: "Gain another Glyph slot",
+    description: () => `Gain another Glyph slot, Increase the IP mult upgrade to ${formatX(2.3, 2, 2)}`,
     effect: () => 1
   },
   {

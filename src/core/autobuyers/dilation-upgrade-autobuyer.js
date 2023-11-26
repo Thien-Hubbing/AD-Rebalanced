@@ -1,18 +1,18 @@
 import { IntervaledAutobuyerState } from "./autobuyer";
 
 export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
-  get _upgradeName() { return ["dtGain", "galaxyThreshold", "tachyonGain"][this.id - 1]; }
+  get _upgradeName() { return ["dtGain", "galaxyThreshold", "tachyonGain", "tachyonExp"][this.id - 1]; }
 
   get data() {
     return player.auto.dilationUpgrades.all[this.id - 1];
   }
 
   get name() {
-    return [`Dilated Time Multiplier`, `Tachyon Galaxy Threshold`, "Tachyon Particle Multiplier"][this.id - 1];
+    return [`Dilated Time Multiplier`, `Tachyon Galaxy Threshold`, "Tachyon Particle Multiplier", "Tachyon Exponent Increaser"][this.id - 1];
   }
 
   get interval() {
-    return 1000 * Perk.autobuyerFasterDilation.effectOrDefault(1) / PerkShopUpgrade.autoSpeed.effectOrDefault(1);
+    return 100 * Perk.autobuyerFasterDilation.effectOrDefault(1) / PerkShopUpgrade.autoSpeed.effectOrDefault(1);
   }
 
   get isUnlocked() {
@@ -24,7 +24,7 @@ export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
   }
 
   get bulk() {
-    return PerkShopUpgrade.bulkDilation.effectOrDefault(1);
+    return PerkShopUpgrade.bulkDilation.effectOrDefault(1) * 64;
   }
 
   tick() {
@@ -33,7 +33,7 @@ export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
     DilationUpgrade[upgradeName].purchase(this.bulk);
   }
 
-  static get entryCount() { return 3; }
+  static get entryCount() { return 4; }
   static get autobuyerGroupName() { return "Dilation Upgrade"; }
   static get isActive() { return player.auto.dilationUpgrades.isActive; }
   static set isActive(value) { player.auto.dilationUpgrades.isActive = value; }

@@ -53,17 +53,8 @@ export const normalTimeStudies = [
     cost: 3,
     requirement: [11],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
-    description: () => `Improve Replicanti multiplier formula to
-      (log2(x)${formatPow(2)})+x${formatPow(0.032, 3, 3)}`,
-    effect: () => Replicanti.amount.pow(0.032),
-    // This is a special case because the study itself is *added* to the existing formula, but it makes more sense
-    // to display a multiplicative increase just like every other study. We need to do the calculation in here in order
-    // to properly show only the effect of this study and nothing else
-    formatEffect: value => {
-      const oldVal = Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2);
-      const newVal = oldVal.plus(value);
-      return formatX(newVal.div(oldVal).clampMin(1), 2, 2);
-    }
+    description: () => `Improve Replicanti multiplier formula
+      log2(x)${formatPow(2)} ➜ x${formatPow(0.032, 3, 3)}`,
   },
   {
     id: 22,
@@ -128,8 +119,8 @@ export const normalTimeStudies = [
     cost: 3,
     requirement: [51],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
-    description: () => `You gain ${formatX(15)} more Eternity Points`,
-    effect: 15
+    description: () => `You gain ${formatX(10)} more Eternity Points`,
+    effect: 10
   },
   {
     id: 62,
@@ -186,7 +177,7 @@ export const normalTimeStudies = [
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     description: "Dimension Boosts affect Infinity Dimensions",
     effect: () => DC.D1_0000109.pow(Math.pow(DimBoost.totalBoosts, 2)),
-    cap: DC.E1E7,
+    cap: DC.E80000,
     formatEffect: value => formatX(value, 2, 1)
   },
   {

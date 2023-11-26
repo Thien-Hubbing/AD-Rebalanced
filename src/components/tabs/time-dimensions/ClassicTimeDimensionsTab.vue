@@ -67,13 +67,13 @@ export default {
     <div>
       <p>
         You have gained
-        <span class="c-time-dim-description__accent">{{ formatInt(totalUpgrades) }}</span> Tickspeed upgrades from
+        <span class="c-time-dim-description__accent">{{ totalUpgrades > 1e10 ? format(totalUpgrades, 2, 2) : formatInt(totalUpgrades) }}</span> Tickspeed upgrades from
         <span class="c-time-dim-description__accent">{{ format(timeShards, 2, 1) }}</span> Time Shards.
       </p>
       <p>
         Next Tickspeed upgrade at
         <span class="c-time-dim-description__accent">{{ format(upgradeThreshold, 2, 1) }}</span>, increasing by
-        <span class="c-time-dim-description__accent">{{ formatX(multPerTickspeed, 2, 2) }}</span> per
+        <span class="c-time-dim-description__accent">{{ formatX(multPerTickspeed, 3, 3) }}</span> per
         Tickspeed upgrade gained.
       </p>
     </div>

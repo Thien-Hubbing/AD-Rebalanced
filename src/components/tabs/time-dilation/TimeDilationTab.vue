@@ -29,7 +29,8 @@ export default {
       return [
         DilationUpgrade.dtGain,
         DilationUpgrade.galaxyThreshold,
-        DilationUpgrade.tachyonGain
+        DilationUpgrade.tachyonGain,
+        DilationUpgrade.tachyonExp
       ];
     },
     upgrades() {
@@ -37,12 +38,20 @@ export default {
         [
           DilationUpgrade.doubleGalaxies,
           DilationUpgrade.tdMultReplicanti,
-          DilationUpgrade.ndMultDT
+          DilationUpgrade.ndMultDT,
+          DilationUpgrade.dilatedReplication
         ],
         [
           DilationUpgrade.ipMultDT,
           DilationUpgrade.timeStudySplit,
-          DilationUpgrade.dilationPenalty
+          DilationUpgrade.dilationPenalty,
+          DilationUpgrade.eterniDTSynergism
+        ],
+        [
+          DilationUpgrade.IDPer10Mults,
+          DilationUpgrade.dimensionBoostMult,
+          DilationUpgrade.tickOnOtherDims,
+          DilationUpgrade.intergalaticTo8Dims
         ],
       ];
     },

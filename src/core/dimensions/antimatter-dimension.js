@@ -130,6 +130,7 @@ function applyNDMultipliers(mult, tier) {
     tier <= 4 ? Achievement(64) : null,
     tier < 8 ? TimeStudy(71) : null,
     tier === 8 ? TimeStudy(214) : null,
+    tier === 8 ? DilationUpgrade.intergalaticTo8Dims : null,
     tier > 1 && tier < 8 ? InfinityChallenge(8).reward : null
   );
   if (Achievement(43).isUnlocked) {
@@ -599,6 +600,9 @@ class AntimatterDimensionState extends DimensionState {
       }
     }
     production = production.min(this.cappedProductionInNormalChallenges);
+    if (production.gt(DC.E1E9)) {
+      production = production.pow(0.05).times(DC.E1E9)
+    }
     return production;
   }
 }

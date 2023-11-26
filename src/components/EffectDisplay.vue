@@ -85,8 +85,8 @@ export default {
           this.effectValue = Decimal.fromDecimal(value);
           this.updateEffect = () => this.effectValue.copyFrom(effect());
         } else {
-          throw new Error(`EffectDisplay config.effect is a function which returns` +
-            ` unsupported type "${typeof effect}"`);
+          this.effectValue = value;
+          this.updateEffect = () => this.effectValue = effect()
         }
 
         let cap = config.cap;

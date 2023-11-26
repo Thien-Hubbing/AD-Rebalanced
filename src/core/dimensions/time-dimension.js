@@ -120,6 +120,9 @@ export function timeDimensionCommonMultiplier() {
       AlchemyResource.dimensionality,
       PelleRifts.chaos
     );
+    if (DilationUpgrade.tickOnOtherDims.canBeApplied) {
+      mult = mult.times(DilationUpgrade.tickOnOtherDims.effectValue.TD)
+    }
 
   if (EternityChallenge(9).isRunning) {
     mult = mult.times(
@@ -143,7 +146,7 @@ class TimeDimensionState extends DimensionState {
     super(() => player.dimensions.time, tier);
     const BASE_COSTS = [null, DC.D1, DC.D5, DC.E2, DC.E3, DC.E2350, DC.E2650, DC.E3000, DC.E3350];
     this._baseCost = BASE_COSTS[tier];
-    const COST_MULTS = [null, 3, 9, 27, 81, 24300, 72900, 218700, 656100];
+    const COST_MULTS = [null, 3, 9, 27, 81, 24300, 656100, 17714700, 4304672100];
     this._costMultiplier = COST_MULTS[tier];
     const E6000_SCALING_AMOUNTS = [null, 7322, 4627, 3382, 2665, 833, 689, 562, 456];
     this._e6000ScalingAmount = E6000_SCALING_AMOUNTS[tier];
@@ -168,7 +171,7 @@ class TimeDimensionState extends DimensionState {
       return cost;
     }
 
-    const costMultIncreases = [1, 1.5, 2.2];
+    const costMultIncreases = [1, 2, 5];
     for (let i = 0; i < this._costIncreaseThresholds.length; i++) {
       const cost = Decimal.pow(this.costMultiplier * costMultIncreases[i], bought).times(this.baseCost);
       if (cost.lt(this._costIncreaseThresholds[i])) return cost;
@@ -318,7 +321,7 @@ export const TimeDimensions = {
   all: TimeDimension.index.compact(),
 
   get scalingPast1e6000() {
-    return 4;
+    return 36;
   },
 
   tick(diff) {

@@ -146,7 +146,7 @@ class InfinityDimensionState extends DimensionState {
       .timesEffectsOf(
         tier === 1 ? Achievement(94) : null,
         tier === 4 ? TimeStudy(72) : null,
-        tier === 1 ? EternityChallenge(2).reward : null
+        tier === 1 ? EternityChallenge(2).reward : null,
       );
     mult = mult.times(Decimal.pow(this.powerMultiplier, Math.floor(this.baseAmount / 10)));
 
@@ -155,6 +155,9 @@ class InfinityDimensionState extends DimensionState {
       mult = mult.times(PelleRifts.decay.milestones[0].effectOrDefault(1));
     }
 
+    if (DilationUpgrade.tickOnOtherDims.canBeApplied) {
+      mult = mult.times(DilationUpgrade.tickOnOtherDims.effectValue.ID)
+    }
 
     mult = mult.pow(getAdjustedGlyphEffect("infinitypow"));
     mult = mult.pow(getAdjustedGlyphEffect("effarigdimensions"));
@@ -202,7 +205,9 @@ class InfinityDimensionState extends DimensionState {
 
   get powerMultiplier() {
     return new Decimal(this._powerMultiplier)
-      .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.infinity : null)
+      .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.infinity : null,
+        DilationUpgrade.IDPer10Mults
+       )
       .pow(ImaginaryUpgrade(14).effectOrDefault(1));
   }
 
@@ -215,9 +220,7 @@ class InfinityDimensionState extends DimensionState {
     if (Enslaved.isRunning) {
       return 1;
     }
-    return InfinityDimensions.capIncrease + (this.tier === 8
-      ? Number.MAX_VALUE
-      : InfinityDimensions.HARDCAP_PURCHASES);
+    return Number.MAX_VALUE
   }
 
   get isCapped() {
@@ -325,7 +328,7 @@ export const InfinityDimensions = {
    * @type {InfinityDimensionState[]}
    */
   all: InfinityDimension.index.compact(),
-  HARDCAP_PURCHASES: 2000000,
+  HARDCAP_PURCHASES: Number.MAX_VALUE,
 
   unlockNext() {
     if (InfinityDimension(8).isUnlocked) return;

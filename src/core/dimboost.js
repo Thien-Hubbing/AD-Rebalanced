@@ -31,6 +31,7 @@ export class DimBoost {
         TimeStudy(231),
         Achievement(117),
         Achievement(142),
+        DilationUpgrade.dimensionBoostMult,
         GlyphEffect.dimBoostPower,
         PelleRifts.recursion.milestones[0]
       ).powEffectsOf(InfinityUpgrade.dimboostMult.chargedEffect);

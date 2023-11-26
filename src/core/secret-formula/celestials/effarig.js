@@ -44,7 +44,8 @@ export const effarigUnlocks = {
       return ` Replicanti cap is multiplied by a value based on Infinities
         Infinities increase your max Replicanti Galaxies
         Base Infinity Point gain is capped at ${format(DC.E200)} in Effarig's Reality
-        Each type of Infinity Point multiplier is capped at ${format(DC.E50)} in Effarig's Reality`;
+        Each type of Infinity Point multiplier is capped at ${format(DC.E50)} in Effarig's Reality
+        The limit for the Replicanti Chance and Interval upgrades are removed`;
     },
   },
   eternity: {
@@ -53,14 +54,15 @@ export const effarigUnlocks = {
     get description() {
       return ` Eternities generates Infinities
         Infinity Points are no longer limited in any way in Effarig's Reality
-        You have unlocked The Nameless Ones`;
+        You have unlocked The Nameless Ones
+        The Replicanti Chance is raised to an exponent based on Infinities`;
     },
   },
   reality: {
     id: 6,
     label: "Reality",
     get description() {
-      return " You have unlocked Effarig Glyphs (You may equip at most one and some effects are mutually exclusive)";
+      return ` You have unlocked Effarig Glyphs (You may equip at most one and some effects are mutually exclusive)`;
     },
   }
 };

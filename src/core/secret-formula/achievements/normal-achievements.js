@@ -732,7 +732,7 @@ export const normalAchievements = [
     checkRequirement: () => player.totalTickGained >= 308,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     reward: "Time Dimensions gain a multiplier based on tickspeed.",
-    effect: () => Tickspeed.perSecond.pow(0.000005),
+    effect: () => Decimal.pow(Tickspeed.perSecond.plus(1).log2(), 2048),
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {

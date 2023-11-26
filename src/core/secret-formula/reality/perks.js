@@ -68,7 +68,8 @@ export const perks = {
     label: "SIP2",
     family: PERK_FAMILY.INFINITY,
     get description() {
-      return `Start every Eternity and Reality with ${format(5e130)} Infinity Points.`;
+      return `Start every Eternity and Reality with ${format(5e130)} Infinity Points.
+        The IP mult upgrade multiplies by ${formatX(2.2, 2, 2)} per upgrade.`;
     },
     bumpCurrency: () => Currency.infinityPoints.bumpTo(5e130),
     effect: 5e130,
@@ -116,11 +117,11 @@ export const perks = {
     label: "STP",
     family: PERK_FAMILY.DILATION,
     get description() {
-      return `After unlocking Dilation, gain ${formatInt(10)} Tachyon Particles.`;
+      return `After unlocking Dilation, gain ${formatInt(1e6)} Tachyon Particles.`;
     },
-    effect: () => (Enslaved.isRunning ? 1 : 10),
+    effect: () => (Enslaved.isRunning ? 1 : 1e6),
     automatorPoints: 5,
-    shortDescription: () => `Start with ${formatInt(10)} TP`,
+    shortDescription: () => `Start with ${formatInt(1e6)} TP`,
     layoutPosList: [106923, 81399, 79399, 80198, 81400, 109376],
   },
   antimatterNoReset: {
@@ -380,9 +381,12 @@ export const perks = {
     id: 100,
     label: "DAU",
     family: PERK_FAMILY.AUTOMATION,
-    description: "Unlock autobuyers for the repeatable Dilation Upgrades.",
+    get description() {
+      return `Unlock autobuyers for the repeatable Dilation Upgrades.
+        Unlock another row of dilation upgrades.`
+    },
     automatorPoints: 5,
-    shortDescription: () => "Dilation Upgrade Autobuyers",
+    shortDescription: () => "Dilation Upgrade Autobuyers, more Dilation upgrades",
     layoutPosList: [120204, 81401, 79802, 79399, 80597, 96672],
   },
   autobuyerFasterID: {

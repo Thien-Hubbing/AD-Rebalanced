@@ -27,6 +27,7 @@ export const DC = deepFreeze({
 
   D0_01:                new Decimal("0.01"),
   D0_1:                 new Decimal("0.1"),
+  D0_25:                new Decimal("0.25"),
   D0_4:                 new Decimal("0.4"),
   D0_55:                new Decimal("0.55"),
   D0_8446303389034288:  new Decimal("0.8446303389034288"),
@@ -120,6 +121,7 @@ export const DC = deepFreeze({
   E600:                 new Decimal("1e600"),
   E616:                 new Decimal("1e616"),
   E650:                 new Decimal("1e650"),
+  E700:                 new Decimal("1e700"),
   E750:                 new Decimal("1e750"),
   E850:                 new Decimal("1e850"),
   E900:                 new Decimal("1e900"),
@@ -171,6 +173,7 @@ export const DC = deepFreeze({
   E45000:               new Decimal("1e45000"),
   E54000:               new Decimal("1e54000"),
   E60000:               new Decimal("1e60000"),
+  E80000:               new Decimal("1e80000"),
   E100000:              new Decimal("1e100000"),
   E110000:              new Decimal("1e110000"),
   E164000:              new Decimal("1e164000"),
@@ -189,8 +192,11 @@ export const DC = deepFreeze({
   E4E7:                 new Decimal("1e40000000"),
   E6E7:                 new Decimal("1e60000000"),
   E1E8:                 new Decimal("1e100000000"),
+  E5E8:                 new Decimal("1e500000000"),
+  E1E9:                 new Decimal("1e1000000000"),
   E1_5E12:              new Decimal("1e1500000000000"),
   E1E15:                new Decimal("1e1000000000000000"),
+  E9E15:                new Decimal("1e9000000000000000")
 });
 
 window.AUTOBUYER_MODE = {

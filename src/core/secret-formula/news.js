@@ -842,7 +842,7 @@ export const news = [
     id: "a158",
     text:
       `If Gaben can't count to three, and Hevipelle can't count to nine, will there be some other game developer
-      in the future that can't count to 27?`
+      in the future that can't count to 27? Well, we know the answer. It's thien.`
   },
   {
     id: "a159",
@@ -861,7 +861,7 @@ export const news = [
   },
   {
     id: "a162",
-    text: `"Python's not the best language, Finnish is." - Hevipelle`
+    text: `"Python's not the best language, Finnish is." - Hevipelle ("Nah, I prefer Javascript and Vietnamese" -Thien)`
   },
   {
     id: "a163",
@@ -982,7 +982,7 @@ export const news = [
   },
   {
     id: "a181",
-    text: "This news broadcast is powered by break_news.js."
+    text: "This news broadcast is powered by break_news.js. (I'll rename the internal code so it's actually called break_news.js)"
   },
   {
     id: "a182",
@@ -1201,7 +1201,11 @@ export const news = [
         "That's basically a rounding error.",
         "That might as well be zero.",
         "Did you forget an exponent somewhere?",
-        "Please, that's nothing."
+        "Please, that's nothing.",
+        `I forgot there was an "e" somewhere.`,
+        `Let me guess, you forgot a very important upgrade.`,
+        `Should have shown you where the 9th dimension is.`,
+        `That looked like a negative for a second.`
       ];
       const diss = disses.randomElement();
       return `Only ${format(Currency.antimatter.value, 2, 0)} antimatter? ${diss}`;
@@ -1991,12 +1995,12 @@ export const news = [
   },
   {
     id: "a316",
-    text: "Some people choose to see the ugliness in this world. The disarray. I choose to see the numbers."
+    text: "Some people choose to see the ugliness in this world. The disarray. I choose to see the numbers. And the ugliness."
   },
   {
     id: "a317",
     get text() {
-      return `${format(Number.MAX_VALUE, 2, 0)}? Doesn't look like anything to me.`;
+      return `${format(Currency.antimatter.value.times(Decimal.NUMBER_MAX_VALUE), 2, 0)}? Doesn't look like anything to me.`;
     }
   },
   {
@@ -2316,7 +2320,9 @@ export const news = [
   },
   {
     id: "a358",
-    text: `Press "Choose save" to explore the other 2 parallel universes.`
+    get text() {
+      return `Press "Choose save" to explore the other NaN parallel universes.`
+    }
   },
   {
     id: "a359",
@@ -2326,7 +2332,9 @@ export const news = [
   },
   {
     id: "a360",
-    text: `Press "Choose save" to explore the other 2 parallel universes.`
+    get text() {
+      return `Press "Choose save" to explore the other ${format(Number.MAX_VALUE, 2, 2)} parallel universes.`
+    }
   },
   {
     // Discord contest winner #1
@@ -2594,6 +2602,33 @@ export const news = [
       fast. Update, just 5 hours.`
   },
   {
+    id: "a391",
+    text: `Antimatter Galaxies are stupid. I prefer Replicanti Galaxies. They are easier to get too.`,
+    get unlocked() { return PlayerProgress.replicantiUnlocked() || PlayerProgress.eternityUnlocked() }
+  },
+  {
+    id: "a392",
+    get text() {
+      return `If only we had the 9th dimension. We could have more than
+        ${format(Currency.antimatter.value, 2, 2)} antimatter right now.`;
+    },
+  },
+  {
+    id: "a393",
+    get text() {
+      let mastered = ""
+      if (player.records.fullGameCompletions >= 1) mastered = "everything"
+      else if (Pelle.isUnlocked) mastered = "celestials"
+      else if (PlayerProgress.realityUnlocked()) mastered = "reality"
+      else if (PlayerProgress.dilationUnlocked()) mastered = "time dilation"
+      else if (PlayerProgress.eternityUnlocked()) mastered = "eternity"
+      else if (PlayerProgress.eternityUnlocked()) mastered = "eternity"
+      else if (PlayerProgress.infinityUnlocked()) mastered = "infinity"
+      else mastered = "nothing"
+      return `I think you did a good job mastering ${mastered}`;
+    }
+  },
+  {
     id: "l1",
     text: "You just made your 1,000,000,000,000,000th antimatter. This one tastes like chicken.",
     get unlocked() { return Currency.antimatter.exponent === 15; }
@@ -2601,7 +2636,7 @@ export const news = [
   {
     id: "l2",
     text: "Nerf the galaxies please.",
-    get unlocked() { return player.galaxies === 2 || Currency.infinities.gt(0); }
+    get unlocked() { return player.galaxies >= 2 || Currency.infinities.gt(0); }
   },
   {
     id: "l3",
@@ -2649,7 +2684,7 @@ export const news = [
   },
   {
     id: "l11",
-    text: "9th Dimension is a lie.",
+    text: "9th Dimension is a lie. Except it isn't. I'll try to implement it.",
     get unlocked() {
       return DimBoost.totalBoosts >= 5 ||
       player.galaxies > 0 ||
@@ -2770,8 +2805,8 @@ export const news = [
     id: "l26",
     text:
       `Thanos is gonna be super dissapointed when he shows up with a fully powered Infinity gauntlet, and Hevi
-      has a fully powered Eternity gauntlet.`,
-    get unlocked() { return PlayerProgress.eternityUnlocked(); }
+      has a fully powered Eternity gauntlet. Well, I have a Reality gauntlet.`,
+    get unlocked() { return PlayerProgress.eternityUnlocked() || PlayerProgress.realityUnlocked() }
   },
   {
     id: "l27",
@@ -2846,7 +2881,7 @@ export const news = [
     text:
       `I broke the 8th wall, there is only chaos, Slabdrill is ritually sacrificing antimatter to the 9th
       dimension. This will be my last entry, may Hevipelle have mercy on our souls, we didn't listen,
-      We should have listened.`,
+      We should have listened. ("I should tell you, I can try to give you the 9th dimesion" -Thien)`,
     get unlocked() { return NewsHandler.hasSeenNews("l58"); }
   },
   {
@@ -2878,7 +2913,7 @@ export const news = [
   },
   {
     id: "l46",
-    text: "Achievement Unlocked!",
+    text: "Achievement Unlocked: The Celestial of Bypasses. Reward: Unlock the 9th dimension.",
     get unlocked() { return Achievements.effectiveCount >= GameDatabase.achievements.normal.length; }
   },
   {
@@ -2943,7 +2978,8 @@ export const news = [
         "a Replicanti cake: Gather some Replicanti, place in oven, and watch rise. And rise. And rise.",
         "an antimatter cake: Gather some antimatter, place in oven, and <b>BOOM<b>.",
         "an Eternity cake: Gather some Eternity Points, place in oven, and wait...",
-        "an Infinity cake: Gather some Infinity Points, place in oven, and watch them shatter spacetime."
+        "an Infinity cake: Gather some Infinity Points, place in oven, and watch them shatter spacetime.",
+        "a Reality cake: Gather some Reality Machines, place in oven, and watch them. I mean, it's just a cake.",
       ];
       const recipe = recipes.randomElement();
       return `How to bake ${recipe}`;
@@ -3244,12 +3280,12 @@ export const news = [
   {
     id: "l85",
     text:
-      `On opposite day, the new update is just -5 hours away. You begin increasing your Matter. Once you acquire a
+      `On opposite day, the new update is always available. You begin increasing your Matter. Once you acquire a
       huge abundance of Matter, you must become Infinitesimal. After increasing your wealth in Infinitesimal Points,
       you can eventually Jiffy, the shortest unit of time. After enough time, your Jiffies will accumulate, and you
       will Contract Time. Contracting Time will grant you enough of a boost to eventually Fantasy, the final layer
       of maintenance. However, you find out that it was all a dream. Your Antimatter is safe and well, and the new
-      update is still just 5 hours away.`,
+      update is still just 5 hours away. Well, more like 5 minutes with how I do things.`,
     get unlocked() { return PlayerProgress.realityUnlocked(); }
   },
   {
@@ -3278,6 +3314,31 @@ export const news = [
       average per-player credit earn rates on a daily basis, and we'll be making constant adjustments to ensure that
       players have challenges that are compelling, rewarding, and of course attainable via gameplay.`,
     get unlocked() { return PlayerProgress.realityUnlocked(); }
+  },
+  {
+    id: "l89",
+    text: "Do you want to see some celestials? No? Okay.",
+    onClick() { nextNewsMessageId = "l90" },
+    get unlocked() { return Teresa.isUnlocked }
+  },
+  {
+    id: "l90",
+    text:
+      `Since you asked for it, ok.
+      .........
+      Matpat, The Celestial of Lore,
+      MisterObvious, The Celestial of CP (if you know what that is.),
+      SpeedMcQueen, The Celestial of Releatables,
+      Hevipelle, The Celestial of Game Mechanics,
+      Aarex, The Celestial of Omnisity,
+      Vsauce, The Celestial of Mysteries,
+      NCS, The Celestial of Nostalgia,
+      (someones name I don't wanna say), The Celestial of <span style='animation: a-existence-glow 3s
+      infinite; font-size: 1.8rem; color: white; line-height: 0;'>Stupidity</span>
+      Thien, The Celestial of Realms,
+      Packgod and LTG, The Celestial of Roasting,
+      And then there's you. A mortal. A HighTierMortal to be more specific.`,
+    get unlocked() { return Teresa.isUnlocked && nextNewsMessageId === this.id }
   },
   {
     id: "r1",

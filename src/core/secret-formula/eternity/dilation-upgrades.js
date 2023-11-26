@@ -1,7 +1,7 @@
 import { DC } from "../../constants";
 
 function rebuyableCost(initialCost, increment, id) {
-  return Decimal.multiply(initialCost, Decimal.pow(increment, player.dilation.rebuyables[id]));
+  return Decimal.multiply(initialCost, Decimal.pow(increment, player.dilation.rebuyables[id] ?? 1));
 }
 function rebuyable(config) {
   return {
@@ -84,43 +84,47 @@ export const dilationUpgrades = {
     formatCost: value => format(value, 2),
     purchaseCap: Number.MAX_VALUE
   }),
-  doubleGalaxies: {
+  tachyonExp: rebuyable({
     id: 4,
+    initialCost: 1e10,
+    increment: 1e4,
+    description: () => {
+      return `Increase the exponent of the TP formula by +${formatPow(0.25, 2, 2)}`;
+    },
+    effect: bought => {
+      return DC.D0_25.multiply(bought ?? 0)
+    },
+    formatEffect: value => `+`+formatPow(value, 2, 2),
+    formatCost: value => format(value, 2, 2),
+    purchaseCap: Number.MAX_VALUE
+  }),
+  doubleGalaxies: {
+    id: 5,
     cost: 5e6,
     description: () => `Gain twice as many Tachyon Galaxies, up to ${formatInt(500)} base Galaxies`,
     effect: 2
   },
   tdMultReplicanti: {
-    id: 5,
+    id: 6,
     cost: 1e9,
     description: () => {
-      const rep10 = replicantiMult().pLog10();
-      let multiplier = "0.1";
-      if (rep10 > 9000) {
-        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10() / rep10;
-        if (ratio < 0.095) {
-          multiplier = ratio.toFixed(2);
-        }
-      }
-      return `Time Dimensions are affected by Replicanti multiplier ${formatPow(multiplier, 1, 3)}, reduced
-        effect above ${formatX(DC.E9000)}`;
+      return `Time Dimensions are affected by Replicanti multiplier ${formatPow(0.1, 2, 2)}`;
     },
     effect: () => {
       let rep10 = replicantiMult().pLog10() * 0.1;
-      rep10 = rep10 > 9000 ? 9000 + 0.5 * (rep10 - 9000) : rep10;
       return Decimal.pow10(rep10);
     },
     formatEffect: value => formatX(value, 2, 1)
   },
   ndMultDT: {
-    id: 6,
+    id: 7,
     cost: 5e7,
     description: "Antimatter Dimension multiplier based on Dilated Time, unaffected by Time Dilation",
     effect: () => Currency.dilatedTime.value.pow(308).clampMin(1),
     formatEffect: value => formatX(value, 2, 1)
   },
   ipMultDT: {
-    id: 7,
+    id: 8,
     cost: 2e12,
     description: "Gain a multiplier to Infinity Points based on Dilated Time",
     effect: () => Currency.dilatedTime.value.pow(1000).clampMin(1),
@@ -128,25 +132,81 @@ export const dilationUpgrades = {
     cap: () => Effarig.eternityCap
   },
   timeStudySplit: {
-    id: 8,
+    id: 9,
     cost: 1e10,
     description: "You can buy all three Time Study paths from the Dimension Split"
   },
   dilationPenalty: {
-    id: 9,
+    id: 10,
     cost: 1e11,
     description: () => `Reduce the Dilation penalty (${formatPow(1.05, 2, 2)} after reduction)`,
     effect: 1.05,
   },
+  dilatedReplication: {
+    id: 11,
+    cost: 1e50,
+    description: "Replicanti replicates faster based on Dilated Time",
+    effect: () => Decimal.pow(Currency.tachyonParticles.value.plus(1).log10(), 5),
+    formatEffect: value => `${formatX(value, 2, 2)}`
+  },
+  eterniDTSynergism: {
+    id: 12,
+    cost: 1e80,
+    description: "Dilated Time and Eternities synergizes with each other",
+    effect: () => {
+      return {
+        eternities: Decimal.pow(Currency.dilatedTime.value.plus(1).log2(), 3.5),
+        dilatedTime: Currency.eternities.value.plus(1).cbrt().pow(0.8)
+      }
+    },
+    formatEffect: obj => `ET: ${formatX(obj.eternities, 2, 2)}, DT: ${formatX(obj.dilatedTime, 2, 2)}`
+  },
   ttGenerator: {
-    id: 10,
+    id: 13,
     cost: 1e15,
     description: "Generate Time Theorems based on Tachyon Particles",
     effect: () => Currency.tachyonParticles.value.div(20000),
     formatEffect: value => `${format(value, 2, 1)}/sec`
   },
+  IDPer10Mults: {
+    id: 14,
+    cost: DC.E280,
+    description: "The Infinity Dimension per-purchase multiplier gets a boost based on DT",
+    effect: () => (Math.log10(Currency.dilatedTime.value.plus(1).log2()) * 3.5) ** 1.65,
+    formatEffect: value => `${formatX(value, 2, 2)}`
+  },
+  dimensionBoostMult: {
+    id: 15,
+    cost: DC.E450,
+    description: "Dilated Time boosts the Dimension Boost multiplier (x+1^3.5)",
+    effect: () => Currency.dilatedTime.value.plus(1).pow(3.5),
+    formatEffect: value => `${formatX(value, 2, 2)}`
+  },
+  tickOnOtherDims: {
+    id: 16,
+    cost: DC.E550,
+    description: "Tickspeed affects all other dimensions types with reduced effect",
+    effect: () => {
+      let ID = Tickspeed.perSecond.plus(1).pow(0.002)
+      let TD = Decimal.pow(1.00005, Tickspeed.perSecond.plus(1).log10())
+      if (ID.gte(DC.E5E8)) ID = ID.pow(1/12).times(DC.E5E8)
+      if (TD.gte(DC.E1E7)) TD = TD.pow(1/33).times(DC.E1E7)
+      return {ID, TD}
+    },
+    formatEffect: obj => `ID: ${formatX(obj.ID, 2, 2)}, TD: ${formatX(obj.TD, 2, 2)}`
+  },
+  intergalaticTo8Dims: {
+    id: 17,
+    cost: DC.E700,
+    description: "Antimatter Galaxies boosts the 8th Antimatter Dimensions",
+    effect: () => {
+      const galaxies = player.galaxies ** 2.325
+      return Decimal.pow(galaxies, galaxies)
+    },
+    formatEffect: value => `${formatX(value, 2, 2)}`
+  },
   dtGainPelle: rebuyable({
-    id: 11,
+    id: 18,
     initialCost: 1e14,
     increment: 100,
     pelleOnly: true,
@@ -157,7 +217,7 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   galaxyMultiplier: rebuyable({
-    id: 12,
+    id: 19,
     initialCost: 1e15,
     increment: 1000,
     pelleOnly: true,
@@ -168,7 +228,7 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   tickspeedPower: rebuyable({
-    id: 13,
+    id: 20,
     initialCost: 1e16,
     increment: 1e4,
     pelleOnly: true,
@@ -179,14 +239,14 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   galaxyThresholdPelle: {
-    id: 14,
+    id: 21,
     cost: 1e45,
     pelleOnly: true,
     description: "Apply a cube root to the Tachyon Galaxy threshold",
     effect: 1 / 3
   },
   flatDilationMult: {
-    id: 15,
+    id: 22,
     cost: 1e55,
     pelleOnly: true,
     description: () => `Gain more Dilated Time based on current EP`,

@@ -197,7 +197,7 @@ export const Tickspeed = {
 export const FreeTickspeed = {
   BASE_SOFTCAP: 300000,
   GROWTH_RATE: 6e-6,
-  GROWTH_EXP: 2,
+  GROWTH_EXP: 1.55,
   multToNext: 1.33,
 
   get amount() {

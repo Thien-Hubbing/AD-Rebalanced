@@ -16,40 +16,40 @@ export const imaginaryUpgrades = [
     id: 1,
     initialCost: 3,
     costMult: 60,
-    description: () => `Increase Temporal Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Temporal Amplifier multiplier by +${format(0.45, 2, 2)}`,
+    effect: 0.45
   }),
   rebuyable({
     name: "Replicative Intensifier",
     id: 2,
     initialCost: 4,
     costMult: 60,
-    description: () => `Increase Replicative Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Replicative Amplifier multiplier by +${format(0.6, 2, 2)}`,
+    effect: 0.6
   }),
   rebuyable({
     name: "Eternal Intensifier",
     id: 3,
     initialCost: 1,
     costMult: 40,
-    description: () => `Increase Eternal Amplifier multiplier by +${format(0.4, 2, 2)}`,
-    effect: 0.4
+    description: () => `Increase Eternal Amplifier multiplier by +${format(0.7, 2, 2)}`,
+    effect: 0.7
   }),
   rebuyable({
     name: "Superluminal Intensifier",
     id: 4,
     initialCost: 5,
     costMult: 80,
-    description: () => `Increase Superluminal Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Superluminal Amplifier multiplier by +${format(0.4, 2, 2)}`,
+    effect: 0.4
   }),
   rebuyable({
     name: "Boundless Intensifier",
     id: 5,
     initialCost: 1,
     costMult: 30,
-    description: () => `Increase Boundless Amplifier multiplier by +${format(0.6, 2, 2)}`,
-    effect: 0.6
+    description: () => `Increase Boundless Amplifier multiplier by +${format(1.25, 2, 2)}`,
+    effect: 1.25
   }),
   rebuyable({
     name: "Elliptic Materiality",

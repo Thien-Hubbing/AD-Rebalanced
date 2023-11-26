@@ -237,6 +237,9 @@ export function gainedEternities() {
     ? new Decimal(1)
     : new Decimal(getAdjustedGlyphEffect("timeetermult"))
       .timesEffectsOf(RealityUpgrade(3), Achievement(113))
+      .times(DilationUpgrade.eterniDTSynergism.canBeApplied
+        ? DilationUpgrade.eterniDTSynergism.effectValue.eternities
+        : 1)
       .pow(AlchemyResource.eternity.effectValue);
 }
 

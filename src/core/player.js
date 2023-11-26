@@ -160,7 +160,7 @@ window.player = {
       isActive: false,
     },
     dilationUpgrades: {
-      all: Array.range(0, 3).map(() => ({
+      all: Array.range(0, 4).map(() => ({
         isActive: false,
         lastTick: 0,
       })),
@@ -411,9 +411,10 @@ window.player = {
       1: 0,
       2: 0,
       3: 0,
-      11: 0,
-      12: 0,
-      13: 0,
+      4: 0,
+      18: 0,
+      19: 0,
+      20: 0,
     },
     lastEP: DC.DM1,
   },
@@ -972,7 +973,7 @@ export const Player = {
 
   get infinityLimit() {
     const challenge = NormalChallenge.current || InfinityChallenge.current;
-    return challenge === undefined ? Decimal.MAX_VALUE : challenge.goal;
+    return challenge === undefined ? DC.E9E15 : challenge.goal;
   },
 
   get eternityGoal() {

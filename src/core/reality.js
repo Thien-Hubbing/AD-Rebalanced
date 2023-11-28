@@ -678,9 +678,10 @@ export function finishProcessReality(realityProps) {
       1: 0,
       2: 0,
       3: 0,
-      11: 0,
+      4: 0,
       12: 0,
-      13: 0
+      13: 0,
+      14: 0
     };
   }
   if (!PelleUpgrade.tachyonParticlesNoReset.canBeApplied) {
@@ -795,7 +796,7 @@ export function applyRUPG10() {
   player.dimensionBoosts = Math.max(4, player.dimensionBoosts);
   player.galaxies = Math.max(1, player.galaxies);
   player.break = true;
-  Currency.eternities.bumpTo(100);
+  Currency.eternities.bumpTo(100000);
   Replicanti.amount = Replicanti.amount.clampMin(1);
   Replicanti.unlock(true);
 

@@ -25,7 +25,8 @@ export class DimBoost {
       InfinityChallenge(7),
       TimeStudy(81)
     )
-      .toDecimal()
+    if (Effarig.isRunning) boost = Math.max(boost, getEffarigICEffects("IC7"))
+    boost = boost.toDecimal()
       .timesEffectsOf(
         TimeStudy(83),
         TimeStudy(231),
@@ -34,6 +35,7 @@ export class DimBoost {
         GlyphEffect.dimBoostPower,
         PelleRifts.recursion.milestones[0]
       ).powEffectsOf(InfinityUpgrade.dimboostMult.chargedEffect);
+
     if (GlyphAlteration.isAdded("effarig")) boost = boost.pow(getSecondaryGlyphEffect("effarigforgotten"));
 
     if (boost.gte("1e10000")) boost = boost.pow(1/9).times("1e10000")

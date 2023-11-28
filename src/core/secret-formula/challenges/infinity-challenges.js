@@ -21,9 +21,9 @@ export const infinityChallenges = [
     goal: DC.E10500,
     isQuickResettable: false,
     reward: {
-      description: () => `Dimensional Sacrifice autobuyer and stronger Dimensional Sacrifice
+      description: () => `Dimensional Sacrifice autobuyer and Dimensional Sacrifice formula is much stronger. (
         ${Sacrifice.getSacrificeDescription({ "InfinityChallenge2isCompleted": false })} ➜
-        ${Sacrifice.getSacrificeDescription({ "InfinityChallenge2isCompleted": true })}`,
+        ${Sacrifice.getSacrificeDescription({ "InfinityChallenge2isCompleted": true })})`,
     },
     unlockAM: DC.E11000,
   },
@@ -103,14 +103,14 @@ export const infinityChallenges = [
         TimeStudy(81)
       );
       return `you cannot buy Antimatter Galaxies. Base Dimension Boost multiplier is increased to a maximum
-        of ${formatX(10)}. (Current base multiplier: ${formatX(mult, 2, 1)})`;
+        of ${formatX(500)}. (Current base multiplier: ${formatX(mult, 2, 1)})`;
     },
     goal: DC.E10000,
     isQuickResettable: false,
-    effect: 10,
+    effect: 500,
     reward: {
-      description: () => `Dimension Boost multiplier is increased to a minimum of ${formatX(4)}`,
-      effect: 4
+      description: () => `Dimension Boost multiplier is increased to a minimum of ${formatX(25)}`,
+      effect: 25
     },
     unlockAM: DC.E23000,
   },

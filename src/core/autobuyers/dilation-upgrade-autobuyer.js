@@ -1,14 +1,14 @@
 import { IntervaledAutobuyerState } from "./autobuyer";
 
 export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
-  get _upgradeName() { return ["dtGain", "galaxyThreshold", "tachyonGain"][this.id - 1]; }
+  get _upgradeName() { return ["dtGain", "galaxyThreshold", "tachyonGain", "reduceAndIncrease"][this.id - 1]; }
 
   get data() {
     return player.auto.dilationUpgrades.all[this.id - 1];
   }
 
   get name() {
-    return [`Dilated Time Multiplier`, `Tachyon Galaxy Threshold`, "Tachyon Particle Multiplier"][this.id - 1];
+    return [`Dilated Time Multiplier`, `Tachyon Galaxy Threshold`, "Tachyon Particle Multiplier", "Dilation Reducer/Increaser"][this.id - 1];
   }
 
   get interval() {
@@ -33,7 +33,7 @@ export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
     DilationUpgrade[upgradeName].purchase(this.bulk);
   }
 
-  static get entryCount() { return 3; }
+  static get entryCount() { return 4; }
   static get autobuyerGroupName() { return "Dilation Upgrade"; }
   static get isActive() { return player.auto.dilationUpgrades.isActive; }
   static set isActive(value) { player.auto.dilationUpgrades.isActive = value; }

@@ -24,7 +24,9 @@ export function infinityDimensionCommonMultiplier() {
   if (Replicanti.areUnlocked && Replicanti.amount.gt(1)) {
     mult = mult.times(replicantiMult());
   }
-
+  if (Effarig.isRunning) {
+    mult = mult.times(getEffarigICEffects("IC3"))
+  }
   return mult;
 }
 
@@ -117,8 +119,12 @@ class InfinityDimensionState extends DimensionState {
       // other ID production is per-10-seconds).
       EternityChallenge(7).reward.applyEffect(v => toGain = v.times(10));
       if (EternityChallenge(7).isRunning) EternityChallenge(7).applyEffect(v => toGain = v.times(10));
+    } else if (tier === 7 && V.isRunning) {
+      return DC.D0
     } else {
-      toGain = InfinityDimension(tier + 1).productionPerSecond;
+      toGain = V.isRunning
+      ? InfinityDimension(tier + 2).productionPerSecond
+      : InfinityDimension(tier + 1).productionPerSecond;
     }
     const current = Decimal.max(this.amount, 1);
     return toGain.times(10).dividedBy(current).times(getGameSpeedupForDisplay());
@@ -135,6 +141,9 @@ class InfinityDimensionState extends DimensionState {
     }
     if (EternityChallenge(7).isRunning) {
       production = production.times(Tickspeed.perSecond);
+    }
+    if (Effarig.isRunning) {
+      production = production.times(getEffarigICEffects("IC3"))
     }
     return production.times(this.multiplier);
   }
@@ -172,7 +181,12 @@ class InfinityDimensionState extends DimensionState {
     }
 
     if (Effarig.isRunning) {
+      mult = mult.times(getEffarigICEffects("IC8"))
+      mult = mult.dividedBy(getEffarigICEffects("IC6"))
       mult = Effarig.multiplier(mult);
+      if (player.postC4Tier !== tier) {
+        mult = mult.pow(getEffarigICEffects("IC4"))
+      }
     } else if (V.isRunning) {
       mult = mult.pow(0.5);
     }
@@ -205,6 +219,10 @@ class InfinityDimensionState extends DimensionState {
   }
 
   get powerMultiplier() {
+    if (Enslaved.isRunning) {
+      return DC.D1
+    }
+    
     return new Decimal(this._powerMultiplier)
       .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.infinity : null)
       .pow(ImaginaryUpgrade(14).effectOrDefault(1));
@@ -373,7 +391,7 @@ export const InfinityDimensions = {
     )
     const formula = (equation
       * (1.25 + (equation > 3.4
-    ? (equation > 5 ? equation * (equation / 1.4) : equation * 1.3)
+    ? (equation > 5 ? equation ** 2.2 : equation * 1.3)
     : equation * 0.45)) - 0.7)
     if (PlayerProgress.eternityUnlocked()) return Math.max(formula, 1) * (Pelle.isDoomed ? equation ** 2 : 1)
     else return 1;
@@ -394,8 +412,9 @@ export const InfinityDimensions = {
   },
 
   tick(diff) {
-    for (let tier = 8; tier > 1; tier--) {
-      InfinityDimension(tier).produceDimensions(InfinityDimension(tier - 1), diff / 10);
+    const subtract = V.isRunning ? 2 : 1
+    for (let tier = 8; tier > subtract; tier--) {
+      InfinityDimension(tier).produceDimensions(InfinityDimension(tier - subtract), diff / 10);
     }
 
     if (EternityChallenge(7).isRunning) {
@@ -404,6 +423,9 @@ export const InfinityDimensions = {
       }
     } else {
       InfinityDimension(1).produceCurrency(Currency.infinityPower, diff);
+      if (V.isRunning) {
+        InfinityDimension(2).produceCurrency(Currency.infinityPower, diff);
+      }
     }
 
     player.requirementChecks.reality.maxID1 = player.requirementChecks.reality.maxID1

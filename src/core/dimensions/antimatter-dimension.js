@@ -44,6 +44,9 @@ export function antimatterDimensionCommonMultiplier() {
   );
 
   multiplier = multiplier.dividedByEffectOf(InfinityChallenge(6));
+  if (Effarig.isRunning) {
+    multiplier = multiplier.dividedBy(getEffarigICEffects("IC6"))
+  }
   multiplier = multiplier.times(getAdjustedGlyphEffect("powermult"));
   multiplier = multiplier.times(Currency.realityMachines.value.powEffectOf(AlchemyResource.force));
 
@@ -182,6 +185,12 @@ function applyNDPowers(mult, tier) {
     multiplier = multiplier.pow(0.5);
   }
 
+  if (Effarig.isRunning) {
+    multiplier = multiplier.times(getEffarigICEffects("IC8"))
+    if (player.postC4Tier !== tier) {
+      multiplier = multiplier.pow(getEffarigICEffects("IC4"))
+    }
+  }
 
   return multiplier;
 }
@@ -429,17 +438,19 @@ class AntimatterDimensionState extends DimensionState {
    */
   get rateOfChange() {
     const tier = this.tier;
-    if (tier === 8 ||
+    if ((tier === 8 && !EternityChallenge(7).isRunning) ||
       (tier > 3 && EternityChallenge(3).isRunning) ||
-      (tier > 6 && NormalChallenge(12).isRunning)) {
+      (tier > 6 && (NormalChallenge(12).isRunning || V.isRunning))) {
       return DC.D0;
     }
 
     let toGain;
-    if (tier === 7 && EternityChallenge(7).isRunning) {
+    if (tier === 8 && EternityChallenge(7).isRunning) {
       toGain = InfinityDimension(1).productionPerSecond.times(10);
-    } else if (NormalChallenge(12).isRunning) {
+    } else if (NormalChallenge(12).isRunning || V.isRunning) {
       toGain = AntimatterDimension(tier + 2).productionPerSecond;
+    } else if (tier >= 3 && Teresa.isRunning) {
+      toGain = DC.D0
     } else {
       toGain = AntimatterDimension(tier + 1).productionPerSecond;
     }
@@ -551,7 +562,7 @@ class AntimatterDimensionState extends DimensionState {
   }
 
   challengeCostBump() {
-    if (InfinityChallenge(5).isRunning) this.multiplyIC5Costs();
+    if (InfinityChallenge(5).isRunning || Effarig.isRunning) this.multiplyIC5Costs();
     else if (NormalChallenge(9).isRunning) this.multiplySameCosts();
   }
 
@@ -594,7 +605,10 @@ class AntimatterDimensionState extends DimensionState {
       if (tier === 4) amount = amount.pow(1.4);
       if (tier === 6) amount = amount.pow(1.2);
     }
-    let production = amount.times(this.multiplier).times(Tickspeed.perSecond);
+    let production = amount.times(this.multiplier).times(Effarig.isRunning
+      ? getEffarigICEffects("IC3")
+      : Tickspeed.perSecond
+    );
     if (NormalChallenge(2).isRunning) {
       production = production.times(player.chall2Pow);
     }
@@ -607,6 +621,11 @@ class AntimatterDimensionState extends DimensionState {
         production = Decimal.pow10(Math.pow(log10, getAdjustedGlyphEffect("effarigantimatter")));
       }
     }
+
+    if (tier >= 3 && Teresa.isRunning) {
+      production = DC.D0
+    }
+
     production = production.min(this.cappedProductionInNormalChallenges);
     return production;
   }
@@ -654,6 +673,10 @@ export const AntimatterDimensions = {
     mult = mult.pow(getAdjustedGlyphEffect("effarigforgotten")).powEffectOf(InfinityUpgrade.buy10Mult.chargedEffect);
     mult = mult.pow(ImaginaryUpgrade(14).effectOrDefault(1));
 
+    if (Enslaved.isRunning) {
+      mult = DC.D1
+    }
+
     return mult;
   },
 
@@ -665,7 +688,7 @@ export const AntimatterDimensions = {
 
     let maxTierProduced = EternityChallenge(3).isRunning ? 3 : 7;
     let nextTierOffset = 1;
-    if (NormalChallenge(12).isRunning) {
+    if (NormalChallenge(12).isRunning || V.isRunning) {
       maxTierProduced--;
       nextTierOffset++;
     }
@@ -676,7 +699,7 @@ export const AntimatterDimensions = {
       player.requirementChecks.eternity.noAD1 = false;
     }
     AntimatterDimension(1).produceCurrency(Currency.antimatter, diff);
-    if (NormalChallenge(12).isRunning) {
+    if (NormalChallenge(12).isRunning || V.isRunning) {
       AntimatterDimension(2).produceCurrency(Currency.antimatter, diff);
     }
     // Production may overshoot the goal on the final tick of the challenge

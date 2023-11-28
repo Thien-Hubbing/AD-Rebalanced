@@ -1,4 +1,6 @@
 <script>
+import { getEffarigICEffects } from '../../core/globals';
+
 export default {
   name: "HeaderChallengeEffects",
   data() {
@@ -55,18 +57,22 @@ export default {
     updateChallengePower() {
       const isC2Running = NormalChallenge(2).isRunning;
       const isC3Running = NormalChallenge(3).isRunning;
-      const isIC6Running = InfinityChallenge(6).isRunning;
-      const isIC8Running = InfinityChallenge(8).isRunning;
+      const isIC6Running = InfinityChallenge(6).isRunning || Effarig.isRunning;
+      const isIC8Running = InfinityChallenge(8).isRunning || Effarig.isRunning;
       const isChallengePowerVisible = isC2Running || isC3Running || isIC6Running || isIC8Running;
       this.isChallengePowerVisible = isChallengePowerVisible;
       if (isChallengePowerVisible) {
         const powerArray = [];
         if (isC2Running) powerArray.push(`Production: ${formatPercents(player.chall2Pow, 2, 2)}`);
         if (isC3Running) powerArray.push(`First dimension: ${formatX(player.chall3Pow, 3, 4)}`);
-        if (isIC6Running) powerArray.push(`Matter: Antimatter Dimensions /
-          ${format(new Decimal(1).timesEffectOf(InfinityChallenge(6)), 2, 2)}`);
+        if (isIC6Running) powerArray.push(`Matter: ${Effarig.isRunning ? "All" : "Antimatter"} Dimensions /
+          ${format(new Decimal(1).times(Effarig.isRunning
+            ? getEffarigICEffects("IC6")
+            : InfinityChallenge(6).effectValue), 2, 2)}`);
         if (isIC8Running) powerArray.push(`Production: /
-          ${format(new Decimal(1).timesEffectOf(InfinityChallenge(8)).reciprocal(), 2, 2)}`);
+          ${format(new Decimal(1).times(Effarig.isRunning
+            ? getEffarigICEffects("IC8")
+            : InfinityChallenge(8).effectValue).reciprocal(), 2, 2)}`);
         this.challengePower = powerArray.join(", ");
       }
     },

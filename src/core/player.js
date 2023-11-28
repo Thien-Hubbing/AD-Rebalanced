@@ -11,6 +11,9 @@ import { GlyphTypes } from "./glyph-effects";
 window.player = {
   antimatter: DC.E1,
   globalSpeed: 1,
+  forceSaveRegardless: false,
+  ignoreChallengeLimit: false,
+  meta: undefined,
   dimensions: {
     antimatter: Array.range(0, 8).map(() => ({
       bought: 0,
@@ -161,7 +164,7 @@ window.player = {
       isActive: false,
     },
     dilationUpgrades: {
-      all: Array.range(0, 3).map(() => ({
+      all: Array.range(0, 4).map(() => ({
         isActive: false,
         lastTick: 0,
       })),
@@ -412,9 +415,10 @@ window.player = {
       1: 0,
       2: 0,
       3: 0,
-      11: 0,
+      4: 0,
       12: 0,
       13: 0,
+      14: 0,
     },
     lastEP: DC.DM1,
   },
@@ -920,7 +924,7 @@ export const Player = {
   defaultStart: deepmergeAll([{}, player]),
 
   get isInMatterChallenge() {
-    return NormalChallenge(11).isRunning || InfinityChallenge(6).isRunning;
+    return NormalChallenge(11).isRunning || InfinityChallenge(6).isRunning || Effarig.isRunning;
   },
 
   get isInAntimatterChallenge() {
@@ -942,7 +946,7 @@ export const Player = {
   get canCrunch() {
     if (Enslaved.isRunning && Enslaved.BROKEN_CHALLENGES.includes(NormalChallenge.current?.id)) return false;
     const challenge = NormalChallenge.current || InfinityChallenge.current;
-    const goal = challenge === undefined ? Decimal.NUMBER_MAX_VALUE : challenge.goal;
+    const goal = (challenge === undefined || player.ignoreChallengeLimit) ? Decimal.NUMBER_MAX_VALUE : challenge.goal;
     return player.records.thisInfinity.maxAM.gte(goal);
   },
 
@@ -968,12 +972,14 @@ export const Player = {
 
   get infinityGoal() {
     const challenge = NormalChallenge.current || InfinityChallenge.current;
-    return challenge === undefined ? Decimal.NUMBER_MAX_VALUE : challenge.goal;
+    return (challenge === undefined || player.ignoreChallengeLimit)
+    ? (player.ignoreChallengeLimit ? Decimal.MAX_VALUE : Decimal.NUMBER_MAX_VALUE)
+    : challenge.goal;
   },
 
   get infinityLimit() {
     const challenge = NormalChallenge.current || InfinityChallenge.current;
-    return challenge === undefined ? Decimal.MAX_VALUE : challenge.goal;
+    return (challenge === undefined || player.ignoreChallengeLimit) ? Decimal.MAX_VALUE : challenge.goal;
   },
 
   get eternityGoal() {

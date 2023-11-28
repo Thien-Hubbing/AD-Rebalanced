@@ -51,7 +51,8 @@ export default {
       const display = (value) => {
         const powers = TimeStudy(213).effectValue * getAdjustedGlyphEffect("replicationpow") * (getSecondaryGlyphEffect("replicationspeed") + 1)
         let string = `Replicate chance: ${formatPercents(value)}`
-        if (TimeStudy(213).isBought) string = `Replicanti chance: ${format(Decimal.pow(value, powers), 2, 2)}%`
+        if (TimeStudy(213).isBought) string = `Replicanti chance: ${format(Decimal.pow(value, powers).times(100), 2, 2)}%`
+        if (powers > 1e6) string = `Replication Amount: ${formatX(powers * Math.log10(value), 2, 2)}`
         return string;
       }
       return new ReplicantiUpgradeButtonSetup(

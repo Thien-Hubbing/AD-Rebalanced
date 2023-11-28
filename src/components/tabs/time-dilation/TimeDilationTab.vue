@@ -30,7 +30,8 @@ export default {
       return [
         DilationUpgrade.dtGain,
         DilationUpgrade.galaxyThreshold,
-        DilationUpgrade.tachyonGain
+        DilationUpgrade.tachyonGain,
+        DilationUpgrade.reduceAndIncrease
       ];
     },
     upgrades() {

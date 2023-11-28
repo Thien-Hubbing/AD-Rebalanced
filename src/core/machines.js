@@ -4,7 +4,7 @@ export const MachineHandler = {
   get baseRMCap() { return DC.E1000; },
 
   get hardcapRM() {
-    return this.baseRMCap.times(ImaginaryUpgrade(6).effectOrDefault(1));
+    return this.baseRMCap.times(ImaginaryUpgrade(6).effectOrDefault(1)).pow(ImaginaryUpgrade(17).effectOrDefault(1));
   },
 
   get distanceToRMCap() {
@@ -28,6 +28,7 @@ export const MachineHandler = {
     if (log10FinalEP > 5e5) base -= 0.2
     if (log10FinalEP > 2e6) base -= 0.05
     if (log10FinalEP > 1e7) base -= 0.05
+    if (log10FinalEP > 1e9) base -= 0.13
     let rmGain = Decimal.floor(Decimal.pow(base, log10FinalEP / 4000))
     return rmGain.times(this.realityMachineMultiplier).floor()
   },

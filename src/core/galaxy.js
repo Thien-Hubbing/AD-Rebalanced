@@ -95,6 +95,7 @@ export class Galaxy {
   }
 
   static get canBeBought() {
+    if (Effarig.isRunning) return false;
     if (EternityChallenge(6).isRunning && !Enslaved.isRunning) return false;
     if (NormalChallenge(8).isRunning || InfinityChallenge(7).isRunning) return false;
     if (EternityChallenge(7).isRunning) return false;
@@ -105,6 +106,7 @@ export class Galaxy {
 
   static get lockText() {
     if (this.canBeBought) return null;
+    if (Effarig.isRunning) return "Locked (Effarig's Reality)"
     if (EternityChallenge(6).isRunning) return "Locked (Eternity Challenge 6)";
     if (EternityChallenge(7).isRunning) return "Locked (Eternity Challenge 7)";
     if (InfinityChallenge(7).isRunning) return "Locked (Infinity Challenge 7)";

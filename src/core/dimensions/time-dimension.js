@@ -238,7 +238,12 @@ class TimeDimensionState extends DimensionState {
     }
 
     if (Effarig.isRunning) {
+      mult = mult.times(getEffarigICEffects("IC8"))
+      mult = mult.dividedBy(getEffarigICEffects("IC6"))
       mult = Effarig.multiplier(mult);
+      if (player.postC4Tier !== tier) {
+        mult = mult.pow(getEffarigICEffects("IC4"))
+      }
     } else if (V.isRunning) {
       mult = mult.pow(0.5);
     }
@@ -262,6 +267,9 @@ class TimeDimensionState extends DimensionState {
     if (EternityChallenge(7).isRunning) {
       production = production.times(Tickspeed.perSecond);
     }
+    if (Effarig.isRunning) {
+      production = production.times(getEffarigICEffects("IC3"))
+    }
     if (this._tier === 1 && !EternityChallenge(7).isRunning) {
       production = production.pow(getAdjustedGlyphEffect("timeshardpow"));
     }
@@ -270,10 +278,12 @@ class TimeDimensionState extends DimensionState {
 
   get rateOfChange() {
     const tier = this._tier;
-    if (tier === 8) {
+    if (tier === 8 || (tier > 6 && V.isRunning)) {
       return DC.D0;
     }
-    const toGain = TimeDimension(tier + 1).productionPerSecond;
+    const toGain = (V.isRunning)
+    ? TimeDimension(tier + 2).productionPerSecond
+    : TimeDimension(tier + 1).productionPerSecond;
     const current = Decimal.max(this.amount, 1);
     return toGain.times(10).dividedBy(current).times(getGameSpeedupForDisplay());
   }
@@ -297,6 +307,10 @@ class TimeDimensionState extends DimensionState {
   }
 
   get powerMultiplier() {
+    if (Enslaved.isRunning) {
+      return DC.D1
+    }
+
     return DC.D4
       .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.time : null)
       .pow(ImaginaryUpgrade(14).effectOrDefault(1));
@@ -339,14 +353,18 @@ export const TimeDimensions = {
   },
 
   tick(diff) {
-    for (let tier = 8; tier > 1; tier--) {
-      TimeDimension(tier).produceDimensions(TimeDimension(tier - 1), diff / 10);
+    const subtract = V.isRunning ? 2 : 1
+    for (let tier = 8; tier > subtract; tier--) {
+      TimeDimension(tier).produceDimensions(TimeDimension(tier - subtract), diff / 10);
     }
 
     if (EternityChallenge(7).isRunning) {
       TimeDimension(1).produceDimensions(InfinityDimension(8), diff);
     } else {
       TimeDimension(1).produceCurrency(Currency.timeShards, diff);
+      if (V.isRunning) {
+        TimeDimension(2).produceCurrency(Currency.timeShards, diff);
+      }
     }
 
     EternityChallenge(7).reward.applyEffect(production => {

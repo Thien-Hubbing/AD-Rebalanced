@@ -16,40 +16,40 @@ export const imaginaryUpgrades = [
     id: 1,
     initialCost: 3,
     costMult: 60,
-    description: () => `Increase Temporal Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Temporal Amplifier multiplier by +${format(0.65, 2, 2)}`,
+    effect: 0.65
   }),
   rebuyable({
     name: "Replicative Intensifier",
     id: 2,
     initialCost: 4,
     costMult: 60,
-    description: () => `Increase Replicative Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Replicative Amplifier multiplier by +${format(0.55, 2, 2)}`,
+    effect: 0.55
   }),
   rebuyable({
     name: "Eternal Intensifier",
     id: 3,
     initialCost: 1,
     costMult: 40,
-    description: () => `Increase Eternal Amplifier multiplier by +${format(0.4, 2, 2)}`,
-    effect: 0.4
+    description: () => `Increase Eternal Amplifier multiplier by +${format(0.85, 2, 2)}`,
+    effect: 0.85
   }),
   rebuyable({
     name: "Superluminal Intensifier",
     id: 4,
     initialCost: 5,
     costMult: 80,
-    description: () => `Increase Superluminal Amplifier multiplier by +${format(0.15, 2, 2)}`,
-    effect: 0.15
+    description: () => `Increase Superluminal Amplifier multiplier by +${format(0.55, 2, 2)}`,
+    effect: 0.55
   }),
   rebuyable({
     name: "Boundless Intensifier",
     id: 5,
     initialCost: 1,
     costMult: 30,
-    description: () => `Increase Boundless Amplifier multiplier by +${format(0.6, 2, 2)}`,
-    effect: 0.6
+    description: () => `Increase Boundless Amplifier multiplier by +${format(0.8, 2, 2)}`,
+    effect: 0.8
   }),
   rebuyable({
     name: "Elliptic Materiality",
@@ -195,7 +195,8 @@ export const imaginaryUpgrades = [
     checkRequirement: () => Singularity.singularitiesGained >= 20 &&
       Currency.darkEnergy.gte(Singularity.cap * SingularityMilestone.autoCondense.effectOrDefault(Infinity)),
     checkEvent: GAME_EVENT.SINGULARITY_RESET_BEFORE,
-    description: "Unlock the 3rd Dark Matter Dimension",
+    description: () => `Unlock the 3rd Dark Matter Dimension and the Reality Machine cap is raised ${formatPow(1.75, 2, 2)}`,
+    effect: 1.75
   },
   {
     name: "Dimensional Symmetry",

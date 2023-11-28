@@ -55,7 +55,7 @@ export function startDilatedEternity(auto) {
 }
 
 const DIL_UPG_NAMES = [
-  null, "dtGain", "galaxyThreshold", "tachyonGain", "doubleGalaxies", "tdMultReplicanti",
+  null, "dtGain", "galaxyThreshold", "tachyonGain", "reduceAndIncrease", "doubleGalaxies", "tdMultReplicanti",
   "ndMultDT", "ipMultDT", "timeStudySplit", "dilationPenalty", "ttGenerator",
   "dtGainPelle", "galaxyMultiplier", "tickspeedPower", "galaxyThresholdPelle", "flatDilationMult"
 ];
@@ -64,11 +64,11 @@ export function buyDilationUpgrade(id, bulk = 1) {
   if (GameEnd.creditsEverClosed) return false;
   // Upgrades 1-3 are rebuyable, and can be automatically bought in bulk with a perk shop upgrade
   const upgrade = DilationUpgrade[DIL_UPG_NAMES[id]];
-  if (id > 3 && id < 11) {
+  if (id > 4 && id < 12) {
     if (player.dilation.upgrades.has(id)) return false;
     if (!Currency.dilatedTime.purchase(upgrade.cost)) return false;
     player.dilation.upgrades.add(id);
-    if (id === 4) player.dilation.totalTachyonGalaxies *= 2;
+    if (id === 5) player.dilation.totalTachyonGalaxies *= 20;
   } else {
     const upgAmount = player.dilation.rebuyables[id];
     if (Currency.dilatedTime.lt(upgrade.cost) || upgAmount >= upgrade.config.purchaseCap) return false;
@@ -87,7 +87,7 @@ export function buyDilationUpgrade(id, bulk = 1) {
       player.dilation.totalTachyonGalaxies = 0;
     }
 
-    if (id === 3 && !Pelle.isDisabled("tpMults")) {
+    if ((id === 3 || id === 4) && !Pelle.isDisabled("tpMults")) {
       let retroactiveTPFactor = Effects.max(
         1,
         Perk.retroactiveTP1,
@@ -95,6 +95,7 @@ export function buyDilationUpgrade(id, bulk = 1) {
         Perk.retroactiveTP3,
         Perk.retroactiveTP4
       );
+      if (id === 4) retroactiveTPFactor += 1
       if (Enslaved.isRunning) {
         retroactiveTPFactor = Math.pow(retroactiveTPFactor, Enslaved.tachyonNerf);
       }
@@ -141,6 +142,7 @@ export function getDilationGainPerSecond() {
       Ra.unlocks.continuousTTBoost.effects.dilatedTime,
       Ra.unlocks.peakGamespeedDT
     );
+  dtRate = dtRate.times(DilationUpgrade.reduceAndIncrease.effectValue.dt)
   dtRate = dtRate.times(getAdjustedGlyphEffect("dilationDT"));
   dtRate = dtRate.times(ShopPurchase.dilatedTimePurchases.currentMult);
   dtRate = dtRate.times(
@@ -160,7 +162,8 @@ export function tachyonGainMultiplier() {
     RealityUpgrade(4),
     RealityUpgrade(8),
     RealityUpgrade(15)
-  ).pow(pow);
+  ).times(DilationUpgrade.reduceAndIncrease.effectValue.tp)
+  .pow(pow);
 }
 
 export function rewardTP() {
@@ -237,8 +240,8 @@ class DilationUpgradeState extends SetPurchasableMechanicState {
   }
 
   onPurchased() {
-    if (this.id === 4) player.dilation.totalTachyonGalaxies *= 2;
-    if (this.id === 10) SpeedrunMilestones(15).tryComplete();
+    if (this.id === 5) player.dilation.totalTachyonGalaxies *= 2;
+    if (this.id === 11) SpeedrunMilestones(15).tryComplete();
   }
 }
 

@@ -315,7 +315,7 @@ export const glyphEffects = {
       ➜ ^(${formatInt(7)} + {value})`,
     genericDesc: "Infinity Power conversion rate",
     shortDesc: "Infinity Power conversion +{value}",
-    effect: (level, strength) => (Math.pow(level, 0.50) * strength) * 0.02765,
+    effect: (level, strength) => (Math.pow(level, 0.50) * strength) * 0.02,
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.add,
     enabledInDoomed: true,
@@ -500,7 +500,7 @@ export const glyphEffects = {
       const formula = (1 + Math.pow(level, 0.4) * Math.pow(strength, 0.6) / 60 +
       GlyphAlteration.sacrificeBoost("effarig") / 10)
       if (GlyphAlteration.isAdded("effarig")) return formula
-      return formula * 0.6
+      return formula * 0.42
     },
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),
@@ -525,7 +525,7 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("effarig")
       ? `Buy ${formatInt(10)} mult. ^{value}, Dimboost mult. ^{value2}`
       : `Buy ${formatInt(10)} mult. ^{value}`),
-    effect: (level, strength) => 1 + (level * (strength / 3.4)),
+    effect: (level, strength) => 1 + (level * (strength / 4)),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
     conversion: x => Math.pow((x / 2.5) + 1, 0.1),
@@ -646,7 +646,7 @@ export const glyphEffects = {
     singleDesc: "All Galaxies are {value} stronger",
     totalDesc: "All Galaxy strength +{value}",
     shortDesc: "Galaxy Strength +{value}",
-    effect: level => 1 + Math.pow(level / 50000, 0.516),
+    effect: level => 1 + Math.pow(level / 50000, 0.4),
     formatEffect: x => formatPercents(x - 1, 2),
     combine: GlyphCombiner.multiply,
   },
@@ -658,7 +658,7 @@ export const glyphEffects = {
     singleDesc: "Multiplier from Reality Upgrade Amplifiers ^{value}",
     totalDesc: "Reality Upgrade Amplifier multiplier ^{value}",
     shortDesc: "Amplifier Multiplier ^{value}",
-    effect: level => 1 + level / 125000,
+    effect: level => 1 + level / 55000,
     formatEffect: x => format(x, 3, 3),
     combine: GlyphCombiner.addExponents,
   },
@@ -675,7 +675,7 @@ export const glyphEffects = {
     shortDesc: "DT pow. for level +{value}",
     // You can only get this effect on level 25000 reality glyphs anyway, might as well make it look nice
     // Actually, the alchemy resource gets it's cap extended so...
-    effect: level => level / 100000,
+    effect: level => level / 250000,
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.add,
   },

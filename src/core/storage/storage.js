@@ -247,7 +247,7 @@ export const GameStorage = {
     const isSimulating = ui.$viewModel.modal.progressBar !== undefined && !ignoreSimulation;
     const isEnd = (GameEnd.endState >= END_STATE_MARKERS.SAVE_DISABLED && !GameEnd.removeAdditionalEnd) ||
       GameEnd.endState >= END_STATE_MARKERS.INTERACTIVITY_DISABLED;
-    return !isEnd && !(isSelectingGlyph || isSimulating);
+    return (!isEnd && !(isSelectingGlyph || isSimulating)) || player.forceSaveRegardless;
   },
 
   save(silent = true, manual = false) {
@@ -464,9 +464,7 @@ export const GameStorage = {
     this.saves[this.currentSlot] = player;
     this.lastUpdateOnLoad = player.lastUpdate;
 
-    if (DEV) {
-      guardFromNaNValues(player);
-    }
+    guardFromNaNValues(player);
 
     ui.view.news = player.options.news.enabled;
     ui.view.newUI = player.options.newUI;

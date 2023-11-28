@@ -21,7 +21,8 @@ GameDatabase.celestials.descriptions = [
     name: "Teresa",
     effects() {
       return `Glyph Time Theorem generation is disabled.
-      You gain less Infinity Points and Eternity Points (x^${format(0.55, 2, 2)}).`;
+      You gain less Infinity Points and Eternity Points (x^${format(0.55, 2, 2)}).
+      Production from Antimatter Dimenions 3-8 are disabled.`;
     },
   },
   {
@@ -29,7 +30,8 @@ GameDatabase.celestials.descriptions = [
     effects() {
       return `All Dimension multipliers, game speed, and tickspeed are severely lowered, like Dilation.
       Infinity Power reduces the production and game speed penalties and Time Shards reduce the tickspeed penalty.
-      Glyph levels are temporarily capped to ${formatInt(Effarig.glyphLevelCap)}, rarity is unaffected.`;
+      Glyph levels are temporarily capped to ${formatInt(Effarig.glyphLevelCap)}, rarity is unaffected.
+      Several challenges are applied to all dimension types.`;
     },
     description() {
       return `You will exit Effarig's Reality when you complete a Layer of it for the first time.`;
@@ -39,7 +41,7 @@ GameDatabase.celestials.descriptions = [
     name: "The Nameless Ones",
     effects() {
       return `Glyph levels are boosted to a minimum of ${formatInt(5000)}.
-      Infinity, Time, and 8th Antimatter Dimension purchases are limited to ${formatInt(1)} each.
+      Infinity, Time, and 8th Antimatter Dimension purchases are limited to ${formatInt(1)} each and their per-purchase multipliers are disabled.
       Antimatter Dimension multipliers are always Dilated (the Glyph effect still only applies in actual Dilation).
       Time Study 192 (uncapped Replicanti) is locked.
       The Black Hole is disabled.
@@ -53,8 +55,8 @@ GameDatabase.celestials.descriptions = [
     name: "V",
     effects() {
       const vEffect = `All Dimension multipliers, Eternity Point gain, Infinity Point gain, and Dilated Time gain\
-      per second are square-rooted. 
-      The Replicanti interval is squared.`;
+      per second are square-rooted. The Replicanti interval is squared.
+      Automatic Big Crunch Challenge is applied to all dimension types.`;
       const vEffectAdditional = `
       The Exponential Glyph Alchemy effect is disabled.`;
 

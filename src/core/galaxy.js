@@ -1,14 +1,12 @@
 export const GALAXY_TYPE = {
   NORMAL: 0,
   DISTANT: 1,
-  REMOTE: 2
-  /*
   FURTHER: 2,
-  REMOTE: 3,
-  DARKLY: 4,
-  GHOSTLY: 5,
-  EXTREME 6,
-  */
+  REMOTE: 3
+  // REMOTE: 3,
+  // DARKLY: 4,
+  // GHOSTLY: 5,
+  // EXTREME 6,
 };
 
 class GalaxyRequirement {
@@ -24,13 +22,16 @@ class GalaxyRequirement {
 }
 
 
-
 export class Galaxy {
   static get remoteStart() {
-    let start = RealityUpgrade(21).effectOrDefault(800) + TimeStudy(302).effectOrDefault(0);
+    const start = RealityUpgrade(21).effectOrDefault(800) + TimeStudy(302).effectOrDefault(0);
     if (EternityChallenge(5).isRunning) return 0;
-    if (ImaginaryUpgrade(18).canBeApplied) return Number.MAX_VALUE
-    return start
+    if (ImaginaryUpgrade(18).canBeApplied) return Number.MAX_VALUE;
+    return start;
+  }
+
+  static get furtherStart() {
+    return 40000 + GlyphSacrifice.power.effectOrDefault(0);
   }
 
   static get requirement() {
@@ -64,12 +65,16 @@ export class Galaxy {
       amount += Math.pow(galaxiesBeforeDistant, 2) + galaxiesBeforeDistant;
     }
 
+    if (type === GALAXY_TYPE.FURTHER) {
+      amount += Math.pow(galaxies - (Galaxy.furtherStart - 1), 2);
+    }
+
     if (type === GALAXY_TYPE.REMOTE) {
-      amount *= Math.pow(1.0045, galaxies - (Galaxy.remoteStart - 1));
+      amount *= Math.pow(1.006, galaxies - (Galaxy.remoteStart - 1));
     }
 
     if (EternityChallenge(5).isRunning) {
-      amount *= Math.pow(1.015, galaxies - (Galaxy.remoteStart - 1))
+      amount *= Math.pow(1.015, galaxies - (Galaxy.remoteStart - 1));
     }
 
     amount -= Effects.sum(InfinityUpgrade.resetBoost);
@@ -106,7 +111,7 @@ export class Galaxy {
 
   static get lockText() {
     if (this.canBeBought) return null;
-    if (Effarig.isRunning) return "Locked (Effarig's Reality)"
+    if (Effarig.isRunning) return "Locked (Effarig's Reality)";
     if (EternityChallenge(6).isRunning) return "Locked (Eternity Challenge 6)";
     if (EternityChallenge(7).isRunning) return "Locked (Eternity Challenge 7)";
     if (InfinityChallenge(7).isRunning) return "Locked (Infinity Challenge 7)";
@@ -116,14 +121,14 @@ export class Galaxy {
   }
 
   static get costScalingStart() {
-    let start = 100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
+    const start = 100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
       TimeStudy(223),
       TimeStudy(224),
       EternityChallenge(5).reward,
       GlyphSacrifice.power
     );
     if (EternityChallenge(5).isRunning) return 0;
-    return start
+    return start;
   }
 
   static get type() {
@@ -136,6 +141,9 @@ export class Galaxy {
     }
     if (EternityChallenge(5).isRunning || galaxies >= this.costScalingStart) {
       return GALAXY_TYPE.DISTANT;
+    }
+    if (galaxies >= Galaxy.furtherStart) {
+      return GALAXY_TYPE.FURTHER;
     }
     return GALAXY_TYPE.NORMAL;
   }

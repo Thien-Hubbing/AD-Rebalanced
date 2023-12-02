@@ -4,7 +4,9 @@ function dimInfinityMult() {
   return Currency.infinitiesTotal.value.times(0.33).plus(1);
 }
 function chargedDimInfinityMult() {
-  return 1 + Math.log10(Math.max(1, Currency.infinitiesTotal.value.pLog10()) * Math.max(1, Currency.eternities.value.pLog10())) * Math.sqrt(Ra.pets.teresa.level) / 150;
+  return 1 + Math.log10(Math.max(1, Currency.infinitiesTotal.value.pLog10()) *
+    Math.max(1, Currency.eternities.value.pLog10())) *
+    Math.sqrt(Ra.pets.teresa.level) / 150;
 }
 
 export const infinityUpgrades = {
@@ -222,14 +224,13 @@ export const infinityUpgrades = {
     checkRequirement: () => Achievement(41).isUnlocked,
     costCap: DC.E9E15,
     costIncreaseThreshold: DC.E3E9,
-    description: () => `Multiply Infinity Points from all sources by ${(player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
-      ? formatX(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0))
-      : formatX(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), 2, 2)}`,
-    // Normally the multiplier caps at e993k or so with 3300000 purchases, but if the cost is capped then we just give
-    // an extra e7k to make the multiplier look nice
-    effect: () => (player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
+    description: () => `Multiply Infinity Points from all sources by
+    ${(player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
+    ? formatX(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0))
+    : formatX(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), 2, 2)}`,
+    effect: () => (player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought
       ? Decimal.pow(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0), player.IPMultPurchases)
-      : Decimal.pow(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), player.IPMultPurchases),
+      : Decimal.pow(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), player.IPMultPurchases)),
     cap: () => Effarig.eternityCap ?? DC.E9E15,
     formatEffect: value => formatX(value, 2, 2),
   }

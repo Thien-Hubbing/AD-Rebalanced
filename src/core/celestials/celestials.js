@@ -40,6 +40,7 @@ GameDatabase.celestials.descriptions = [
   {
     name: "The Nameless Ones",
     effects() {
+      /* eslint-disable max-len */
       return `Glyph levels are boosted to a minimum of ${formatInt(5000)}.
       Infinity, Time, and 8th Antimatter Dimension purchases are limited to ${formatInt(1)} each and their per-purchase multipliers are disabled.
       Antimatter Dimension multipliers are always Dilated (the Glyph effect still only applies in actual Dilation).
@@ -49,6 +50,7 @@ GameDatabase.celestials.descriptions = [
       Time Theorem generation from Dilation Glyphs is disabled.
       Certain challenge goals are increased.
       Stored game time is discharged at a reduced effectiveness (exponent^${format(0.55, 2, 2)}).`;
+      /* eslint-enable max-len */
     }
   },
   {
@@ -69,7 +71,8 @@ GameDatabase.celestials.descriptions = [
     name: "Ra",
     effects() {
       return `You only have ${formatInt(4)} Dimension Boosts and can not gain any more.
-      The Tickspeed purchase multiplier is fixed at ${formatX(1.1245, 0, 3)}.`;
+      The Tickspeed purchase multiplier is fixed at ${formatX(1.1245, 0, 3)}.
+      Only Time and Infinity dimensions can be boosted by Replicanti.`;
     },
   },
   {

@@ -195,8 +195,8 @@ export const imaginaryUpgrades = [
     checkRequirement: () => Singularity.singularitiesGained >= 20 &&
       Currency.darkEnergy.gte(Singularity.cap * SingularityMilestone.autoCondense.effectOrDefault(Infinity)),
     checkEvent: GAME_EVENT.SINGULARITY_RESET_BEFORE,
-    description: () => `Unlock the 3rd Dark Matter Dimension and the Reality Machine cap is raised ${formatPow(1.75, 2, 2)}`,
-    effect: 1.75
+    description: () => `Unlock the 3rd Dark Matter Dimension and the Reality Machine cap is squared`,
+    effect: 2
   },
   {
     name: "Dimensional Symmetry",

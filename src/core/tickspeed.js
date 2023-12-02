@@ -60,8 +60,8 @@ export function getTickSpeedMultiplier() {
   galaxies *= getAdjustedGlyphEffect("realitygalaxies");
   galaxies *= 1 + ImaginaryUpgrade(9).effectOrDefault(0);
   if (Pelle.isDoomed) galaxies *= 0.5;
-  if (galaxies > 1e4) galaxies *= 0.85
-  if (galaxies > 5e4) galaxies *= 0.6
+  if (galaxies > 1e4) galaxies *= 0.85;
+  if (galaxies > 5e4) galaxies *= 0.6;
 
   galaxies *= Pelle.specialGlyphEffect.power;
   const perGalaxy = DC.D0_965;
@@ -146,7 +146,8 @@ export const Tickspeed = {
     const tickspeed = Effarig.isRunning
       ? Effarig.tickspeed
       : this.baseValue.powEffectOf(DilationUpgrade.tickspeedPower);
-    return player.dilation.active || ImaginaryUpgrade(19).isBought || PelleStrikes.dilation.hasStrike ? dilatedValueOf(tickspeed) : tickspeed;
+    return (player.dilation.active || ImaginaryUpgrade(19).isBought ||
+      PelleStrikes.dilation.hasStrike) ? dilatedValueOf(tickspeed) : tickspeed;
   },
 
   get cost() {
@@ -200,7 +201,7 @@ export const FreeTickspeed = {
   BASE_SOFTCAP: 3000000,
   GROWTH_RATE: 6e-6,
   get GROWTH_EXP() {
-    return this.amount > 1e8 ? 3.5 : 2
+    return this.amount > 1e8 ? 3.5 : 2;
   },
 
   multToNext: 1.33,

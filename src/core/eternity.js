@@ -307,8 +307,8 @@ class EPMultiplierState extends GameMechanicState {
   }
 
   get base() {
-    if (RealityUpgrade(9).isBought) return 20
-      else return 5
+    if (RealityUpgrade(9).isBought) return 20;
+    return 5;
   }
 
   purchase() {

@@ -5,18 +5,15 @@ export const glyphSacrifice = {
       if (Pelle.isDisabled("glyphsac")) return 0;
       const sac = player.reality.glyphs.sac.power + (added ?? 0);
       const capped = Math.clampMax(sac, GlyphSacrificeHandler.maxSacrificeForEffects);
-      const base = Math.log10(capped + 1) / Math.log10(GlyphSacrificeHandler.maxSacrificeForEffects);
-      return Math.floor(750 * Math.pow(base, 1.2));
+      const base = Math.log10(capped + 1) / Math.log10(100);
+      return Math.floor(1550 * Math.pow(base, 1.3));
     },
     description: amount => {
-      const sacCap = GlyphSacrificeHandler.maxSacrificeForEffects;
-      const nextDistantGalaxy = Math.pow(10, Math.pow((amount + 1) / 750, 1 / 1.2) * Math.log10(sacCap)) - 1;
-      const nextGalaxyText = amount < 750
-        ? ` (next at ${format(nextDistantGalaxy, 2, 2)})`
-        : "";
-      return `Distant Galaxy scaling starts ${formatInt(amount)} later${nextGalaxyText}`;
+      const nextDistantGalaxy = Math.pow(10, Math.pow((amount + 1) / 750, 1 / 1.2) * Math.log10(100)) - 1;
+      const nextGalaxyText = ` (next at ${format(nextDistantGalaxy, 2, 2)})`;
+      return `Distant and Further Galaxy scaling starts ${formatInt(amount)} later${nextGalaxyText}`;
     },
-    cap: () => GlyphSacrificeHandler.maxSacrificeForEffects
+    cap: () => 1e129
   },
   "infinity": {
     id: "infinity",
@@ -24,9 +21,9 @@ export const glyphSacrifice = {
       if (Pelle.isDisabled("glyphsac")) return 1;
       const sac = player.reality.glyphs.sac.infinity + (added ?? 0);
       const capped = Math.clampMax(sac, GlyphSacrificeHandler.maxSacrificeForEffects);
-      return 1 + Math.log10(1 + Math.pow(capped, 0.2) / 100);
+      return 1 + Math.log10(1 + Math.pow(capped, 0.35) / 100);
     },
-    description: amount => `${formatX(amount, 2, 2)} bigger multiplier when buying 8th Infinity Dimension`,
+    description: amount => `${formatX(amount, 2, 2)} bigger multiplier when buying 8th and 1st Infinity Dimension`,
     cap: () => GlyphSacrificeHandler.maxSacrificeForEffects
   },
   "time": {
@@ -35,9 +32,9 @@ export const glyphSacrifice = {
       if (Pelle.isDisabled("glyphsac")) return 1;
       const sac = player.reality.glyphs.sac.time + (added ?? 0);
       const capped = Math.clampMax(sac, GlyphSacrificeHandler.maxSacrificeForEffects);
-      return Math.pow(1 + Math.pow(capped, 0.2) / 100, 2);
+      return Math.pow(1 + Math.pow(capped, 0.2) / 100, 1.5);
     },
-    description: amount => `${formatX(amount, 2, 2)} bigger multiplier when buying 8th Time Dimension`,
+    description: amount => `${formatX(amount, 2, 2)} bigger multiplier when buying 1st, 4th, and 8th Time Dimension`,
     cap: () => GlyphSacrificeHandler.maxSacrificeForEffects
   },
   "replication": {
@@ -46,13 +43,13 @@ export const glyphSacrifice = {
       if (Pelle.isDisabled("glyphsac")) return 0;
       const sac = player.reality.glyphs.sac.replication + (added ?? 0);
       const capped = Math.clampMax(sac, GlyphSacrificeHandler.maxSacrificeForEffects);
-      const base = Math.log10(capped + 1) / Math.log10(GlyphSacrificeHandler.maxSacrificeForEffects);
-      return Math.floor(1500 * Math.pow(base, 1.2));
+      const base = Math.log10(capped + 1) / Math.log10(100);
+      return Math.floor(5000 * Math.pow(base, 1.2));
     },
     description: amount => {
       const sacCap = GlyphSacrificeHandler.maxSacrificeForEffects;
-      const nextDistantGalaxy = Math.pow(10, Math.pow((amount + 1) / 1500, 1 / 1.2) * Math.log10(sacCap)) - 1;
-      const nextGalaxyText = amount < 1500
+      const nextDistantGalaxy = Math.pow(10, Math.pow((amount + 1) / 5000, 1 / 1.2) * Math.log10(sacCap)) - 1;
+      const nextGalaxyText = amount < 5000
         ? ` (next at ${format(nextDistantGalaxy, 2, 2)})`
         : "";
       return `Replicanti Galaxy scaling starts ${formatInt(amount)} later${nextGalaxyText}`;
@@ -90,7 +87,7 @@ export const glyphSacrifice = {
       if (Pelle.isDisabled("glyphsac")) return 0;
       const sac = player.reality.glyphs.sac.reality + (added ?? 0);
       // This cap is only feasibly reached with the imaginary upgrade, but we still want to cap it at a nice number
-      return Math.clampMax(1 + Math.sqrt(sac) / 15, 100);
+      return Math.clampMax(1 + Math.sqrt(sac), 1e10);
     },
     description: amount => `Multiply Memory Chunk gain by ${formatX(amount, 2, 3)}`,
     cap: () => GlyphSacrificeHandler.maxSacrificeForEffects

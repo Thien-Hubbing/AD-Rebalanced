@@ -130,7 +130,7 @@ export function timeDimensionCommonMultiplier() {
   }
 
   if (EternityChallenge(2).isRunning) {
-    mult = mult.powEffectOf(EternityChallenge(10))
+    mult = mult.powEffectOf(EternityChallenge(10));
   }
 
   return mult;
@@ -216,11 +216,11 @@ class TimeDimensionState extends DimensionState {
     let bought = tier === 8 ? Math.clampMax(dim.bought, 1e8) : dim.bought;
 
     if (bought > 1e8) {
-      bought = (bought * 0.4321 + 1e8)
+      bought = (bought * 0.4321 + 1e8);
     }
 
     if (tier === 8 && TimeStudy(227).canBeApplied) {
-      mult = mult.times(TimeStudy(227).effectValue.time)
+      mult = mult.times(TimeStudy(227).effectValue.time);
     }
 
     mult = mult.times(Decimal.pow(dim.powerMultiplier, bought));
@@ -238,18 +238,22 @@ class TimeDimensionState extends DimensionState {
     }
 
     if (Effarig.isRunning) {
-      mult = mult.times(getEffarigICEffects("IC8"))
-      mult = mult.dividedBy(getEffarigICEffects("IC6"))
+      mult = mult.times(getEffarigICEffects("IC8"));
+      mult = mult.dividedBy(getEffarigICEffects("IC6"));
       mult = Effarig.multiplier(mult);
       if (player.postC4Tier !== tier) {
-        mult = mult.pow(getEffarigICEffects("IC4"))
+        mult = mult.pow(getEffarigICEffects("IC4"));
       }
     } else if (V.isRunning) {
       mult = mult.pow(0.5);
     }
 
     if (mult.gte(DC.E1E9)) {
-      mult = mult.pow(0.1).times(DC.E1E9)
+      mult = mult.pow(0.1).times(DC.E1E9);
+    }
+
+    if (Replicanti.areUnlocked && Replicanti.amount.gt(1) && Ra.isRunning) {
+      mult = Decimal.pow(replicantiMult(), 0.1);
     }
 
     return mult;
@@ -268,7 +272,7 @@ class TimeDimensionState extends DimensionState {
       production = production.times(Tickspeed.perSecond);
     }
     if (Effarig.isRunning) {
-      production = production.times(getEffarigICEffects("IC3"))
+      production = production.times(getEffarigICEffects("IC3"));
     }
     if (this._tier === 1 && !EternityChallenge(7).isRunning) {
       production = production.pow(getAdjustedGlyphEffect("timeshardpow"));
@@ -282,8 +286,8 @@ class TimeDimensionState extends DimensionState {
       return DC.D0;
     }
     const toGain = (V.isRunning)
-    ? TimeDimension(tier + 2).productionPerSecond
-    : TimeDimension(tier + 1).productionPerSecond;
+      ? TimeDimension(tier + 2).productionPerSecond
+      : TimeDimension(tier + 1).productionPerSecond;
     const current = Decimal.max(this.amount, 1);
     return toGain.times(10).dividedBy(current).times(getGameSpeedupForDisplay());
   }
@@ -308,11 +312,11 @@ class TimeDimensionState extends DimensionState {
 
   get powerMultiplier() {
     if (Enslaved.isRunning) {
-      return DC.D1
+      return DC.D1;
     }
 
     return DC.D4
-      .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.time : null)
+      .timesEffectsOf((this._tier === 8 || this._tier === 1 || this._tier === 4) ? GlyphSacrifice.time : null)
       .pow(ImaginaryUpgrade(14).effectOrDefault(1));
   }
 
@@ -353,7 +357,7 @@ export const TimeDimensions = {
   },
 
   tick(diff) {
-    const subtract = V.isRunning ? 2 : 1
+    const subtract = V.isRunning ? 2 : 1;
     for (let tier = 8; tier > subtract; tier--) {
       TimeDimension(tier).produceDimensions(TimeDimension(tier - subtract), diff / 10);
     }

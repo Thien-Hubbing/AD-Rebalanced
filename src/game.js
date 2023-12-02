@@ -1,12 +1,12 @@
 import TWEEN from "tween.js";
 
 import { ElectronRuntime, SteamRuntime } from "@/steam";
+import { Cloud } from "./core/storage";
 
 import { DC } from "./core/constants";
 import { deepmergeAll } from "@/utility/deepmerge";
 import { DEV } from "@/env";
 import { SpeedrunMilestones } from "./core/speedrun";
-import { Cloud } from "./core/storage";
 import { supportedBrowsers } from "./supported-browsers";
 
 import Payments from "./core/payments";
@@ -402,8 +402,8 @@ export function realTimeMechanics(realDiff) {
 
   // When storing real time, skip everything else having to do with production once stats are updated
   if (Enslaved.isStoringRealTime) {
-
-    realDiff = getProperDeltaTime(realDiff, 2)
+    // eslint-disable-next-line no-param-reassign
+    realDiff = getProperDeltaTime(realDiff, 2);
 
     player.records.realTimePlayed += realDiff;
     player.records.thisInfinity.realTime += realDiff;
@@ -441,7 +441,7 @@ export function gameLoop(passDiff, options = {}) {
   const thisUpdate = Date.now();
   const realDiffBefore = diff === undefined
     ? Math.clamp(thisUpdate - player.lastUpdate, 1, 8.64e7)
-    : diff
+    : diff;
   const realDiff = getProperDeltaTime(realDiffBefore, 4);
   if (!GameStorage.ignoreBackupTimer) player.backupTimer += getProperDeltaTime(realDiff, 2);
 
@@ -474,8 +474,7 @@ export function gameLoop(passDiff, options = {}) {
   }
   if (diff === undefined) {
     diff = Enslaved.nextTickDiff;
-  }
-  else diff = getProperDeltaTime(diff, 4)
+  } else diff = getProperDeltaTime(diff, 4);
 
   Autobuyers.tick();
   Tutorial.tutorialLoop();
@@ -492,7 +491,7 @@ export function gameLoop(passDiff, options = {}) {
   GameCache.timeDimensionCommonMultiplier.invalidate();
   GameCache.totalIPMult.invalidate();
 
-  const blackHoleDiff = getProperDeltaTime(realDiff, 3)
+  const blackHoleDiff = getProperDeltaTime(realDiff, 3);
   const fixedSpeedActive = EternityChallenge(12).isRunning;
   if (!Enslaved.isReleaseTick && !fixedSpeedActive) {
     let speedFactor;
@@ -899,7 +898,8 @@ function afterSimulation(seconds, playerBefore) {
 }
 
 export function simulateTime(seconds, real, fast) {
-  seconds = getProperDeltaTime(seconds, 4)
+  // eslint-disable-next-line no-param-reassign
+  seconds = getProperDeltaTime(seconds, 4);
   // The game is simulated at a base 50ms update rate, with a maximum tick count based on the values of real and fast
   // - Calling with real === true will always simulate at full accuracy with no tick count reduction unless it would
   //   otherwise simulate with more ticks than offline progress would allow
@@ -911,7 +911,8 @@ export function simulateTime(seconds, real, fast) {
   GameUI.notify.showBlackHoles = false;
 
   // Limit the tick count (this also applies if the black hole is unlocked)
-  const maxTicks = GameStorage.maxOfflineTicks(1000 * getProperDeltaTime(seconds, 2), GameStorage.offlineTicks ?? player.options.offlineTicks);
+  const maxTicks = GameStorage.maxOfflineTicks(1000 * getProperDeltaTime(seconds, 2),
+    GameStorage.offlineTicks ?? player.options.offlineTicks);
   if (ticks > maxTicks && !fast) {
     ticks = maxTicks;
   } else if (ticks > 50 && !real && fast) {
@@ -1090,13 +1091,15 @@ export function browserCheck() {
 }
 
 export function checkAndLoadSave() {
-  console.log("Loading save...")
+  // eslint-disable-next-line no-console
+  console.log("Loading save...");
   try {
-    GameStorage.load()
-  }
-  catch({ name, message }) {
+    GameStorage.load();
+  } catch ({ name, message }) {
+    // eslint-disable-next-line no-console
     console.error("Error while loading savefile, resetting save. Found error:");
-    console.error(name, message)
+    // eslint-disable-next-line no-console
+    console.error(name, message);
     GameStorage.hardReset();
     GameStorage.save();
     dev.forceCloudSave();
@@ -1107,23 +1110,22 @@ export function checkAndLoadSave() {
 }
 
 export function getDeltaMultiplier() {
-  return player.globalSpeed === undefined ? 1 : player.globalSpeed
+  return player.globalSpeed === undefined ? 1 : player.globalSpeed;
 }
 
 export function getProperDeltaTime(diff, type) {
-  if (!isFinite(diff)) return 0;
-  else {
-    if (type < 1 || type > 4) throw new Error("Unimplemented diff calcuation type")
-    switch (type) {
-      case 1:
-        return diff
-      case 2:
-        return diff / getDeltaMultiplier()
-      case 3:
-        return diff / Math.sqrt(getDeltaMultiplier())
-      case 4:
-        return diff * getDeltaMultiplier()
-    }
+  if (type < 1 || type > 4) throw new Error("Unimplemented diff calcuation type");
+  switch (type) {
+    case 1:
+      return diff;
+    case 2:
+      return diff / getDeltaMultiplier();
+    case 3:
+      return diff / Math.sqrt(getDeltaMultiplier());
+    case 4:
+      return diff * getDeltaMultiplier();
+    default:
+      return diff;
   }
 }
 

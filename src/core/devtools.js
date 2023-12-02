@@ -532,20 +532,24 @@ dev.unlockAllCosmeticSets = function() {
 dev.completeChallenges = function(type = "all") {
   switch (type) {
     case "all":
-      player.challenge.normal.completedBits = 2 ** 13 - 1
-      player.challenge.infinity.completedBits = 2 ** 9 - 1
+      player.challenge.normal.completedBits = 2 ** 13 - 1;
+      player.challenge.infinity.completedBits = 2 ** 9 - 1;
       for (let i = 1; i <= 12; i++) {
-        EternityChallenge(i).completions = 5
+        EternityChallenge(i).completions = 5;
       }
+      break;
     case "normal":
-      player.challenge.normal.completedBits = 2 ** 13 - 1
+      player.challenge.normal.completedBits = 2 ** 13 - 1;
+      break;
     case "infinity":
-      player.challenge.infinity.completedBits = 2 ** 9 - 1
+      player.challenge.infinity.completedBits = 2 ** 9 - 1;
+      break;
     case "eternity":
       for (let i = 1; i <= 12; i++) {
-        EternityChallenge(i).completions = 5
+        EternityChallenge(i).completions = 5;
       }
+      break;
     default:
-      throw new Error("Not a challenge type")
+      throw new Error("Not a challenge type");
   }
 }

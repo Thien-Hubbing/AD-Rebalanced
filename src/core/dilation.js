@@ -95,7 +95,7 @@ export function buyDilationUpgrade(id, bulk = 1) {
         Perk.retroactiveTP3,
         Perk.retroactiveTP4
       );
-      if (id === 4) retroactiveTPFactor += 1
+      if (id === 4) retroactiveTPFactor += 1;
       if (Enslaved.isRunning) {
         retroactiveTPFactor = Math.pow(retroactiveTPFactor, Enslaved.tachyonNerf);
       }
@@ -109,7 +109,7 @@ export function getTachyonGalaxyScale() {
   return Math.max((Pelle.isDoomed
     ? 1 + Math.log10(Currency.dilatedTime.value.plus(1).log10() ** 2.5 + 1)
     : 1 + (Math.log10(Currency.dilatedTime.value.plus(1).log10() ** 1.4 + 1) - Math.log10(DC.E10000.log10() + 1))
-  ), 1)
+  ), 1);
 }
 
 export function getTachyonGalaxyMult(thresholdUpgrade) {
@@ -142,7 +142,7 @@ export function getDilationGainPerSecond() {
       Ra.unlocks.continuousTTBoost.effects.dilatedTime,
       Ra.unlocks.peakGamespeedDT
     );
-  dtRate = dtRate.times(DilationUpgrade.reduceAndIncrease.effectValue.dt)
+  dtRate = dtRate.times(DilationUpgrade.reduceAndIncrease.effectValue.dt);
   dtRate = dtRate.times(getAdjustedGlyphEffect("dilationDT"));
   dtRate = dtRate.times(ShopPurchase.dilatedTimePurchases.currentMult);
   dtRate = dtRate.times(
@@ -163,7 +163,7 @@ export function tachyonGainMultiplier() {
     RealityUpgrade(8),
     RealityUpgrade(15)
   ).times(DilationUpgrade.reduceAndIncrease.effectValue.tp)
-  .pow(pow);
+    .pow(pow);
 }
 
 export function rewardTP() {

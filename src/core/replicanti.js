@@ -142,7 +142,7 @@ export function totalReplicantiSpeedMult(overCap) {
     RealityUpgrade(23),
   );
 
-  totalMult = totalMult.timesEffectOf(RealityUpgrade(2))
+  totalMult = totalMult.timesEffectOf(RealityUpgrade(2));
 
   totalMult = totalMult.times(preCelestialEffects);
   if (TimeStudy(132).isBought && Perk.studyPassive.isBought) {
@@ -160,7 +160,7 @@ export function totalReplicantiSpeedMult(overCap) {
   totalMult = totalMult.timesEffectsOf(AlchemyResource.replication, Ra.unlocks.continuousTTBoost.effects.replicanti);
 
   if (TimeStudy(213).isBought) {
-    totalMult = totalMult.times(getReplicantChance("ln"))
+    totalMult = totalMult.times(getReplicantChance("ln"));
   }
 
   return totalMult;
@@ -180,14 +180,20 @@ export function replicantiCap() {
  */
 
 export function getReplicantChance(type) {
-  const chancePowers = (getSecondaryGlyphEffect("replicationspeed") + 1) * TimeStudy(213).effectOrDefault(1) * getAdjustedGlyphEffect("replicationpow")
-  const logChancePowers = chancePowers * Math.log10(player.replicanti.chance)
-  const actualChance = Decimal.pow(player.replicanti.chance, chancePowers).clampMin(1)
-  if (type !== undefined) {
-    if (type === "ln") return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance))
-    else if (type === "log2") return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.log2(actualChance))
-    else if (type === "log10") return (chancePowers > 1e6 ? logChancePowers : Decimal.log10(actualChance))
-    else throw new Error("Invalid logarithm type: " + type)
+  const chancePowers = (getSecondaryGlyphEffect("replicationspeed") + 1) *
+    TimeStudy(213).effectOrDefault(1) *
+    getAdjustedGlyphEffect("replicationpow");
+  const logChancePowers = chancePowers * Math.log10(player.replicanti.chance);
+  const actualChance = Decimal.pow(player.replicanti.chance, chancePowers).clampMin(1);
+  switch (type) {
+    case "ln":
+      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
+    case "log2":
+      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
+    case "log10":
+      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
+    default:
+      throw new Error(`Invalid logarithm type: ${type}`);
   }
 }
 
@@ -288,7 +294,7 @@ export function replicantiMult() {
   return (RealityUpgrade(24).isBought
     ? Decimal.pow(Replicanti.amount.clampMin(1), 0.323)
     : Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2).plusEffectOf(TimeStudy(21))
-    ).timesEffectOf(TimeStudy(102))
+  ).timesEffectOf(TimeStudy(102))
     .clampMin(1)
     .pow(getAdjustedGlyphEffect("replicationpow"));
 }
@@ -356,7 +362,8 @@ export const ReplicantiUpgrade = {
     }
 
     get increase() {
-      return 0.01 * (getSecondaryGlyphEffect("replicationdtgain") * (Decimal.log10(Replicanti.amount.plus(1)) / 10000)) + 0.01
+      return 0.01 * (getSecondaryGlyphEffect("replicationdtgain") *
+        (Decimal.log10(Replicanti.amount.plus(1)) / 10000)) + 0.01;
     }
 
     get cost() {
@@ -418,7 +425,7 @@ export const ReplicantiUpgrade = {
     set baseCost(value) { player.replicanti.intervalCost = value; }
 
     get costIncrease() {
-      const fastScale = Decimal.pow(1e6, this.value.toDecimal().div(10000).recip().pow(0.8))
+      const fastScale = Decimal.pow(1e6, this.value.toDecimal().div(10000).recip().pow(0.8));
       return TimeStudy(22).isBought ? fastScale : 1e10;
     }
 

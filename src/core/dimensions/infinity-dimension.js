@@ -25,7 +25,7 @@ export function infinityDimensionCommonMultiplier() {
     mult = mult.times(replicantiMult());
   }
   if (Effarig.isRunning) {
-    mult = mult.times(getEffarigICEffects("IC3"))
+    mult = mult.times(getEffarigICEffects("IC3"));
   }
   return mult;
 }
@@ -120,11 +120,11 @@ class InfinityDimensionState extends DimensionState {
       EternityChallenge(7).reward.applyEffect(v => toGain = v.times(10));
       if (EternityChallenge(7).isRunning) EternityChallenge(7).applyEffect(v => toGain = v.times(10));
     } else if (tier === 7 && V.isRunning) {
-      return DC.D0
+      return DC.D0;
     } else {
       toGain = V.isRunning
-      ? InfinityDimension(tier + 2).productionPerSecond
-      : InfinityDimension(tier + 1).productionPerSecond;
+        ? InfinityDimension(tier + 2).productionPerSecond
+        : InfinityDimension(tier + 1).productionPerSecond;
     }
     const current = Decimal.max(this.amount, 1);
     return toGain.times(10).dividedBy(current).times(getGameSpeedupForDisplay());
@@ -143,7 +143,7 @@ class InfinityDimensionState extends DimensionState {
       production = production.times(Tickspeed.perSecond);
     }
     if (Effarig.isRunning) {
-      production = production.times(getEffarigICEffects("IC3"))
+      production = production.times(getEffarigICEffects("IC3"));
     }
     return production.times(this.multiplier);
   }
@@ -166,7 +166,7 @@ class InfinityDimensionState extends DimensionState {
     }
 
     if (tier === 8 && TimeStudy(227).canBeApplied) {
-      mult = mult.times(TimeStudy(227).effectValue.infinity)
+      mult = mult.times(TimeStudy(227).effectValue.infinity);
     }
 
     mult = mult.pow(getAdjustedGlyphEffect("infinitypow"));
@@ -181,11 +181,11 @@ class InfinityDimensionState extends DimensionState {
     }
 
     if (Effarig.isRunning) {
-      mult = mult.times(getEffarigICEffects("IC8"))
-      mult = mult.dividedBy(getEffarigICEffects("IC6"))
+      mult = mult.times(getEffarigICEffects("IC8"));
+      mult = mult.dividedBy(getEffarigICEffects("IC6"));
       mult = Effarig.multiplier(mult);
       if (player.postC4Tier !== tier) {
-        mult = mult.pow(getEffarigICEffects("IC4"))
+        mult = mult.pow(getEffarigICEffects("IC4"));
       }
     } else if (V.isRunning) {
       mult = mult.pow(0.5);
@@ -193,6 +193,10 @@ class InfinityDimensionState extends DimensionState {
 
     if (PelleStrikes.powerGalaxies.hasStrike) {
       mult = mult.pow(0.5);
+    }
+
+    if (Replicanti.areUnlocked && Replicanti.amount.gt(1) && Ra.isRunning) {
+      mult = replicantiMult();
     }
 
     return mult;
@@ -220,11 +224,11 @@ class InfinityDimensionState extends DimensionState {
 
   get powerMultiplier() {
     if (Enslaved.isRunning) {
-      return DC.D1
+      return DC.D1;
     }
-    
+
     return new Decimal(this._powerMultiplier)
-      .timesEffectsOf(this._tier === 8 ? GlyphSacrifice.infinity : null)
+      .timesEffectsOf((this._tier === 8 || this._tier === 1) ? GlyphSacrifice.infinity : null)
       .pow(ImaginaryUpgrade(14).effectOrDefault(1));
   }
 
@@ -378,23 +382,24 @@ export const InfinityDimensions = {
   },
 
   get convSoftcapStart() {
-    return Pelle.isDoomed ? DC.D0 : DC.E2E9.pow(Math.log10(this.capIncrease + 1) + 1)
+    return Pelle.isDoomed ? DC.D0 : DC.E2E9.pow(Math.log10(this.capIncrease + 1) + 1);
   },
 
   get convSoftcapEffect() {
-    let equation = ( Pelle.isDoomed
+    const equation = (Pelle.isDoomed
       ? Math.log10(Decimal.log10(Currency.infinityPower.value.plus(1).pow(12)))
       : Math.max(
         Math.log10(Decimal.log10(Currency.infinityPower.value.plus(1))) - Math.log10(this.convSoftcapStart.log10()),
         1
-        )
-    )
-    const formula = (equation
-      * (1.25 + (equation > 3.4
-    ? (equation > 5 ? equation ** 2.2 : equation * 1.3)
-    : equation * 0.45)) - 0.7)
-    if (PlayerProgress.eternityUnlocked()) return Math.max(formula, 1) * (Pelle.isDoomed ? equation ** 2 : 1)
-    else return 1;
+      )
+    );
+    const formula = (equation *
+      // eslint-disable-next-line no-nested-ternary
+      (1.25 + (equation > 3.4
+        ? (equation > 5 ? equation ** 2.2 : equation * 1.3)
+        : equation * 0.45)) - 0.7);
+    if (PlayerProgress.eternityUnlocked()) return Math.max(formula, 1) * (Pelle.isDoomed ? equation ** 2 : 1);
+    return 1;
   },
 
   get totalDimCap() {
@@ -412,7 +417,7 @@ export const InfinityDimensions = {
   },
 
   tick(diff) {
-    const subtract = V.isRunning ? 2 : 1
+    const subtract = V.isRunning ? 2 : 1;
     for (let tier = 8; tier > subtract; tier--) {
       InfinityDimension(tier).produceDimensions(InfinityDimension(tier - subtract), diff / 10);
     }
@@ -456,7 +461,7 @@ export const InfinityDimensions = {
 
   get powerConversionRate() {
     const multiplier = PelleRifts.paradox.milestones[2].effectOrDefault(1);
-    return ((7 + getAdjustedGlyphEffect("infinityrate") + PelleUpgrade.infConversion.effectOrDefault(0))
-      * multiplier) / this.convSoftcapEffect;
+    return ((7 + getAdjustedGlyphEffect("infinityrate") + PelleUpgrade.infConversion.effectOrDefault(0)) *
+      multiplier) / this.convSoftcapEffect;
   }
 };

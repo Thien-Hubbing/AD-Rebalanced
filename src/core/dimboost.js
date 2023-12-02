@@ -24,8 +24,8 @@ export class DimBoost {
       InfinityChallenge(7).reward,
       InfinityChallenge(7),
       TimeStudy(81)
-    )
-    if (Effarig.isRunning) boost = Math.max(boost, getEffarigICEffects("IC7"))
+    );
+    if (Effarig.isRunning) boost = Math.max(boost, getEffarigICEffects("IC7"));
     boost = boost.toDecimal()
       .timesEffectsOf(
         TimeStudy(83),
@@ -38,7 +38,7 @@ export class DimBoost {
 
     if (GlyphAlteration.isAdded("effarig")) boost = boost.pow(getSecondaryGlyphEffect("effarigforgotten"));
 
-    if (boost.gte("1e10000")) boost = boost.pow(1/9).times("1e10000")
+    if (boost.gte("1e10000")) boost = boost.pow(1 / 9).times("1e10000");
 
     return boost;
   }

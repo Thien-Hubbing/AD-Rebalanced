@@ -1,7 +1,5 @@
 Array.prototype.distinct = function() {
-    return this.filter(function (value, index, self) {
-        return self.indexOf(value) === index;
-    });
+  return this.filter(value, index, self => self.indexOf(value) === index );
 };
 
 Math.wrap = function(number, min, max) {

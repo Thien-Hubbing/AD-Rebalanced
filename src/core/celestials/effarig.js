@@ -136,43 +136,44 @@ class EffarigUnlockState extends BitUpgradeState {
 }
 
 export function getEffarigICEffects(IC) {
-  let effects = {
+  const effects = {
     IC3: Decimal.pow(1.05 + (player.galaxies * 0.005), player.totalTickBought),
     IC4: InfinityChallenge(4).effectValue,
     IC6: Currency.matter.value.clampMin(1),
     get IC6MatterGain() {
-      let diffPow
+      let diffPow;
       switch (Effarig.currentStage) {
         case EFFARIG_STAGES.INFINITY:
-          diffPow = 1
+          diffPow = 1;
           break;
         case EFFARIG_STAGES.ETERNITY:
-          diffPow = 1.03
+          diffPow = 1.03;
           break;
         case EFFARIG_STAGES.REALITY:
-          diffPow = 1.1
+          diffPow = 1.1;
           break;
         case EFFARIG_STAGES.COMPLETED:
-          diffPow = 1.4
+          diffPow = 1.4;
           break;
       }
-      return diffPow ** Math.clamp(Date.now() - player.lastUpdate, 1, 21600000)
+      return diffPow ** Math.clamp(Date.now() - player.lastUpdate, 1, 21600000);
     },
     IC7: InfinityChallenge(7).effectValue,
     get IC8() {
-      const diff = player.records.thisInfinity.realTime ** 1.2 - player.records.thisInfinity.lastBuyTime
+      const diff = player.records.thisInfinity.realTime ** 1.2 - player.records.thisInfinity.lastBuyTime;
       switch (Effarig.currentStage) {
         case EFFARIG_STAGES.INFINITY:
-          return new Decimal(0.1).pow(Math.max(0, diff))
+          return new Decimal(0.1).pow(Math.max(0, diff));
         case EFFARIG_STAGES.ETERNITY:
-          return DC.C1D2_11E12.pow(Math.max(0, diff))
+          return DC.C1D2_11E12.pow(Math.max(0, diff));
         case EFFARIG_STAGES.REALITY:
-          return DC.C1D5_5E555.pow(Math.max(0, diff))
+          return DC.C1D5_5E555.pow(Math.max(0, diff));
         case EFFARIG_STAGES.COMPLETED:
-          return DC.C1D2E1111.pow(Math.max(0, diff * 1.5))
+          return DC.C1D2E1111.pow(Math.max(0, diff * 1.5));
       }
+      return 1;
     }
-  }
+  };
   return effects[IC];
 }
 

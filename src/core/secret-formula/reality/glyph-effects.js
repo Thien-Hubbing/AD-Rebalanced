@@ -191,16 +191,16 @@ export const glyphEffects = {
       : `Multiply Replication speed by ×{value}`
     ),
     totalDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed ×{value} and Replicanti chance exponent ×{value2}`
-    : `Replication speed ×{value}`
+      ? `Replication speed ×{value} and Replicanti chance exponent ×{value2}`
+      : `Replication speed ×{value}`
     ),
     genericDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed and chance exponent multiplier`
-    : `Replication speed multiplier`
+      ? `Replication speed and chance exponent multiplier`
+      : `Replication speed multiplier`
     ),
     shortDesc: () => (GlyphAlteration.isEmpowered("replication") && GlyphAlteration.isAdded("replication")
-    ? `Replication speed ×{value}, chance exponent multiplier ×{value2}`
-    : `Replication speed ×{value}`
+      ? `Replication speed ×{value}, chance exponent multiplier ×{value2}`
+      : `Replication speed ×{value}`
     ),
     effect: (level, strength) => (GlyphAlteration.isEmpowered("replication")
       ? DC.D1_3.pow(level * strength).times(10)
@@ -209,9 +209,7 @@ export const glyphEffects = {
     combine: GlyphCombiner.multiplyDecimal,
     conversion: x => Decimal.log10(x.pow(0.025)),
     formatSecondaryEffect: x => format(x, 2, 3),
-    alteredColor: () => {
-      return GlyphAlteration.getEmpowermentColor("replication")
-    },
+    alteredColor: () => GlyphAlteration.getEmpowermentColor("replication"),
     alterationType: ALTERATION_TYPE.EMPOWER
   },
   replicationpow: {
@@ -488,14 +486,14 @@ export const glyphEffects = {
       ? `Multiply the alchemy resource cap by ×{value}`
       : `Achievement Multiplier power +{value}`),
     totalDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Multiply the alchemy resource cap by ×{value}`
-    : `Achievement Multiplier ^{value}`),
+      ? `Multiply the alchemy resource cap by ×{value}`
+      : `Achievement Multiplier ^{value}`),
     genericDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Alchemy resource cap multiplier`
-    : `Achievement Multiplier ^x`),
+      ? `Alchemy resource cap multiplier`
+      : `Achievement Multiplier ^x`),
     shortDesc: () => (GlyphAlteration.isAdded("effarig")
-    ? `Alchemy resource cap ×{value}`
-    : `Achievement Mult. power +{value}`),
+      ? `Alchemy resource cap ×{value}`
+      : `Achievement Mult. power +{value}`),
     effect: (level, strength) => {
       const formula = (1 + Math.pow(level, 0.4) * Math.pow(strength, 0.6) / 60 +
       GlyphAlteration.sacrificeBoost("effarig") / 10)
@@ -525,7 +523,7 @@ export const glyphEffects = {
     shortDesc: () => (GlyphAlteration.isAdded("effarig")
       ? `Buy ${formatInt(10)} mult. ^{value}, Dimboost mult. ^{value2}`
       : `Buy ${formatInt(10)} mult. ^{value}`),
-    effect: (level, strength) => 1 + (level * (strength / 4)),
+    effect: (level, strength) => 1 + Math.cbrt(level * (strength / 4)),
     formatEffect: x => format(x, 2, 2),
     combine: GlyphCombiner.multiply,
     conversion: x => Math.pow((x / 2.5) + 1, 0.1),

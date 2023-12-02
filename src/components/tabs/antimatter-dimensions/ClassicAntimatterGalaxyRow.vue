@@ -20,12 +20,14 @@ export default {
       },
       canBeBought: false,
       distantStart: 0,
+      furtherStart: 0,
       remoteStart: 0,
       lockText: null,
       canBulkBuy: false,
       creditsClosed: false,
       scalingText: {
         distant: null,
+        further: null,
         remote: null,
       },
       hasTutorial: false,
@@ -59,6 +61,7 @@ export default {
       switch (this.type) {
         case GALAXY_TYPE.NORMAL: return "Antimatter Galaxies";
         case GALAXY_TYPE.DISTANT: return "Distant Antimatter Galaxies";
+        case GALAXY_TYPE.FURTHER: return "Further Antimatter Galaxies";
         case GALAXY_TYPE.REMOTE: return "Remote Antimatter Galaxies";
       }
       return undefined;
@@ -70,9 +73,10 @@ export default {
       switch (this.type) {
         case GALAXY_TYPE.DISTANT:
           return `Each Galaxy is more expensive past ${quantifyInt("Galaxy", this.distantStart)}`;
-        case GALAXY_TYPE.REMOTE: {
+        case GALAXY_TYPE.FURTHER || GALAXY_TYPE.REMOTE: {
           const scalings = [
-            { type: "distant", function: "quadratic", amount: this.distantStart },
+            { type: "distant", function: "multiplicative", amount: this.distantStart },
+            { type: "further", function: "quadratic", amount: this.furtherStart },
             { type: "remote", function: "exponential", amount: this.remoteStart }
           ];
           return `Increased Galaxy cost scaling: ${scalings.sort((a, b) => a.amount - b.amount)
@@ -101,6 +105,7 @@ export default {
       this.requirement.tier = requirement.tier;
       this.canBeBought = requirement.isSatisfied && Galaxy.canBeBought;
       this.distantStart = EternityChallenge(5).isRunning ? 0 : Galaxy.costScalingStart;
+      this.furtherStart = Galaxy.furtherStart;
       this.remoteStart = Galaxy.remoteStart;
       this.lockText = Galaxy.lockText;
       this.canBulkBuy = EternityMilestone.autobuyMaxGalaxies.isReached;

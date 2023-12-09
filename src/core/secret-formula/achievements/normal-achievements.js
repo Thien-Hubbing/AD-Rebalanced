@@ -199,7 +199,7 @@ export const normalAchievements = [
     checkRequirement: () => player.requirementChecks.infinity.noSacrifice,
     checkEvent: GAME_EVENT.GALAXY_RESET_BEFORE,
     get reward() {
-      return "You should have definitely believed in gods."
+      return "You should have definitely believed in gods.";
     }
   },
   {
@@ -513,7 +513,7 @@ export const normalAchievements = [
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     reward: "Extremely LARGE multiplier to Antimatter Dimensions based on time played.",
     effect: () => Decimal.pow(Time.totalTimePlayed.totalSeconds, 555).max(1),
-    formatEffect: value => `${formatX(value, 2, 2)}`
+    formatEffect: value => `×${formatPostBreak(value, 2, 2)}`
   },
   {
     id: 77,
@@ -1180,8 +1180,8 @@ export const normalAchievements = [
     get description() { return `Get ${formatPostBreak(DC.E1E12)} antimatter while Dilated.`; },
     checkRequirement: () => Currency.antimatter.exponent >= 1e12 && player.dilation.active,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    get reward() { return `Time Study 213 boosts itself.` },
-    effect: () => { return Math.sqrt(TimeStudy(213).effectValue) },
+    get reward() { return `Time Study 213 boosts itself.`; },
+    effect: () => Math.sqrt(TimeStudy(213).effectValue),
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {

@@ -13,7 +13,7 @@ export default {
       return [
         // Numerical nerfs and disabled boosts
         "Anything unlocked through a Pelle upgrade cannot be unlocked normally",
-        "All pre-Doomed IP and EP multipliers are disabled",
+        `All pre-Doomed IP and EP multipliers (except ${formatX(2)} and ${formatX(5)}) are disabled`,
         "IP generation based on fastest infinity speed is disabled",
         "All pre-Doomed Replicanti speed multipliers are disabled",
         `Replicanti slows down more drastically above ${format(Number.MAX_VALUE, 2)}`,
@@ -42,7 +42,7 @@ export default {
 
         // Glyphs
         "Glyph equipping is disabled until reacquired",
-        `Glyph levels are lowered and rarity is set to ${formatPercents(0)}`,
+        `Glyph levels are lowered, rarity is unaffected.`,
         "Effects from Glyph Sacrifice, Alteration, and Alchemy are all disabled",
 
         // Celestial features

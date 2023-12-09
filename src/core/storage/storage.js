@@ -5,6 +5,7 @@ import { devMigrations } from "./dev-migrations";
 import { migrations } from "./migrations";
 
 import { deepmergeAll } from "@/utility/deepmerge";
+import { isLocalEnvironment } from "../devtools";
 
 export const BACKUP_SLOT_TYPE = {
   ONLINE: 0,
@@ -216,17 +217,22 @@ export const GameStorage = {
         let thisNaN;
         switch (typeof prop) {
           case "object":
+            if (prop instanceof Decimal) {
+              thisNaN = !Number.isFinite(prop.mantissa) || !Number.isFinite(prop.exponent);
+              hasNaN = hasNaN || thisNaN;
+              if (thisNaN) invalidProps.push(`${path}.${key}`);
+            }
             thisNaN = checkNaN(prop, `${path}.${key}`);
             hasNaN = hasNaN || thisNaN;
             break;
           case "number":
-            thisNaN = Number.isNaN(prop);
+            thisNaN = !Number.isFinite(prop);
             hasNaN = hasNaN || thisNaN;
             if (thisNaN) invalidProps.push(`${path}.${key}`);
             break;
           case "string":
             // If we're attempting to import, all NaN entries will still be strings
-            thisNaN = prop === "NaN";
+            thisNaN = (prop === "NaN" || prop === "Infinity");
             hasNaN = hasNaN || thisNaN;
             if (thisNaN) invalidProps.push(`${path}.${key}`);
             break;
@@ -237,7 +243,11 @@ export const GameStorage = {
     checkNaN(save, "player");
 
     if (invalidProps.length === 0) return "";
-    return `${quantify("NaN player property", invalidProps.length)} found:
+    if (DEV || isLocalEnvironment()) throw new Error(
+      `${quantify("NaN/Out of Bounds player property", invalidProps.length)}
+      found: ${invalidProps.join(", ")}`
+    );
+    return `${quantify("NaN/Out of Bounds player property", invalidProps.length)} found:
       ${invalidProps.join(", ")}`;
   },
 
@@ -247,7 +257,7 @@ export const GameStorage = {
     const isSimulating = ui.$viewModel.modal.progressBar !== undefined && !ignoreSimulation;
     const isEnd = (GameEnd.endState >= END_STATE_MARKERS.SAVE_DISABLED && !GameEnd.removeAdditionalEnd) ||
       GameEnd.endState >= END_STATE_MARKERS.INTERACTIVITY_DISABLED;
-    return (!isEnd && !(isSelectingGlyph || isSimulating)) || player.forceSaveRegardless;
+    return (!isEnd && !(isSelectingGlyph || isSimulating)) && !player.forceSaveRegardless;
   },
 
   save(silent = true, manual = false) {
@@ -425,7 +435,7 @@ export const GameStorage = {
 
     const checkString = this.checkPlayerObject(playerObject);
     if (playerObject === Player.defaultStart || checkString !== "") {
-      if (DEV && checkString !== "") {
+      if (checkString !== "") {
         // eslint-disable-next-line no-console
         console.log(`Savefile was invalid and has been reset - ${checkString}`);
       }

@@ -1,5 +1,5 @@
 <script>
-import { getReplicantChance } from '../../../core/replicanti';
+import { getReplicantChance, ReplicantiGrowth } from "../../../core/replicanti";
 
 export default {
   name: "ReplicantiGainText",
@@ -7,10 +7,12 @@ export default {
     return {
       remainingTimeText: "",
       galaxyText: "",
-      intevalText: ""
+      intevalText: "",
+      intervalIncreaseText: ""
     };
   },
   methods: {
+    // eslint-disable-next-line complexity
     update() {
       const updateRateMs = player.options.updateRate;
       const ticksPerSecond = 1000 / updateRateMs;
@@ -24,7 +26,7 @@ export default {
 
       const replicantiAmount = Replicanti.amount;
       const isAbove308 = Replicanti.isUncapped && replicantiAmount.log10() > LOG10_MAX_VALUE;
-      const baseInterval = getReplicantiInterval(false)
+      const baseInterval = getReplicantiInterval(false);
 
       if (isAbove308) {
         const postScale = Math.log10(ReplicantiGrowth.scaleFactor) / ReplicantiGrowth.scaleLog10;
@@ -42,8 +44,11 @@ export default {
         const timeEstimateText = timeToThousand.eq(0)
           ? "an extremely long time"
           : `${TimeSpan.fromSeconds(timeToThousand.toNumber())}`;
-        this.remainingTimeText = `You are gaining ${formatX(gainFactorPerSecond, 2, 1)} Replicanti per second` +
-          ` (${timeEstimateText} until ${format(nextMilestone)})`;
+        const gainPerOoMsText = gainFactorPerSecond.lte("1e10000")
+          ? formatX(gainFactorPerSecond, 2, 1)
+          : `+${format(gainFactorPerSecond.max(1).log10(), 2, 1)} OoM worth of`;
+        this.remainingTimeText = `You are gaining ${gainPerOoMsText} Replicanti every second` +
+          `${timeToThousand.lte(1) ? `` : ` (${timeEstimateText} until ${format(nextMilestone)})`}`;
       } else {
         this.remainingTimeText = "";
       }
@@ -131,19 +136,22 @@ export default {
 
       this.intevalText = `Your current base replicanti interval is `;
       if (baseInterval.lt(1)) {
-        this.intevalText += `1 / ${format(baseInterval.reciprocal(), 2, 2)} ms`
+        this.intevalText += `1 / ${format(baseInterval.reciprocal(), 2, 2)} ms`;
       } else if (baseInterval.lt(1000) && baseInterval.gte(1)) {
-        this.intevalText += `${format(baseInterval, 2, 2)} ms`
+        this.intevalText += `${format(baseInterval, 2, 2)} ms`;
       } else if (baseInterval.gte(1000)) {
-        this.intevalText += `${format(baseInterval.div(1000), 2, 2)} s`
+        this.intevalText += `${format(baseInterval.div(1000), 2, 2)} s`;
       }
+
+      this.intervalIncreaseText = `Replicanti Interval increases by ${formatX(ReplicantiGrowth.scaleFactor, 0, 2)}
+        per ${format(ReplicantiGrowth.scaleLog10, 2, 2)} OoMs`;
     }
   }
 };
 </script>
 
 <template>
-  <p>{{ remainingTimeText }}<br>{{ galaxyText }}<br>{{ intevalText }}</p>
+  <p>{{ remainingTimeText }}<br>{{ galaxyText }}<br>{{ intervalIncreaseText }}<br>{{ intevalText }}<br></p>
 </template>
 
 <style scoped>

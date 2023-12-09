@@ -24,14 +24,14 @@ class GalaxyRequirement {
 
 export class Galaxy {
   static get remoteStart() {
-    const start = RealityUpgrade(21).effectOrDefault(800) + TimeStudy(302).effectOrDefault(0);
+    const start = RealityUpgrade(21).effectOrDefault(800);
     if (EternityChallenge(5).isRunning) return 0;
     if (ImaginaryUpgrade(18).canBeApplied) return Number.MAX_VALUE;
     return start;
   }
 
   static get furtherStart() {
-    return 40000 + GlyphSacrifice.power.effectOrDefault(0);
+    return 40000 + GlyphSacrifice.power.effectOrDefault(0) + TimeStudy(302).effectOrDefault(0);
   }
 
   static get requirement() {

@@ -45,7 +45,7 @@ export function antimatterDimensionCommonMultiplier() {
 
   multiplier = multiplier.dividedByEffectOf(InfinityChallenge(6));
   if (Effarig.isRunning) {
-    multiplier = multiplier.dividedBy(getEffarigICEffects("IC6"))
+    multiplier = multiplier.dividedBy(getEffarigICEffects("IC6"));
   }
   multiplier = multiplier.times(getAdjustedGlyphEffect("powermult"));
   multiplier = multiplier.times(Currency.realityMachines.value.powEffectOf(AlchemyResource.force));
@@ -89,7 +89,7 @@ export function getDimensionFinalMultiplierUncached(tier) {
   }
 
   if (multiplier.gte(DC.E1E11)) {
-    multiplier = multiplier.pow(0.1).times(DC.E1E11)
+    multiplier = multiplier.pow(0.1).times(DC.E1E11);
   }
 
   return multiplier;
@@ -129,11 +129,11 @@ function applyNDMultipliers(mult, tier) {
   }
   if (tier === 8) {
     multiplier = multiplier.times(Sacrifice.totalBoost);
-    multiplier = multiplier.timesEffectOf(Achievement(71))
+    multiplier = multiplier.timesEffectOf(Achievement(71));
   }
 
   if (tier === 2) {
-    multiplier = multiplier.timesEffectOf(Achievement(71))
+    multiplier = multiplier.timesEffectOf(Achievement(71));
   }
 
   multiplier = multiplier.timesEffectsOf(
@@ -186,10 +186,14 @@ function applyNDPowers(mult, tier) {
   }
 
   if (Effarig.isRunning) {
-    multiplier = multiplier.times(getEffarigICEffects("IC8"))
+    multiplier = multiplier.times(getEffarigICEffects("IC8"));
     if (player.postC4Tier !== tier) {
-      multiplier = multiplier.pow(getEffarigICEffects("IC4"))
+      multiplier = multiplier.pow(getEffarigICEffects("IC4"));
     }
+  }
+
+  if (Pelle.isDoomed && PelleRifts.chaos._milestones[1].canBeApplied) {
+    multiplier = multiplier.pow(Pelle.specialGlyphEffect.effarig);
   }
 
   return multiplier;
@@ -450,7 +454,7 @@ class AntimatterDimensionState extends DimensionState {
     } else if (NormalChallenge(12).isRunning || V.isRunning) {
       toGain = AntimatterDimension(tier + 2).productionPerSecond;
     } else if (tier >= 3 && Teresa.isRunning) {
-      toGain = DC.D0
+      toGain = DC.D0;
     } else {
       toGain = AntimatterDimension(tier + 1).productionPerSecond;
     }
@@ -623,7 +627,7 @@ class AntimatterDimensionState extends DimensionState {
     }
 
     if (tier >= 3 && Teresa.isRunning) {
-      production = DC.D0
+      production = DC.D0;
     }
 
     production = production.min(this.cappedProductionInNormalChallenges);
@@ -674,7 +678,7 @@ export const AntimatterDimensions = {
     mult = mult.pow(ImaginaryUpgrade(14).effectOrDefault(1));
 
     if (Enslaved.isRunning) {
-      mult = DC.D1
+      mult = DC.D1;
     }
 
     return mult;

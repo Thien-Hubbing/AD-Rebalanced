@@ -4,7 +4,8 @@ import { DC } from "./constants";
 // OoM past the cap (default is 308.25 (log10 of 1.8e308), 1.2, Number.MAX_VALUE)
 export const ReplicantiGrowth = {
   get scaleLog10() {
-    return Math.log10(Number.MAX_VALUE);
+    return (Math.log10(Number.MAX_VALUE) + RealityUpgrade(23).effectOrDefault(0)) *
+      ImaginaryUpgrade(14).effectOrDefault(1);
   },
   get scaleFactor() {
     if (PelleStrikes.eternity.hasStrike) return 10;
@@ -136,11 +137,7 @@ export function totalReplicantiSpeedMult(overCap) {
   totalMult = totalMult.times(ShopPurchase.replicantiPurchases.currentMult);
   if (Pelle.isDisabled("replicantiIntervalMult")) return totalMult;
 
-  const preCelestialEffects = Effects.product(
-    TimeStudy(62),
-    RealityUpgrade(6),
-    RealityUpgrade(23),
-  );
+  const preCelestialEffects = Effects.product(TimeStudy(62), RealityUpgrade(6));
 
   totalMult = totalMult.timesEffectOf(RealityUpgrade(2));
 
@@ -184,14 +181,16 @@ export function getReplicantChance(type) {
     TimeStudy(213).effectOrDefault(1) *
     getAdjustedGlyphEffect("replicationpow");
   const logChancePowers = chancePowers * Math.log10(player.replicanti.chance);
-  const actualChance = Decimal.pow(player.replicanti.chance, chancePowers).clampMin(1);
+  const actualChance = Decimal.pow(player.replicanti.chance, chancePowers).plus(1);
   switch (type) {
     case "ln":
       return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
     case "log2":
-      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
+      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.log2(actualChance));
     case "log10":
-      return (chancePowers > 1e6 ? logChancePowers * 2 : Decimal.ln(actualChance));
+      return (chancePowers > 1e6 ? logChancePowers : Decimal.log10(actualChance));
+    case "none":
+      return actualChance;
     default:
       throw new Error(`Invalid logarithm type: ${type}`);
   }
@@ -293,7 +292,7 @@ export function replicantiLoop(diff) {
 export function replicantiMult() {
   return (RealityUpgrade(24).isBought
     ? Decimal.pow(Replicanti.amount.clampMin(1), 0.323)
-    : Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2).plusEffectOf(TimeStudy(21))
+    : Decimal.pow(Decimal.log2(Replicanti.amount.clampMin(1)), 2).timesEffectOf(TimeStudy(21))
   ).timesEffectOf(TimeStudy(102))
     .clampMin(1)
     .pow(getAdjustedGlyphEffect("replicationpow"));

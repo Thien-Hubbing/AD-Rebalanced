@@ -125,13 +125,13 @@ export const glyphEffects = {
     singleDesc: "Tachyon Galaxy threshold multiplier ×{value}",
     genericDesc: "Tachyon Galaxy cost multiplier",
     shortDesc: "TG threshold ×{value}",
-    effect: (level, strength) => 1 - Math.pow(level, 0.2) * Math.pow(strength, 0.4) / 60 -
-      GlyphAlteration.sacrificeBoost("dilation") / 35,
+    effect: (level, strength) => (Math.pow(level, 0.2) * Math.pow(strength, 0.4) / 60 *
+      Math.max(GlyphAlteration.sacrificeBoost("dilation") / 35, 1)),
     formatEffect: x => format(x, 3, 3),
     alteredColor: () => GlyphAlteration.getBoostColor("dilation"),
     alterationType: ALTERATION_TYPE.BOOST,
     combine: effects => {
-      const prod = effects.reduce(Number.prodReducer, 1);
+      const prod = effects.reduce(Number.prodReducer, 0.01);
       return prod < 0.4
         ? { value: 0.4 - Math.pow(0.4 - prod, 1.7), capped: true }
         : { value: prod, capped: false };
@@ -496,9 +496,9 @@ export const glyphEffects = {
       : `Achievement Mult. power +{value}`),
     effect: (level, strength) => {
       const formula = (1 + Math.pow(level, 0.4) * Math.pow(strength, 0.6) / 60 +
-      GlyphAlteration.sacrificeBoost("effarig") / 10)
-      if (GlyphAlteration.isAdded("effarig")) return formula
-      return formula * 0.42
+      GlyphAlteration.sacrificeBoost("effarig") / 10);
+      if (GlyphAlteration.isAdded("effarig")) return formula;
+      return formula * 0.42;
     },
     formatEffect: x => format(x, 3, 3),
     formatSingleEffect: x => format(x - 1, 3, 3),

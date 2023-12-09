@@ -77,7 +77,7 @@ export const sidebarResources = [
     id: 10,
     optionName: "Relic Shards",
     isAvailable: () => TeresaUnlocks.effarig.isUnlocked,
-    value: () => new Decimal(Currency.relicShards.value),
+    value: () => Currency.relicShards.value,
     formatValue: x => format(x, 2),
     formatClass: "o-sidebar-currency--effarig",
   },

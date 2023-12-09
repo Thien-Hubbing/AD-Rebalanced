@@ -114,8 +114,8 @@ export class DimBoost {
     let amount = 20;
     const discount = Effects.sum(
       TimeStudy(211),
-      TimeStudy(222)
-    );
+      TimeStudy(222),
+    ) + (TimeStudy(301).canBeApplied ? 2 : 0);
     if (tier === 6 && NormalChallenge(10).isRunning) {
       amount += Math.round((targetResets - 3) * (20 - discount));
     } else if (tier === 8) {
@@ -187,7 +187,7 @@ export class DimBoost {
 
 // eslint-disable-next-line max-params
 export function softReset(tempBulk, forcedADReset = false, forcedAMReset = false, enteringAntimatterChallenge = false) {
-  if (Currency.antimatter.gt(Player.infinityLimit)) return;
+  if (Currency.antimatter.gt(Player.infinityLimit) && Player.isInAntimatterChallenge) return;
   const bulk = Math.min(tempBulk, DimBoost.maxBoosts - player.dimensionBoosts);
   EventHub.dispatch(GAME_EVENT.DIMBOOST_BEFORE, bulk);
   player.dimensionBoosts = Math.max(0, player.dimensionBoosts + bulk);

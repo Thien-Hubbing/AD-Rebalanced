@@ -92,7 +92,8 @@ export const realityUpgrades = [
     checkEvent: GAME_EVENT.BIG_CRUNCH_BEFORE,
     canLock: true,
     lockEvent: "gain another Antimatter Galaxy",
-    description: () => `Infinity gain is boosted from Antimatter Galaxy count and the IP mult upgrade multiplies by ${formatX(5)} beyond ${format(DC.E3E9, 2, 2)}`,
+    description: () => `Infinity gain is boosted from Antimatter Galaxy count and the
+      IP mult upgrade multiplies by ${formatX(5)} beyond ${format(DC.E3E9, 2, 2)}`,
     effect: () => 1 + player.galaxies ** 1.6,
     formatEffect: value => formatX(value, 2, 2)
   },
@@ -332,10 +333,11 @@ export const realityUpgrades = [
     hasFailed: () => Time.thisReality.totalMinutes >= 15,
     checkRequirement: () => Time.thisReality.totalMinutes < 15,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
-    description: "Replicanti speed is boosted based on your fastest game-time Reality",
-    effect: () => 15 / Math.clamp(Time.bestReality.totalMinutes, 1 / 12, 15),
-    cap: 180,
-    formatEffect: value => formatX(value, 2, 2)
+    description: `Increase the OoMs required for next replicant interval increase
+      based on how fast you performed a reality`,
+    effect: () => 1 / Math.clamp(Time.bestReality.totalMinutes / 1000, 1 / 1e25, 1),
+    cap: 1e6,
+    formatEffect: value => `+${format(value, 2, 2)}`
   },
   {
     name: "Synthetic Symbolism",
@@ -348,8 +350,9 @@ export const realityUpgrades = [
     canLock: true,
     lockEvent: "equip a non-Companion Glyph",
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
-    description: "Gain another Glyph slot and improve the replicanti formula further, but disable timestudy 21 (ReP^0.323)",
-    effect: () => 1
+    description: `Gain two more Glyph slot and improve the replicanti formula further,
+      but disable timestudy 21 (ReP^0.323)`,
+    effect: () => 2
   },
   {
     name: "Effortless Existence",
@@ -358,15 +361,16 @@ export const realityUpgrades = [
     requirement: () => `Reach ${format(DC.E11111)} EP (Best: ${format(player.records.bestReality.bestEP, 2)} EP)`,
     checkRequirement: () => player.records.bestReality.bestEP.exponent >= 11111,
     checkEvent: GAME_EVENT.ETERNITY_RESET_AFTER,
-    description: "Unlock the Reality autobuyer and Automator command; Tickspeed affects all other dimensions with reduced effect",
+    description: `Unlock the Reality autobuyer and Automator command;
+      Tickspeed affects all other dimensions with reduced effect`,
     automatorPoints: 100,
     shortDescription: () => `Reality Autobuyer; Tickspeed affects other dimension types`,
     effect: () => {
-      const tick = Tickspeed.perSecond.div(10000)
-      const first = Decimal.pow(tick.log2(), 8192)
-      const second = Decimal.pow(tick.log10(), 1024)
-      const third = Math.cbrt(player.galaxies + 1)
-      return first.times(second).pow(third)
+      const tick = Tickspeed.perSecond.div(10000);
+      const first = Decimal.pow(tick.log2(), 8192);
+      const second = Decimal.pow(tick.log10(), 1024);
+      const third = Math.cbrt(player.galaxies + 1);
+      return first.times(second).pow(third);
     },
     cap: undefined,
     formatEffect: value => formatX(value, 2, 2)

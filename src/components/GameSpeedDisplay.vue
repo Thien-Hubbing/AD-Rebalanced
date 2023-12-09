@@ -24,7 +24,7 @@ export default {
         return `${speed} (fixed)`;
       }
       if (this.realTimeSpeed !== 1) {
-        return `${speed} (game-time); ${this.formatNumber(this.realTimeSpeed)} (real-time)`
+        return `${speed} (game-time); ${this.formatNumber(this.realTimeSpeed)} (real-time)`;
       }
       return `${speed}`;
     },

@@ -22,15 +22,14 @@ export const MachineHandler = {
       if (log10FinalEP > 8000) log10FinalEP = 8000;
       if (log10FinalEP > 6000) log10FinalEP -= (log10FinalEP - 6000) * 0.75;
     }
-    //return rmGain.floor();
-    let base = 2
-    if (log10FinalEP > 50000) base -= 0.5
-    if (log10FinalEP > 5e5) base -= 0.2
-    if (log10FinalEP > 2e6) base -= 0.05
-    if (log10FinalEP > 1e7) base -= 0.05
-    if (log10FinalEP > 1e9) base -= 0.13
-    let rmGain = Decimal.floor(Decimal.pow(base, log10FinalEP / 4000))
-    return rmGain.times(this.realityMachineMultiplier).floor()
+    let base = 2;
+    if (log10FinalEP > 50000) base -= 0.5;
+    if (log10FinalEP > 5e5) base -= 0.2;
+    if (log10FinalEP > 2e6) base -= 0.05;
+    if (log10FinalEP > 1e7) base -= 0.05;
+    if (log10FinalEP > 1e9) base -= 0.13;
+    const rmGain = Decimal.floor(Decimal.pow(base, log10FinalEP / 4000));
+    return rmGain.times(this.realityMachineMultiplier).floor();
   },
 
   get gainedRealityMachines() {
@@ -42,8 +41,8 @@ export const MachineHandler = {
   },
 
   get baseIMCap() {
-    return (Math.pow(Math.clampMin(this.uncappedRM.log10() - 1000, 0), 2)) *
-      (Math.pow(Math.clampMin(this.uncappedRM.log10() - 100000, 1), 0.2));
+    return (Math.pow(Math.clampMin(this.uncappedRM.log10() - 1000, 0), 10)) *
+      (Math.pow(Math.clampMin(this.uncappedRM.log10() - 50, 1), 0.5));
   },
 
   get currentIMCap() {

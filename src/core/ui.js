@@ -96,7 +96,10 @@ const ReactivityComplainer = {
       return;
     }
     if (obj.__ob__ !== undefined) {
-      throw new Error(`Boi you fukked up - ${path} became REACTIVE (oh shite)`);
+      delete obj.__ob__;
+      throw new Error(`No. (Reactive property detected: ${path})
+As such, this observer property has been annihiliated.`);
+      // Not used: throw new Error(`Boi you fukked up - ${path} became REACTIVE (oh shite)`);
     }
     for (const key in obj) {
       if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;

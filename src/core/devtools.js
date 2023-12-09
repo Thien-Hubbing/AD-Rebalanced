@@ -552,4 +552,4 @@ dev.completeChallenges = function(type = "all") {
     default:
       throw new Error("Not a challenge type");
   }
-}
+};

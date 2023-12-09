@@ -105,7 +105,7 @@ export const imaginaryUpgrades = [
     requirement: () => `${format(1e90)} total Relic Shards
       (You have ${format(player.celestials.effarig.relicShards, 2)})`,
     hasFailed: () => false,
-    checkRequirement: () => player.celestials.effarig.relicShards >= 1e90,
+    checkRequirement: () => player.celestials.effarig.relicShards.gte(1e90),
     checkEvent: GAME_EVENT.REALITY_RESET_AFTER,
     description: "Time Dimension power based on total antimatter",
     effect: () => 1 + Math.log10(player.records.totalAntimatter.log10()) / 100,
@@ -122,7 +122,7 @@ export const imaginaryUpgrades = [
     checkRequirement: () => Object.values(player.celestials.effarig.glyphWeights).some(w => w === 100) &&
       gainedGlyphLevel().actualLevel >= 9000,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
-    description: "Gain free Dimboosts based on Imaginary rebuyable count",
+    description: "Gain free Dimboost based on Imaginary rebuyable count",
     effect: () => 2e4 * ImaginaryUpgrades.totalRebuyables,
     formatEffect: value => `${format(value, 1)}`,
     isDisabledInDoomed: true
@@ -139,7 +139,7 @@ export const imaginaryUpgrades = [
       MachineHandler.uncappedRM.times(simulatedRealityCount(false) + 1).gte(Number.MAX_VALUE),
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: "Increase Imaginary Machine Cap based on Imaginary Upgrades purchased",
-    effect: () => 1 + ImaginaryUpgrades.totalRebuyables / 20 + ImaginaryUpgrades.totalSinglePurchase / 2,
+    effect: () => 1 + ImaginaryUpgrades.totalRebuyables / 4 + ImaginaryUpgrades.totalSinglePurchase,
     formatEffect: value => `${formatX(value, 2, 1)}`,
     isDisabledInDoomed: true
   },
@@ -152,7 +152,8 @@ export const imaginaryUpgrades = [
     hasFailed: () => false,
     checkRequirement: () => EternityChallenge(5).isRunning && Tickspeed.perSecond.exponent >= 7.5e10,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    description: () => `Raise all Dimension per-purchase multipliers to ${formatPow(1.5, 0, 1)}`,
+    description: () => `Raise all Dimension per-purchase multipliers to ${formatPow(1.5, 0, 1)}
+      and multiply Replicanti Interval OoMs by ${formatX(1.5, 0, 1)}`,
     effect: 1.5,
     isDisabledInDoomed: true
   },

@@ -11,15 +11,15 @@ export default {
     CelestialQuoteHistory,
   },
   data() {
+    this.relicShards = new Decimal(0);
     return {
-      relicShards: 0,
       shardRarityBoost: 0,
       shardPower: 0,
-      shardsGained: 0,
-      currentShardsRate: 0,
+      shardsGained: new Decimal(0),
+      currentShardsRate: new Decimal(0),
       amplification: 0,
-      amplifiedShards: 0,
-      amplifiedShardsRate: 0,
+      amplifiedShards: new Decimal(0),
+      amplifiedShardsRate: new Decimal(0),
       runUnlocked: false,
       quote: "",
       isRunning: false,
@@ -73,10 +73,10 @@ export default {
       this.shardRarityBoost = Effarig.maxRarityBoost / 100;
       this.shardPower = Ra.unlocks.maxGlyphRarityAndShardSacrificeBoost.effectOrDefault(1);
       this.shardsGained = Effarig.shardsGained;
-      this.currentShardsRate = (this.shardsGained / Time.thisRealityRealTime.totalMinutes);
+      this.currentShardsRate = (this.shardsGained.div(Time.thisRealityRealTime.totalMinutes));
       this.amplification = simulatedRealityCount(false);
-      this.amplifiedShards = this.shardsGained * (1 + this.amplification);
-      this.amplifiedShardsRate = (this.amplifiedShards / Time.thisRealityRealTime.totalMinutes);
+      this.amplifiedShards = this.shardsGained.times(1 + this.amplification);
+      this.amplifiedShardsRate = (this.amplifiedShards.div(Time.thisRealityRealTime.totalMinutes));
       this.quote = Effarig.quote;
       this.runUnlocked = EffarigUnlock.run.isUnlocked;
       this.isRunning = Effarig.isRunning;

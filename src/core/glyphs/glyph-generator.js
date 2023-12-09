@@ -164,7 +164,7 @@ export const GlyphGenerator = {
     effectList.push(GlyphEffects.timespeed);
     let bitmask = 0;
     for (const effect of effectList) bitmask |= 1 << effect.bitmaskIndex;
-    const glyphLevel = Math.max(player.records.bestReality.glyphLevel, 5000);
+    const glyphLevel = Math.max(player.records.bestReality.glyphLevel, 50000);
     return {
       id: undefined,
       idx: null,

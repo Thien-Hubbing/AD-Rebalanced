@@ -9,8 +9,8 @@ export class Sacrifice {
 
   static get canSacrifice() {
     return DimBoost.purchasedBoosts > 4 && !EternityChallenge(3).isRunning && this.nextBoost.gt(1) &&
-      AntimatterDimension(8).totalAmount.gt(0) && Currency.antimatter.lt(Player.infinityLimit) &&
-      !Enslaved.isRunning;
+      AntimatterDimension(8).totalAmount.gt(0) && (Currency.antimatter.lt(Player.infinityLimit) &&
+      !Player.isInAntimatterChallenge) && !Enslaved.isRunning;
   }
 
   static get disabledCondition() {
@@ -44,6 +44,7 @@ export class Sacrifice {
       (f("Achievement88", Achievement(88).isEffectActive) ? Achievement(88).config.effect : 0) +
       (f("TimeStudy228", TimeStudy(228).isEffectActive) ? TimeStudy(228).config.effect : 0)
     ) * factor;
+    if (f("TimeStudy304", TimeStudy(304).isEffectActive)) return `x${formatPow(0.1667, 4, 4)}`;
     return base + (exponent === 1 ? "" : formatPow(exponent, places, places));
   }
 
@@ -66,7 +67,7 @@ export class Sacrifice {
     const postIC2 = 1 + Effects.sum(Achievement(88), TimeStudy(228));
     const triad = TimeStudy(304).effectOrDefault(1);
 
-    return base * preIC2 * postIC2 * triad;
+    return TimeStudy(304).isEffectActive ? 0.1667 * triad : (base * preIC2 * postIC2) * triad;
   }
 
   static get nextBoost() {

@@ -23,12 +23,12 @@ export const pelleRifts = {
       return totalFill.plus(1).pow(0.5);
     },
     currency: () => Currency.infinityPoints,
-    galaxyGeneratorThreshold: 1000,
+    galaxyGeneratorThreshold: 1e9,
     milestones: [
       {
         resource: "vacuum",
         requirement: 0.04,
-        description: "You can equip a single basic Glyph with decreased level and rarity"
+        description: "You can equip two basic Glyph with decreased level and rarity"
       },
       {
         resource: "vacuum",
@@ -62,7 +62,7 @@ export const pelleRifts = {
     effect: totalFill => (PelleRifts.chaos.milestones[0].canBeApplied
       ? Decimal.sqrt(20000 + 1) : Decimal.sqrt(totalFill.plus(1).log10() * 10 + 1)),
     currency: () => Currency.replicanti,
-    galaxyGeneratorThreshold: 1e7,
+    galaxyGeneratorThreshold: 1e11,
     milestones: [
       {
         resource: "decay",
@@ -120,7 +120,7 @@ export const pelleRifts = {
         player.celestials.pelle.rifts.decay.percentageSpent += spent;
       }
     }),
-    galaxyGeneratorThreshold: 1e9,
+    galaxyGeneratorThreshold: 1e13,
     milestones: [
       {
         resource: "chaos",
@@ -131,7 +131,7 @@ export const pelleRifts = {
       {
         resource: "chaos",
         requirement: 0.15,
-        description: "Glyphs gain a new Pelle-specific effect",
+        description: "Glyphs gain a new Pelle-specific effect including Effarig and Reality",
       },
       {
         resource: "chaos",
@@ -153,7 +153,7 @@ export const pelleRifts = {
     percentageToFill: percentage => Decimal.pow(10, percentage ** 2.5 * 4000).minus(1),
     effect: totalFill => new Decimal(58 * totalFill.plus(1).log10() ** 0.2 / 4000 ** 0.2),
     currency: () => Currency.eternityPoints,
-    galaxyGeneratorThreshold: 1e10,
+    galaxyGeneratorThreshold: 1e17,
     milestones: [
       {
         resource: "recursion",
@@ -190,7 +190,7 @@ export const pelleRifts = {
     percentageToFill: percentage => Decimal.pow10(percentage * 100).minus(1),
     effect: totalFill => new Decimal(1 + totalFill.plus(1).log10() * 0.004),
     currency: () => Currency.dilatedTime,
-    galaxyGeneratorThreshold: 1e5,
+    galaxyGeneratorThreshold: 1e11,
     milestones: [
       {
         resource: "paradox",

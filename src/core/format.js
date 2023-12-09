@@ -67,7 +67,7 @@ window.formatPow = function formatPow(value, places, placesUnder1000) {
 };
 
 window.formatPercents = function formatPercents(value, places) {
-  return `${format(value * 100, 2, places)}%`;
+  return `${format((value instanceof Decimal ? value.times(100) : value * 100), 2, places)}%`;
 };
 
 window.formatRarity = function formatRarity(value) {

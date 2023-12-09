@@ -1,3 +1,5 @@
+import { DEV } from "../env";
+
 import { AutomatorPanels } from "@/components/tabs/automator/AutomatorDocs";
 import { GlyphInfo } from "@/components/modals/options/SelectGlyphInfoDropdown";
 
@@ -5,6 +7,8 @@ import { AUTOMATOR_MODE, AUTOMATOR_TYPE } from "./automator/automator-backend";
 import { DC } from "./constants";
 import { deepmergeAll } from "@/utility/deepmerge";
 import { GlyphTypes } from "./glyph-effects";
+import { isLocalEnvironment } from "./devtools";
+
 
 // This is actually reassigned when importing saves
 // eslint-disable-next-line prefer-const
@@ -13,7 +17,9 @@ window.player = {
   globalSpeed: 1,
   forceSaveRegardless: false,
   ignoreChallengeLimit: false,
-  meta: undefined,
+  meta: {
+    ignoreBreakReqs: false
+  },
   dimensions: {
     antimatter: Array.range(0, 8).map(() => ({
       bought: 0,
@@ -324,8 +330,8 @@ window.player = {
       bestEternitiesPerMs: DC.D0,
       maxReplicanti: DC.D0,
       maxDT: DC.D0,
-      bestRSmin: 0,
-      bestRSminVal: 0,
+      bestRSmin: DC.D0,
+      bestRSminVal: DC.D0,
     },
     bestReality: {
       time: Number.MAX_VALUE,
@@ -568,7 +574,7 @@ window.player = {
       lastRepeatedMachines: DC.D0
     },
     effarig: {
-      relicShards: 0,
+      relicShards: DC.D0,
       unlockBits: 0,
       run: false,
       quoteBits: 0,
@@ -972,9 +978,10 @@ export const Player = {
 
   get infinityGoal() {
     const challenge = NormalChallenge.current || InfinityChallenge.current;
+    // eslint-disable-next-line no-nested-ternary
     return (challenge === undefined || player.ignoreChallengeLimit)
-    ? (player.ignoreChallengeLimit ? Decimal.MAX_VALUE : Decimal.NUMBER_MAX_VALUE)
-    : challenge.goal;
+      ? (player.ignoreChallengeLimit ? Decimal.MAX_VALUE : Decimal.NUMBER_MAX_VALUE)
+      : challenge.goal;
   },
 
   get infinityLimit() {
@@ -1057,6 +1064,7 @@ export function guardFromNaNValues(obj) {
         enumerable: true,
         configurable: true,
         get: () => value,
+        // eslint-disable-next-line no-loop-func
         set: function guardedSetter(newValue) {
           if (newValue === null || newValue === undefined) {
             throw new Error("null/undefined player property assignment");
@@ -1065,6 +1073,7 @@ export function guardFromNaNValues(obj) {
             throw new Error("Non-Number assignment to Number player property");
           }
           if (!isFinite(newValue)) {
+            if (DEV || isLocalEnvironment()) GameStorage.hardReset();
             throw new Error("NaN player property assignment");
           }
           value = newValue;
@@ -1077,6 +1086,7 @@ export function guardFromNaNValues(obj) {
         enumerable: true,
         configurable: true,
         get: () => value,
+        // eslint-disable-next-line no-loop-func
         set: function guardedSetter(newValue) {
           if (newValue === null || newValue === undefined) {
             throw new Error("null/undefined player property assignment");
@@ -1085,7 +1095,8 @@ export function guardFromNaNValues(obj) {
             throw new Error("Non-Decimal assignment to Decimal player property");
           }
           if (!isFinite(newValue.mantissa) || !isFinite(newValue.exponent)) {
-            throw new Error("NaN player property assignment");
+            if (DEV || isLocalEnvironment()) GameStorage.hardReset();
+            throw new Error("NaN/Infinite player property assignment");
           }
           value = newValue;
         }

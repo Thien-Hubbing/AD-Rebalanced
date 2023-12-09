@@ -79,7 +79,9 @@ export const Pelle = {
         ${formatInt(5)} additional Glyphs in order to Doom your Reality.`, 1);
       return;
     }
-    for (const type of BASIC_GLYPH_TYPES) Glyphs.addToInventory(GlyphGenerator.doomedGlyph(type));
+    for (const type of ["power", "infinity", "time", "replication", "dilation", "effarig", "reality"]) {
+      Glyphs.addToInventory(GlyphGenerator.doomedGlyph(type));
+    }
     Glyphs.refreshActive();
     player.options.confirmations.glyphReplace = true;
     player.reality.automator.state.repeat = false;
@@ -187,15 +189,15 @@ export const Pelle = {
   },
 
   get uselessInfinityUpgrades() {
-    return ["passiveGen", "ipMult", "infinitiedGeneration"];
+    return ["passiveGen", "infinitiedGeneration"];
   },
 
   get uselessTimeStudies() {
-    return [32, 33, 41, 51, 61, 62, 121, 122, 123, 141, 142, 143, 192, 213];
+    return [32, 33, 41, 51, 61, 62, 121, 122, 123, 141, 142, 143, 192];
   },
 
   get disabledRUPGs() {
-    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 20, 22, 23, 24];
+    return [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 14, 15, 19, 20, 22, 23];
   },
 
   get uselessPerks() {
@@ -223,12 +225,19 @@ export const Pelle = {
         ? Decimal.pow(player.dilation.totalTachyonGalaxies, 1.5).max(1)
         : DC.D1,
       power: isActive("power")
-        ? 1.02
+        ? (Currency.antimatter.value.plus(1).log10() / 1e10) + 1
         : 1,
       companion: isActive("companion")
         ? 1.34
         : 1,
-      isScaling: () => ["infinity", "time", "replication", "dilation"].includes(this.activeGlyphType),
+      effarig: isActive("effarig")
+        ? 1 + Decimal.log10(Currency.relicShards.value.plus(1)) / 750
+        : 1,
+      reality: isActive("reality")
+        ? Math.log10(Currency.remnants.value + 1) * 2
+        : 1,
+      isScaling: () => ["power", "infinity", "time",
+        "replication", "dilation", "reality"].includes(this.activeGlyphType),
     };
   },
   getSpecialGlyphEffectDescription(type) {
@@ -247,9 +256,15 @@ export const Pelle = {
         return `Dilated Time gain ${formatX(Decimal.pow(player.dilation.totalTachyonGalaxies, 1.5).max(1), 2)}
           (based on Tachyon Galaxies)`;
       case "power":
-        return `Galaxies are ${formatPercents(0.02)} stronger`;
+        return `Galaxies are ${formatPercents(Currency.antimatter.value.plus(1).log10() / 1e10, 2, 2)} stronger`;
       case "companion":
         return `You feel ${formatPercents(0.34)} better`;
+      case "effarig":
+        return `Antimatter production is raised ${formatPow(1 + Currency.relicShards.value.plus(1).log10() / 750, 3, 3)}
+          (based on Relic Shards pre-doomed)`;
+      case "reality":
+        return `Remnant gain ${formatX(Math.log10(Currency.remnants.value + 1) * 2, 2, 2)}
+          (based on current Remnants)`;
       // Undefined means that there is no glyph equipped, needs to be here since this function is used in
       // both Current Glyph Effects and Glyph Tooltip
       case undefined:
@@ -260,7 +275,7 @@ export const Pelle = {
   },
 
   get remnantRequirementForDilation() {
-    return 3.8e7;
+    return 1e8;
   },
 
   get canDilateInPelle() {
@@ -290,9 +305,11 @@ export const Pelle = {
       ep *= 5;
     }
 
-    const gain = (
+    let gain = (
       (Math.log10(am + 2) + Math.log10(ip + 2) + Math.log10(ep + 2)) / 1.64
     ) ** 7.5;
+
+    gain *= this.specialGlyphEffect.reality;
 
     return gain < 1 ? gain : Math.floor(gain - this.cel.remnants);
   },
@@ -311,7 +328,7 @@ export const Pelle = {
 
   // Calculations assume this is in units of proportion per second (eg. 0.03 is 3% drain per second)
   get riftDrainPercent() {
-    return 0.03;
+    return 0.3;
   },
 
   get glyphMaxLevel() {
@@ -319,7 +336,7 @@ export const Pelle = {
   },
 
   get glyphStrength() {
-    return 1;
+    return 3.5;
   },
 
   antimatterDimensionMult(x) {
@@ -354,7 +371,7 @@ export const Pelle = {
     return zalgo(str, Math.floor(stage ** 2 * 7));
   },
 
-  endTabNames: "End Is Nigh Destruction Is Imminent Help Us Good Bye Forever".split(" "),
+  endTabNames: "This Thing Is Stupid So Why Do I Bother Changing Everything".split(" "),
 
   quotes: Quotes.pelle,
 };

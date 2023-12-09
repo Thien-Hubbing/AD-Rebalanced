@@ -65,7 +65,7 @@ export const Glyphs = {
   },
   get activeSlotCount() {
     if (Pelle.isDoomed) {
-      if (PelleRifts.vacuum.milestones[0].canBeApplied) return 1;
+      if (PelleRifts.vacuum.milestones[0].canBeApplied) return 2;
       return 0;
     }
     return 3 + Effects.sum(RealityUpgrade(9), RealityUpgrade(24));
@@ -263,7 +263,7 @@ export const Glyphs = {
     return this.active[activeIndex];
   },
   equip(glyph, targetSlot) {
-    const forbiddenByPelle = Pelle.isDisabled("glyphs") || ["effarig", "reality", "cursed"].includes(glyph.type);
+    const forbiddenByPelle = Pelle.isDisabled("glyphs") || ["cursed"].includes(glyph.type);
     if (Pelle.isDoomed && forbiddenByPelle) return;
     if (GameEnd.creditsEverClosed) return;
 

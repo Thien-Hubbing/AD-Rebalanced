@@ -35,7 +35,8 @@ export const eternityChallenges = [
   },
   {
     id: 3,
-    description: "Antimatter Dimensions 5-8 don't produce anything. Dimensional Sacrifice and Dimension Boosts is disabled.",
+    description: `Antimatter Dimensions 5-8 don't produce anything.\
+    Dimensional Sacrifice and Dimension Boosts is disabled.`,
     goal: DC.E600,
     pelleGoal: DC.E925,
     goalIncrease: DC.E75,
@@ -66,8 +67,9 @@ export const eternityChallenges = [
   },
   {
     id: 5,
-    description: () => `Distant and Remote Antimatter Galaxy cost scaling starts immediately (normally at ${formatInt(100)}
-      and ${formatInt(800)} Galaxies). Dimension Boost and Antimatter Galaxy costs scaling is massively increased.`,
+    description: () => `Distant and Remote Antimatter Galaxy cost scaling starts immediately\
+      (normally at ${formatInt(100)} and ${formatInt(800)} Galaxies).
+      Dimension Boost and Antimatter Galaxy costs scaling is massively increased.`,
     goal: DC.E750,
     pelleGoal: DC.E1400,
     goalIncrease: DC.E400,
@@ -148,14 +150,17 @@ export const eternityChallenges = [
     id: 10,
     description: () => {
       let description = `Time Dimensions and Infinity Dimensions are disabled. You gain an immense boost from
-        Infinities to Antimatter Dimensions (Infinities${formatPow(3008, 2, 2)}${TimeStudy(31).isBought ? formatPow(TimeStudy(31).effectValue) : ""}). ${specialInfinityGlyphDisabledEffectText()}`;
+        Infinities to Antimatter Dimensions` +
+        `(Infinities^${formatInt(3008)}${TimeStudy(31).isBought ? formatPow(TimeStudy(31).effectValue) : ""}).` +
+        `${specialInfinityGlyphDisabledEffectText()}`;
       EternityChallenge(10).applyEffect(v => description += ` Currently: ${formatX(v, 2, 1)}`);
       return description;
     },
     goal: DC.E3000,
     pelleGoal: DC.E3200,
     goalIncrease: DC.E300,
-    effect: () => Decimal.pow(Currency.infinitiesTotal.value, 3008).clampMin(1).pow(TimeStudy(31).effectOrDefault(1) * 2.6),
+    effect: () => Decimal.pow(Currency.infinitiesTotal.value, 3008)
+      .clampMin(1).pow(TimeStudy(31).effectOrDefault(1) * 2.6),
     reward: {
       description: "Time Dimension multiplier based on Infinities",
       effect: completions => {

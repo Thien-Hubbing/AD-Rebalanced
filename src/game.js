@@ -73,7 +73,7 @@ export function playerInfinityUpgradesOnReset() {
 }
 
 export function breakInfinity() {
-  if (!Autobuyer.bigCrunch.hasMaxedInterval) return;
+  if (!Autobuyer.bigCrunch.hasMaxedInterval && !player.meta.ignoreBreakReqs) return;
   if (InfinityChallenge.isRunning) return;
   for (const autobuyer of Autobuyers.all) {
     if (autobuyer.data.interval !== undefined) autobuyer.maxIntervalForFree();
@@ -101,9 +101,10 @@ export function gainedInfinityPoints() {
   }
   let ip = player.break
     ? Decimal.pow10(player.records.thisInfinity.maxAM.log10() / div - 0.75)
+      .times(GameCache.totalIPMult.value)
     : new Decimal(308 / div);
   if (Effarig.isRunning && Effarig.currentStage === EFFARIG_STAGES.ETERNITY) {
-    ip = ip.min(DC.E200);
+    ip = ip.min(DC.E250);
   }
   if (Teresa.isRunning) {
     ip = ip.pow(0.55);
@@ -264,7 +265,7 @@ export function addRealityTime(time, realTime, rm, level, realities, ampFactor, 
   const shards = Effarig.shardsGained;
   player.records.recentRealities.pop();
   player.records.recentRealities.unshift([getProperDeltaTime(time, 2), realTime, rm.times(ampFactor),
-    realities, reality, level, shards * ampFactor, projIM]);
+    realities, reality, level, shards.times(ampFactor), projIM]);
 }
 
 export function gainedInfinities() {
@@ -663,8 +664,8 @@ function updatePrestigeRates() {
     player.records.thisEternity.bestEPminVal = gainedEternityPoints();
   }
 
-  const currentRSmin = Effarig.shardsGained / Math.clampMin(0.0005, Time.thisRealityRealTime.totalMinutes);
-  if (currentRSmin > player.records.thisReality.bestRSmin && isRealityAvailable()) {
+  const currentRSmin = Effarig.shardsGained.dividedBy(Math.clampMin(0.0005, Time.thisRealityRealTime.totalMinutes));
+  if (currentRSmin.gt(player.records.thisReality.bestRSmin) && isRealityAvailable()) {
     player.records.thisReality.bestRSmin = currentRSmin;
     player.records.thisReality.bestRSminVal = Effarig.shardsGained;
   }
@@ -1095,6 +1096,7 @@ export function checkAndLoadSave() {
   console.log("Loading save...");
   try {
     GameStorage.load();
+    GameStorage.checkPlayerObject(player);
   } catch ({ name, message }) {
     // eslint-disable-next-line no-console
     console.error("Error while loading savefile, resetting save. Found error:");

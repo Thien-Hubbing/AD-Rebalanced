@@ -89,22 +89,27 @@ export const dilationUpgrades = {
     initialCost: 1e10,
     increment: 40,
     description: () => {
-      let base = 0.5
-      if (Currency.dilatedTime.value.gte(DC.E1000)) base /= ((Decimal.log10(Currency.dilatedTime.value) / 2000) / 100) + 1
-      const reduction = x => x !== 0.5 ? `/`+format(x.toDecimal().recip(), 2, 3) : formatPercents(x, 2, 2)
+      let base = 0.5;
+      if (Currency.dilatedTime.value.gte(DC.E1000)) {
+        base /= ((Decimal.log10(Currency.dilatedTime.value) / 2000) / 50) + 1;
+      }
+      // eslint-disable-next-line no-negated-condition
+      const reduction = x => (x !== 0.5 ? `/${format(x.toDecimal().recip(), 2, 3)}` : formatPercents(x, 2, 2));
       return `Reduce dilated time gain by ${reduction(base)} but increase the TP gain by ${formatX(4)}`;
     },
     effect: bought => {
-      let lowBaser = 0.5
-      if (Currency.dilatedTime.value.gte(DC.E1000)) lowBaser /= ((Decimal.log10(Currency.dilatedTime.value) / 2000) / 100) + 1
+      let lowBaser = 0.5;
+      if (Currency.dilatedTime.value.gte(DC.E1000)) {
+        lowBaser /= ((Decimal.log10(Currency.dilatedTime.value) / 2000) / 50) + 1;
+      }
       return {
         dt: Decimal.pow(lowBaser, bought),
         tp: DC.D4.pow(bought)
-      }
+      };
     },
     formatEffect: obj => {
-      if (obj.dt.lte(0.01)) return `/${format(obj.dt.recip(), 2, 2)} DT, ${formatX(obj.tp, 2, 2)} TP`
-      return `${formatX(obj.dt, 2, 2)} DT, ${formatX(obj.tp, 2, 2)} TP`
+      if (obj.dt.lte(0.01)) return `/${format(obj.dt.recip(), 2, 2)} DT, ${formatX(obj.tp, 2, 2)} TP`;
+      return `${formatX(obj.dt, 2, 2)} DT, ${formatX(obj.tp, 2, 2)} TP`;
     },
     formatCost: value => format(value, 2),
     purchaseCap: Number.MAX_VALUE
@@ -120,7 +125,7 @@ export const dilationUpgrades = {
     cost: 1e9,
     description: () => `Time Dimensions are affected by Replicanti multiplier ${formatPow(0.1, 1, 3)}`,
     effect: () => {
-      let rep10 = replicantiMult().pLog10() * 0.1;
+      const rep10 = replicantiMult().pLog10() * 0.1;
       return Decimal.pow10(rep10);
     },
     formatEffect: value => formatX(value, 2, 1)

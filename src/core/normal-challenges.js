@@ -21,7 +21,7 @@ export function updateNormalAndInfinityChallenges(diff) {
   }
 
   if (NormalChallenge(3).isRunning || Effarig.isRunning) {
-    player.chall3Pow = player.chall3Pow.times(DC.D1_00038.pow(diff / 100)).clampMax(Decimal.MAX_VALUE);
+    player.chall3Pow = player.chall3Pow.times(DC.D1_00038.pow(diff * 8)).clampMax(Decimal.MAX_VALUE);
   }
 
   if (NormalChallenge(2).isRunning || Effarig.isRunning) {

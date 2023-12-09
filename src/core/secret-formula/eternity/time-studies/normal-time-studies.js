@@ -58,7 +58,7 @@ export const normalTimeStudies = [
       (log2(x)${formatPow(2)})+x${formatPow(0.032, 3, 3)}`,
     effect: () => {
       if (RealityUpgrade(24).isBought) return DC.D1;
-      return Replicanti.amount.pow(0.032)
+      return Replicanti.amount.pow(0.032);
     },
     // This is a special case because the study itself is *added* to the existing formula, but it makes more sense
     // to display a multiplicative increase just like every other study. We need to do the calculation in here in order
@@ -209,7 +209,7 @@ export const normalTimeStudies = [
     requirement: [81],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     description: "Antimatter Dimension multiplier based on time spent in this Eternity",
-    effect: () => Decimal.pow10(Math.min(Time.thisEternity.totalMinutes, 20) * 15),
+    effect: () => Decimal.pow10(Time.thisEternity.totalMinutes * 15).clampMin(DC.E320000),
     cap: DC.E320000,
     formatEffect: value => formatX(value, 2, 1)
   },
@@ -237,8 +237,8 @@ export const normalTimeStudies = [
     cost: 4,
     requirement: [91],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
-    description: "Antimatter Dimension multiplier equal to Replicanti amount",
-    effect: () => Decimal.max(Replicanti.amount, 1),
+    description: "Antimatter Dimension multiplier based on Replicanti amount",
+    effect: () => Decimal.max(Replicanti.amount.plus(1).pow(2.85), 1),
     formatEffect: value => formatX(value, 2, 1)
   },
   {
@@ -255,8 +255,8 @@ export const normalTimeStudies = [
     cost: 6,
     requirement: [93],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
-    description: "Time Dimension multiplier equal to Replicanti Galaxy amount",
-    effect: () => Math.max(player.replicanti.galaxies, 1),
+    description: "Time Dimension multiplier based on total Replicanti Galaxy amount",
+    effect: () => Decimal.pow(8, Replicanti.galaxies.total),
     formatEffect: value => formatX(value, 2, 0)
   },
   {
@@ -497,9 +497,9 @@ export const normalTimeStudies = [
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     description: () => `Replicanti chance can go beyond ${formatPercents(1)} with a boost`,
     effect: () => {
-      let eff = 1 + Math.log10(ReplicantiUpgrade.chance.value + 1)
-      if (Achievement(161).isUnlocked) eff *= Math.sqrt(eff)
-      return eff
+      let eff = 1 + Math.log10(ReplicantiUpgrade.chance.value + 1);
+      if (Achievement(161).isUnlocked) eff *= Math.sqrt(eff);
+      return eff;
     },
     formatEffect: value => formatPow(value, 3, 3)
   },
@@ -508,14 +508,12 @@ export const normalTimeStudies = [
     cost: 120,
     requirement: [193],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
-    description: "Dimensional Sacrifice boosts the 8th Antimatter Dimension even more",
+    description: "Dimensional Sacrifice further boosts the 8th Antimatter Dimension (softcaps after a while)",
     effect: () => {
-      const totalBoost = Sacrifice.totalBoost;
-      const firstPart = totalBoost.pow(7.6).clampMaxExponent(44000);
-      const secondPart = totalBoost.pow(1.05).clampMaxExponent(120000);
-      return firstPart.times(secondPart);
+      let eff = Sacrifice.totalBoost.plus(1).pow(2.2);
+      if (eff.gte(DC.E1E12)) eff = eff.pow(1 / 6).times(DC.E1E12);
+      return eff;
     },
-    cap: DC.E164000,
     formatEffect: value => formatX(value, 2, 1)
   },
   {
@@ -536,8 +534,8 @@ export const normalTimeStudies = [
     requirement: [211],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     requiresST: [221],
-    description: () => `Dimension Boost costs scale by another ${formatFloat(2.5, 1)} less`,
-    effect: 2.5
+    description: () => `Dimension Boost costs scale by another ${formatInt(4)} less`,
+    effect: 4
   },
   {
     id: 223,
@@ -572,9 +570,9 @@ export const normalTimeStudies = [
     requiresST: [226],
     description: "You gain extra Replicanti Galaxies based on Replicanti amount",
     effect: () => {
-      let eff = Math.floor(Replicanti.amount.exponent / 400)
-      if (eff > 5e4) return eff * 0.02 + 5e4
-      else return eff
+      const eff = Math.floor(Replicanti.amount.exponent / 400);
+      if (eff > 5e4) return eff * 0.02 + 5e4;
+      return eff;
     },
     formatEffect: value => `+${formatInt(value)} RG`
   },
@@ -597,15 +595,13 @@ export const normalTimeStudies = [
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     requiresST: [228],
     description: () => {
-      if (TimeStudy(227).isBought) return `DS affects 8th dimensions types`
-      return "Dimensional Sacrifice affects 8th Infinity and Time Dimensions with reduced effect"
+      if (TimeStudy(227).isBought) return `DS affects 8th dimensions types`;
+      return "Dimensional Sacrifice affects 8th Infinity and Time Dimensions with reduced effect";
     },
-    effect: () => {
-      return {
-        infinity: Sacrifice.totalBoost.plus(1).pow(0.001),
-        time: Sacrifice.totalBoost.plus(1).pow(0.0002)
-      }
-    },
+    effect: () => ({
+      infinity: Sacrifice.totalBoost.plus(1).pow(0.001),
+      time: Sacrifice.totalBoost.plus(1).pow(0.0002)
+    }),
     formatEffect: obj => `${formatX(obj.infinity, 2, 2)} to infinity, ${formatX(obj.time, 2, 2)} to time`
   },
   {
@@ -671,7 +667,7 @@ export const normalTimeStudies = [
     requirement: [() => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 1, 221, 222, 231],
     reqType: TS_REQUIREMENT_TYPE.ALL,
     requiresST: [221, 222, 231],
-    description: "Time Study 231 improves the effect of Time Study 221",
+    description: "Time Study 231 improves the effect of Time Study 221; Dimension Boosts scale 2 less",
     effect: () => TimeStudy(221).effectValue.pow(TimeStudy(231).effectValue.minus(1)).clampMin(1),
     formatEffect: value => formatX(value, 2, 1),
     unlocked: () => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 1
@@ -683,7 +679,8 @@ export const normalTimeStudies = [
     requirement: [() => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 2, 223, 224, 232],
     reqType: TS_REQUIREMENT_TYPE.ALL,
     requiresST: [223, 224, 232],
-    description: () => `Distant and Remote Galaxy scaling threshold starts another ${formatInt(20000)} Antimatter Galaxies later`,
+    description: () => `Distant and Further Galaxy scaling threshold starts another
+      ${formatInt(20000)} Antimatter Galaxies later`,
     effect: 20000,
     unlocked: () => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 2
   },
@@ -706,7 +703,7 @@ export const normalTimeStudies = [
     requirement: [() => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 4, 227, 228, 234],
     reqType: TS_REQUIREMENT_TYPE.ALL,
     requiresST: [227, 228, 234],
-    description: "Dimensional Sacrifice multiplier is cubed",
+    description: `Dimensional Sacrifice multiplier is cubed and uses an even better formula`,
     effect: 3,
     unlocked: () => Ra.unlocks.unlockHardV.effectOrDefault(0) >= 4
   }

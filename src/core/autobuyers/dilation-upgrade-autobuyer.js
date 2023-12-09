@@ -1,7 +1,9 @@
 import { IntervaledAutobuyerState } from "./autobuyer";
 
 export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
-  get _upgradeName() { return ["dtGain", "galaxyThreshold", "tachyonGain", "reduceAndIncrease"][this.id - 1]; }
+  get _upgradeName() {
+    return ["dtGain", "galaxyThreshold", "tachyonGain", "reduceAndIncrease"][this.id - 1];
+  }
 
   get data() {
     return player.auto.dilationUpgrades.all[this.id - 1];
@@ -16,7 +18,7 @@ export class DilationUpgradeAutobuyerState extends IntervaledAutobuyerState {
   }
 
   get isUnlocked() {
-    return Perk.autobuyerDilation.isEffectActive && !Pelle.isDoomed;
+    return Perk.autobuyerDilation.isEffectActive;
   }
 
   get resetTickOn() {

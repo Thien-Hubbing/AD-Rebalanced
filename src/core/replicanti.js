@@ -140,10 +140,13 @@ export function totalReplicantiSpeedMult(overCap) {
   const preCelestialEffects = Effects.product(TimeStudy(62), RealityUpgrade(6));
 
   totalMult = totalMult.timesEffectOf(RealityUpgrade(2));
+  if (DilationUpgrade.replicantiToDT.canBeApplied) {
+    totalMult = totalMult.times(DilationUpgrade.replicantiToDT.effectValue.replicanti);
+  }
 
   totalMult = totalMult.times(preCelestialEffects);
   if (TimeStudy(132).isBought && Perk.studyPassive.isBought) {
-    totalMult = totalMult.times(3);
+    totalMult = totalMult.times(1000);
   }
 
   if (!overCap && Achievement(134).isUnlocked) {
@@ -154,7 +157,11 @@ export function totalReplicantiSpeedMult(overCap) {
     totalMult = totalMult.times(
       Math.clampMin(Decimal.log10(Replicanti.amount) * getSecondaryGlyphEffect("replicationdtgain"), 1));
   }
-  totalMult = totalMult.timesEffectsOf(AlchemyResource.replication, Ra.unlocks.continuousTTBoost.effects.replicanti);
+  totalMult = totalMult.timesEffectsOf(
+    AlchemyResource.replication,
+    Ra.unlocks.continuousTTBoost.effects.replicanti,
+    TimeStudy(263)
+  );
 
   if (TimeStudy(213).isBought) {
     totalMult = totalMult.times(getReplicantChance("ln"));
@@ -424,7 +431,7 @@ export const ReplicantiUpgrade = {
     set baseCost(value) { player.replicanti.intervalCost = value; }
 
     get costIncrease() {
-      const fastScale = Decimal.pow(1e6, this.value.toDecimal().div(10000).recip().pow(0.8));
+      const fastScale = Decimal.pow(1e5, this.value.toDecimal().div(10000).recip().pow(0.8));
       return TimeStudy(22).isBought ? fastScale : 1e10;
     }
 
@@ -462,11 +469,11 @@ export const ReplicantiUpgrade = {
     set baseCost(value) { player.replicanti.galCost = value; }
 
     get distantRGStart() {
-      return 100 + Effects.sum(GlyphSacrifice.replication);
+      return 100 + Effects.sum(GlyphSacrifice.replication, TimeStudy(264));
     }
 
     get remoteRGStart() {
-      return 1000 + Effects.sum(GlyphSacrifice.replication);
+      return 1000 + Effects.sum(GlyphSacrifice.replication, TimeStudy(252));
     }
 
     get costIncrease() {
@@ -488,7 +495,9 @@ export const ReplicantiUpgrade = {
     }
 
     get extra() {
-      return Effects.max(0, TimeStudy(131)) + PelleRifts.decay.milestones[2].effectOrDefault(0);
+      return Effects.max(0, TimeStudy(131)) +
+        PelleRifts.decay.milestones[2].effectOrDefault(0) +
+        TimeStudy(132).effectValue[1];
     }
 
     autobuyerTick() {

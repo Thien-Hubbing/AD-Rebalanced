@@ -171,14 +171,31 @@ export const glyphEffects = {
     bitmaskIndex: 7,
     isGenerated: true,
     glyphTypes: ["dilation"],
-    singleDesc: "Antimatter Dimension power +{value} while Dilated",
-    totalDesc: "Antimatter Dimension multipliers ^{value} while Dilated",
-    genericDesc: "Antimatter Dimensions ^x while Dilated",
-    shortDesc: "Dilated AD power +{value}",
+    singleDesc: () => (GlyphAlteration.isAdded("dilation")
+      ? "Antimatter Dimension power +{value} while Dilated \n[and increase DT to Boosts exponent] +{value2}"
+      : "Antimatter Dimension power +{value} while Dilated"
+    ),
+    totalDesc: () => (GlyphAlteration.isAdded("dilation")
+      ? `Antimatter Dimension multipliers ^{value} while Dilated
+          and increase Dilated Time to Dimension Boosts exponent by +{value2}`
+      : "Antimatter Dimension multipliers ^{value} while Dilated"
+    ),
+    genericDesc: () => (GlyphAlteration.isAdded("dilation")
+      ? "Antimatter Dimensions ^x while Dilated"
+      : "Antimatter Dimensions ^x while Dilated and DT to Dimension Boosts exponent +x"
+    ),
+    shortDesc: () => (GlyphAlteration.isAdded("dilation")
+      ? "Dilated AD power +{value}"
+      : "Dilated AD power +{value}, DT to Boosts exp +{value2}"
+    ),
     effect: (level, strength) => 1.1 + Math.pow(level, 0.85) * (strength / 20),
     formatEffect: x => format(x, 2, 2),
     formatSingleEffect: x => format(x - 1, 2, 2),
     combine: GlyphCombiner.addExponents,
+    formatSecondaryEffect: x => format(x, 2, 2),
+    conversion: x => Math.max((Math.cbrt(x) / 9), 0),
+    alteredColor: () => GlyphAlteration.getAdditionColor("dilation"),
+    alterationType: ALTERATION_TYPE.ADDITION,
     enabledInDoomed: true,
   },
   replicationspeed: {

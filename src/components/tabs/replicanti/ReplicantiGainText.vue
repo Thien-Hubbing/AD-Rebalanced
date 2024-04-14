@@ -41,14 +41,14 @@ export default {
         const coeff = Decimal.divide(updateRateMs / 1000, logGainFactorPerTick.times(postScale));
         const timeToThousand = coeff.times(nextMilestone.divide(replicantiAmount).pow(postScale).minus(1));
         // The calculation seems to choke and return zero if the time is too large, probably because of rounding issues
-        const timeEstimateText = timeToThousand.eq(0)
+        const timeEstimateText = (timeToThousand.eq(0) || !isFinite(timeToThousand.toNumber()))
           ? "an extremely long time"
           : `${TimeSpan.fromSeconds(timeToThousand.toNumber())}`;
         const gainPerOoMsText = gainFactorPerSecond.lte("1e10000")
           ? formatX(gainFactorPerSecond, 2, 1)
           : `+${format(gainFactorPerSecond.max(1).log10(), 2, 1)} OoM worth of`;
         this.remainingTimeText = `You are gaining ${gainPerOoMsText} Replicanti every second` +
-          `${timeToThousand.lte(1) ? `` : ` (${timeEstimateText} until ${format(nextMilestone)})`}`;
+          `${gainFactorPerSecond.gt("1e10000") ? `` : ` (${timeEstimateText} until ${format(nextMilestone)})`}`;
       } else {
         this.remainingTimeText = "";
       }
@@ -85,6 +85,9 @@ export default {
           // Because of discrete replication, we add "Approximately" at very low amounts
           this.remainingTimeText = `Approximately ${TimeSpan.fromSeconds(remainingTime)} remaining
             until Infinite Replicanti`;
+        // eslint-disable-next-line no-negated-condition
+        } else if (!isFinite(remainingTime)) {
+          this.remainingTimeText = `A stupidly long time remaining until Infinite Replicanti`;
         } else {
           this.remainingTimeText = `${TimeSpan.fromSeconds(remainingTime)} remaining until Infinite Replicanti`;
         }
@@ -143,7 +146,7 @@ export default {
         this.intevalText += `${format(baseInterval.div(1000), 2, 2)} s`;
       }
 
-      this.intervalIncreaseText = `Replicanti Interval increases by ${formatX(ReplicantiGrowth.scaleFactor, 0, 2)}
+      this.intervalIncreaseText = `Replicanti Interval increases by ${formatX(ReplicantiGrowth.scaleFactor, 0, 5)}
         per ${format(ReplicantiGrowth.scaleLog10, 2, 2)} OoMs`;
     }
   }

@@ -56,7 +56,7 @@ export function startDilatedEternity(auto) {
 
 const DIL_UPG_NAMES = [
   null, "dtGain", "galaxyThreshold", "tachyonGain", "reduceAndIncrease", "doubleGalaxies", "tdMultReplicanti",
-  "ndMultDT", "ipMultDT", "timeStudySplit", "dilationPenalty", "ttGenerator",
+  "ndMultDT", "ipMultDT", "timeStudySplit", "dilationPenalty", "dtToBoosts", "replicantiToDt", "ttGenerator",
   "dtGainPelle", "galaxyMultiplier", "tickspeedPower", "galaxyThresholdPelle", "flatDilationMult"
 ];
 
@@ -64,7 +64,7 @@ export function buyDilationUpgrade(id, bulk = 1) {
   if (GameEnd.creditsEverClosed) return false;
   // Upgrades 1-3 are rebuyable, and can be automatically bought in bulk with a perk shop upgrade
   const upgrade = DilationUpgrade[DIL_UPG_NAMES[id]];
-  if (id > 4 && id < 12) {
+  if (id > 4 && id < 14) {
     if (player.dilation.upgrades.has(id)) return false;
     if (!Currency.dilatedTime.purchase(upgrade.cost)) return false;
     player.dilation.upgrades.add(id);
@@ -95,7 +95,7 @@ export function buyDilationUpgrade(id, bulk = 1) {
         Perk.retroactiveTP3,
         Perk.retroactiveTP4
       );
-      if (id === 4) retroactiveTPFactor += 1;
+      if (id === 4 && Perk.retroactiveTP1.isBought) retroactiveTPFactor += 1;
       if (Enslaved.isRunning) {
         retroactiveTPFactor = Math.pow(retroactiveTPFactor, Enslaved.tachyonNerf);
       }
@@ -146,6 +146,9 @@ export function getDilationGainPerSecond() {
   dtRate = dtRate.times(DilationUpgrade.reduceAndIncrease.effectValue.dt);
   dtRate = dtRate.times(getAdjustedGlyphEffect("dilationDT"));
   dtRate = dtRate.times(ShopPurchase.dilatedTimePurchases.currentMult);
+  if (DilationUpgrade.replicantiToDT.canBeApplied) {
+    dtRate = dtRate.times(DilationUpgrade.replicantiToDT.effectValue.dt);
+  }
   dtRate = dtRate.times(
     Math.clampMin(Decimal.log10(Replicanti.amount) * getAdjustedGlyphEffect("replicationdtgain"), 1));
   if (Enslaved.isRunning && !dtRate.eq(0)) dtRate = Decimal.pow10(Math.pow(dtRate.plus(1).log10(), 0.85) - 1);
@@ -162,7 +165,8 @@ export function tachyonGainMultiplier() {
     Achievement(132),
     RealityUpgrade(4),
     RealityUpgrade(8),
-    RealityUpgrade(15)
+    RealityUpgrade(15),
+    TimeStudy(265)
   ).times(DilationUpgrade.reduceAndIncrease.effectValue.tp)
     .pow(pow);
 }

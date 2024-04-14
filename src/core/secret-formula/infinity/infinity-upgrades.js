@@ -223,12 +223,12 @@ export const infinityUpgrades = {
     cost: () => InfinityUpgrade.ipMult.cost,
     checkRequirement: () => Achievement(41).isUnlocked,
     costCap: DC.E9E15,
-    costIncreaseThreshold: DC.E3E9,
+    get costIncreaseThreshold() { return TimeStudy(241).isBought ? DC.E9E15 : DC.E3E9; },
     description: () => `Multiply Infinity Points from all sources by
-    ${(player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought)
+    ${(player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought && !TimeStudy(241).isBought)
     ? formatX(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0))
     : formatX(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), 2, 2)}`,
-    effect: () => (player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought
+    effect: () => (player.IPMultPurchases >= 3000000000 && RealityUpgrade(7).isBought && !TimeStudy(241).isBought
       ? Decimal.pow(5 + (DilationUpgrade.ipMultDT.isBought ? 3 : 0), player.IPMultPurchases)
       : Decimal.pow(2 + (DilationUpgrade.ipMultDT.isBought ? 0.5 : 0), player.IPMultPurchases)),
     cap: () => Effarig.eternityCap ?? DC.E9E15,

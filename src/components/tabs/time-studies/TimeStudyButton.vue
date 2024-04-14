@@ -106,7 +106,15 @@ export default {
       return this.eternityChallengeRunning ? "o-time-study-eternity-challenge--running" : "";
     },
     config() {
-      return { ...this.study.config, formatCost: value => (value >= 1e6 ? format(value) : formatInt(value)) };
+      return {
+        ...this.study.config,
+        formatCost: value => {
+          if (value instanceof Decimal) {
+            return value.gte(1e6) ? format(value, 2, 0) : formatInt(value.toNumber());
+          }
+          return value >= 1e6 ? format(value, 2, 0) : formatInt(value);
+        }
+      };
     },
     showDefaultCostDisplay() {
       const costCond = (this.showCost && !this.showStCost) || this.STCost === 0;
@@ -114,8 +122,8 @@ export default {
     },
     customCostStr() {
       const ttStr = this.setup.isSmall
-        ? `${formatInt(this.config.cost)} TT`
-        : quantifyInt("Time Theorem", this.config.cost);
+        ? `${format(this.config.cost, 2, 0)} TT`
+        : quantify("Time Theorem", this.config.cost, 2, 0);
       const stStr = this.setup.isSmall
         ? `${formatInt(this.STCost)} ST`
         : quantifyInt("Space Theorem", this.STCost);

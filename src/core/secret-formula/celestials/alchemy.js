@@ -160,9 +160,9 @@ export const alchemyResources = {
     symbol: "ω",
     isBaseResource: false,
     effect: amount => {
-      const formula = amount / 200000
-      if (formula >= 0.125) return formula * 0.08 + 0.125
-      return formula
+      const formula = amount / 200000;
+      if (formula >= 0.125) return formula * 0.08 + 0.125;
+      return formula;
     },
     tier: 2,
     uiOrder: 4,

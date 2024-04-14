@@ -13,12 +13,13 @@ import { isLocalEnvironment } from "./devtools";
 // This is actually reassigned when importing saves
 // eslint-disable-next-line prefer-const
 window.player = {
-  antimatter: DC.E1,
+  antimatter: DC.E2,
   globalSpeed: 1,
   forceSaveRegardless: false,
   ignoreChallengeLimit: false,
   meta: {
-    ignoreBreakReqs: false
+    ignoreBreakReqs: false,
+    disableRMCap: false,
   },
   dimensions: {
     antimatter: Array.range(0, 8).map(() => ({
@@ -422,9 +423,9 @@ window.player = {
       2: 0,
       3: 0,
       4: 0,
-      12: 0,
-      13: 0,
       14: 0,
+      15: 0,
+      16: 0,
     },
     lastEP: DC.DM1,
   },
@@ -1047,6 +1048,9 @@ export function guardFromNaNValues(obj) {
   function isObject(ob) {
     return ob !== null && typeof ob === "object" && !(ob instanceof Decimal);
   }
+  function isArray(arr) {
+    return arr !== null && Array.isArray(arr) && !(arr instanceof Decimal);
+  }
 
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
@@ -1054,7 +1058,7 @@ export function guardFromNaNValues(obj) {
     if (key === "automator") continue;
 
     let value = obj[key];
-    if (isObject(value)) {
+    if (isObject(value) || isArray(value)) {
       guardFromNaNValues(value);
       continue;
     }
@@ -1072,7 +1076,7 @@ export function guardFromNaNValues(obj) {
           if (typeof newValue !== "number") {
             throw new Error("Non-Number assignment to Number player property");
           }
-          if (!isFinite(newValue)) {
+          if (!Number.isFinite(newValue)) {
             if (DEV || isLocalEnvironment()) GameStorage.hardReset();
             throw new Error("NaN player property assignment");
           }

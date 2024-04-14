@@ -6,6 +6,7 @@ export const normalAchievements = [
     name: "You gotta start somewhere",
     description: "Buy a 1st Antimatter Dimension.",
     checkEvent: GAME_EVENT.ACHIEVEMENT_EVENT_OTHER,
+    get reward() { return `Infinity is immediately broken.`; }
   },
   {
     id: 12,
@@ -24,6 +25,11 @@ export const normalAchievements = [
     name: "L4D: Left 4 Dimensions",
     description: "Buy a 4th Antimatter Dimension.",
     checkEvent: GAME_EVENT.ACHIEVEMENT_EVENT_OTHER,
+    get reward() {
+      return `Antimatter Dimensions multipliers are squared but
+        only if they're less than ${formatX(Number.MAX_VALUE, 2, 2)}.`;
+    },
+    effect: () => 2
   },
   {
     id: 15,

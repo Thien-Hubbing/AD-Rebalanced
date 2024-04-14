@@ -48,13 +48,16 @@ export default {
   computed: {
     isDoomed: () => Pelle.isDoomed,
     replicantiChanceSetup() {
-      const display = (value) => {
-        const powers = TimeStudy(213).effectValue * getAdjustedGlyphEffect("replicationpow") * (getSecondaryGlyphEffect("replicationspeed") + 1)
-        let string = `Replicate chance: ${formatPercents(value)}`
-        if (TimeStudy(213).isBought) string = `Replicanti chance: ${format(Decimal.pow(value, powers).times(100), 2, 2)}%`
-        if (powers > 1e6) string = `Replication Amount: ${formatX(powers * Math.log10(value), 2, 2)}`
+      const display = value => {
+        const powers = TimeStudy(213).effectValue * getAdjustedGlyphEffect("replicationpow") *
+          (getSecondaryGlyphEffect("replicationspeed") + 1);
+        let string = `Replicate chance: ${formatPercents(value)}`;
+        if (TimeStudy(213).isBought) {
+          string = `Replicanti chance: ${format(Decimal.pow(value, powers).times(100), 2, 2)}%`;
+        }
+        if (powers > 1e6) string = `Replication Amount: ${formatX(powers * Math.log10(value), 2, 2)}`;
         return string;
-      }
+      };
       return new ReplicantiUpgradeButtonSetup(
         ReplicantiUpgrade.chance,
         value => display(value),
@@ -177,7 +180,7 @@ export default {
         Replicanti.galaxies.max >= 1 || PlayerProgress.eternityUnlocked();
       this.maxReplicanti.copyFrom(player.records.thisReality.maxReplicanti);
       this.estimateToMax = this.calculateEstimate();
-      this.nextPercent = ReplicantiUpgrade.chance.nearestPercent(ReplicantiUpgrade.chance.increase)
+      this.nextPercent = ReplicantiUpgrade.chance.nearestPercent(ReplicantiUpgrade.chance.increase);
     },
     vacuumText() {
       return wordShift.wordCycle(PelleRifts.vacuum.name);

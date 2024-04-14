@@ -156,15 +156,46 @@ export const dilationUpgrades = {
     description: () => `Reduce the Dilation penalty (${formatPow(1.12, 2, 2)} after reduction)`,
     effect: 1.12,
   },
-  ttGenerator: {
+  dtToBoosts: {
     id: 11,
+    cost: 1e100,
+    description: () => {
+      let exp = new Decimal(2.5);
+      exp = exp.plus(GlyphAlteration.isAdded("dilation")
+        ? getSecondaryGlyphEffect("dilationpow")
+        : 0
+      )
+      return `Dilated Time boosts the multiplier from Dimension Boosts (x${formatPow(exp, 2, 2)})`;
+    },
+    effect: () => Currency.dilatedTime.value.pow(2.5 + (GlyphAlteration.isAdded("dilation")
+      ? getSecondaryGlyphEffect("dilationpow")
+      : 0
+    )),
+    formatEffect: value => `${formatX(value, 2, 1)}`
+  },
+  replicantiToDT: {
+    id: 12,
+    cost: DC.E50,
+    description: `Replicanti and Dilated Time multiplies eachother's gain`,
+    effect: () => {
+      const returningObject = {
+        replicanti: Math.pow(Currency.dilatedTime.value.plus(1).log10() + 1, 3),
+        dt: Math.pow(Replicanti.amount.plus(1).log2(), 2.5),
+      };
+      return returningObject;
+    },
+    formatEffect: obj => `Rep: ${formatX(obj.replicanti, 2, 1)},
+      DT: ${formatX(obj.dt, 2, 1)}`
+  },
+  ttGenerator: {
+    id: 13,
     cost: 1e15,
     description: "Generate Time Theorems based on Tachyon Particles",
     effect: () => Currency.tachyonParticles.value.div(20000),
     formatEffect: value => `${format(value, 2, 1)}/sec`
   },
   dtGainPelle: rebuyable({
-    id: 12,
+    id: 14,
     initialCost: 1e14,
     increment: 100,
     pelleOnly: true,
@@ -175,7 +206,7 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   galaxyMultiplier: rebuyable({
-    id: 13,
+    id: 15,
     initialCost: 1e15,
     increment: 1000,
     pelleOnly: true,
@@ -186,7 +217,7 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   tickspeedPower: rebuyable({
-    id: 14,
+    id: 16,
     initialCost: 1e16,
     increment: 1e4,
     pelleOnly: true,
@@ -197,14 +228,14 @@ export const dilationUpgrades = {
     purchaseCap: Number.MAX_VALUE
   }),
   galaxyThresholdPelle: {
-    id: 15,
+    id: 17,
     cost: 1e45,
     pelleOnly: true,
     description: "Apply a 10th root to the Tachyon Galaxy threshold",
     effect: 1 / 10
   },
   flatDilationMult: {
-    id: 16,
+    id: 18,
     cost: 1e55,
     pelleOnly: true,
     description: () => `Gain more Dilated Time based on current EP`,

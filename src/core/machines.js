@@ -1,7 +1,7 @@
 import { DC } from "./constants";
 
 export const MachineHandler = {
-  get baseRMCap() { return DC.E1000; },
+  get baseRMCap() { return player.meta.disableRMCap ? DC.E9E15 : DC.E1000; },
 
   get hardcapRM() {
     return this.baseRMCap.times(ImaginaryUpgrade(6).effectOrDefault(1)).pow(ImaginaryUpgrade(17).effectOrDefault(1));

@@ -31,7 +31,10 @@ export class Galaxy {
   }
 
   static get furtherStart() {
-    return 40000 + GlyphSacrifice.power.effectOrDefault(0) + TimeStudy(302).effectOrDefault(0);
+    let start = 40000 + GlyphSacrifice.power.effectOrDefault(0) + TimeStudy(302).effectOrDefault(0);
+    if (TimeStudy(251).isBought) start += Effects.sum(TimeStudy(251));
+    if (TimeStudy(253).isBought) start += Effects.sum(TimeStudy(253));
+    return start;
   }
 
   static get requirement() {
@@ -121,14 +124,14 @@ export class Galaxy {
   }
 
   static get costScalingStart() {
-    const start = 100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
+    const start = (100 + TimeStudy(302).effectOrDefault(0) + Effects.sum(
       TimeStudy(223),
       TimeStudy(224),
       EternityChallenge(5).reward,
       GlyphSacrifice.power
-    );
+    )) * TimeStudy(63).effectOrDefault(1);
     if (EternityChallenge(5).isRunning) return 0;
-    return start;
+    return Math.floor(start);
   }
 
   static get type() {

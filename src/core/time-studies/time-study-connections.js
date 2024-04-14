@@ -33,13 +33,16 @@ TimeStudy.allConnections = (function() {
   const connections = [
     [TS(11), TS(21)],
     [TS(11), TS(22)],
+    [TS(11), TS(23)],
 
     [TS(21), TS(31)],
     [TS(22), TS(33)],
     [TS(22), TS(32)],
+    [TS(23), TS(34)],
 
     [TS(31), TS(41)],
     [TS(32), TS(42)],
+    [TS(34), TS(42)],
 
     [TS(41), TS(51)],
     [TS(42), TS(51)],
@@ -48,11 +51,12 @@ TimeStudy.allConnections = (function() {
     [TS(42), TS(62), () => !Perk.bypassEC5Lock.isBought],
 
     [TS(51), TS(61)],
-    [EC(5), TS(62), () => Perk.bypassEC5Lock.isBought],
+    [TS(51), TS(62)],
+    [EC(5), TS(63), () => Perk.bypassEC5Lock.isBought],
 
-    [TS(61), TS(71)],
-    [TS(61), TS(72)],
-    [TS(61), TS(73)],
+    [TS(62), TS(71)],
+    [TS(62), TS(72)],
+    [TS(62), TS(73)],
 
     [TS(71), TS(81)],
     [TS(72), TS(82)],
@@ -71,6 +75,7 @@ TimeStudy.allConnections = (function() {
     [TS(103), TS(111)],
 
     [TS(111), EC(7)],
+    [TS(111), TS(112)],
 
     [TS(111), TS(121)],
     [TS(111), TS(122)],
@@ -107,10 +112,12 @@ TimeStudy.allConnections = (function() {
       () => !Perk.bypassEC1Lock.isBought || !Perk.bypassEC2Lock.isBought || !Perk.bypassEC3Lock.isBought],
 
     [EC(1), TS(181), () => Perk.bypassEC1Lock.isBought],
-    [EC(2), TS(181), () => Perk.bypassEC2Lock.isBought],
-    [EC(3), TS(181), () => Perk.bypassEC3Lock.isBought],
+    [EC(2), TS(182), () => Perk.bypassEC2Lock.isBought],
+    [EC(3), TS(183), () => Perk.bypassEC3Lock.isBought],
 
     [TS(181), EC(10)],
+    [TS(182), EC(10)],
+    [TS(183), EC(10)],
 
     [EC(10), TS(191)],
     [EC(10), TS(192)],
@@ -153,7 +160,19 @@ TimeStudy.allConnections = (function() {
     [TimeStudy.timeDimension(5), TimeStudy.timeDimension(6)],
     [TimeStudy.timeDimension(6), TimeStudy.timeDimension(7)],
     [TimeStudy.timeDimension(7), TimeStudy.timeDimension(8)],
-    [TimeStudy.timeDimension(8), TimeStudy.reality]
+    [TimeStudy.timeDimension(8), TimeStudy.reality],
+
+    [TS(241), TimeStudy.reality],
+    [TS(241), TS(251)],
+    [TS(241), TS(252)],
+    [TS(241), TS(253)],
+
+    [TS(251), TS(261)],
+    [TS(251), TS(262)],
+    [TS(252), TS(263)],
+    [TS(252), TS(264)],
+    [TS(253), TS(265)],
+    [TS(253), TS(266)],
   ].map(props => new TimeStudyConnection(props[0], props[1], props[2]));
 
   return connections;

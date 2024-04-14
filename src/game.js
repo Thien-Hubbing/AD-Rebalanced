@@ -73,7 +73,7 @@ export function playerInfinityUpgradesOnReset() {
 }
 
 export function breakInfinity() {
-  if (!Autobuyer.bigCrunch.hasMaxedInterval && !player.meta.ignoreBreakReqs) return;
+  if (!Autobuyer.bigCrunch.hasMaxedInterval && !Achievement(11).isUnlocked && !player.meta.ignoreBreakReqs) return;
   if (InfinityChallenge.isRunning) return;
   for (const autobuyer of Autobuyers.all) {
     if (autobuyer.data.interval !== undefined) autobuyer.maxIntervalForFree();
@@ -139,8 +139,9 @@ function totalEPMult() {
 }
 
 export function gainedEternityPoints() {
+  const div = Effects.min(308, TimeStudy(112)) - PelleRifts.recursion.effectValue.toNumber();
   let ep = DC.D5.pow(player.records.thisEternity.maxIP.plus(
-    gainedInfinityPoints()).log10() / (308 - PelleRifts.recursion.effectValue.toNumber()) - 0.7).times(totalEPMult());
+    gainedInfinityPoints()).log10() / div - 0.7).times(totalEPMult());
 
   if (Teresa.isRunning) {
     ep = ep.pow(0.55);
@@ -339,6 +340,7 @@ export function getGameSpeedupFactor(effectsToConsider, blackHolesActiveOverride
         factor *= VUnlocks.achievementBH.effectOrDefault(1);
       }
     }
+    if (TimeStudy(23).canBeApplied) factor *= TimeStudy(23).effectValue;
   }
 
   if (effects.includes(GAME_SPEED_EFFECT.SINGULARITY_MILESTONE)) {
@@ -840,7 +842,7 @@ function updateImaginaryMachines(diff) {
 
 function updateTachyonGalaxies() {
   const tachyonGalaxyMult = Effects.max(1, DilationUpgrade.doubleGalaxies);
-  const tachyonGalaxyThreshold = 1000;
+  const tachyonGalaxyThreshold = 10000;
   const thresholdMult = getTachyonGalaxyMult();
   player.dilation.baseTachyonGalaxies = Math.max(player.dilation.baseTachyonGalaxies,
     1 + Math.floor(Decimal.log(Currency.dilatedTime.value.dividedBy(1000), thresholdMult)));
@@ -876,7 +878,7 @@ export function getTTPerSecond() {
   // Lai'tela TT power
   let finalTT = dilationTT.add(glyphTT);
   if (finalTT.gt(1)) {
-    finalTT = finalTT.pow(SingularityMilestone.theoremPowerFromSingularities.effectOrDefault(1));
+    finalTT = finalTT.powEffectsOf(SingularityMilestone.theoremPowerFromSingularities, TimeStudy(266));
   }
 
   return finalTT;
@@ -1096,7 +1098,10 @@ export function checkAndLoadSave() {
   console.log("Loading save...");
   try {
     GameStorage.load();
-    GameStorage.checkPlayerObject(player);
+    const saveString = GameStorage.checkPlayerObject(player);
+    if (saveString !== "") {
+      throw new Error(saveString);
+    }
   } catch ({ name, message }) {
     // eslint-disable-next-line no-console
     console.error("Error while loading savefile, resetting save. Found error:");
@@ -1106,13 +1111,12 @@ export function checkAndLoadSave() {
     GameStorage.save();
     dev.forceCloudSave();
     GlobalErrorHandler.cleanStart = true;
-    player.gotError.type = name;
-    player.gotError.catched = true;
+    GameIntervals.restart();
   }
 }
 
 export function getDeltaMultiplier() {
-  return player.globalSpeed === undefined ? 1 : player.globalSpeed;
+  return (player.globalSpeed === undefined || !isFinite(player.globalSpeed)) ? 1 : player.globalSpeed;
 }
 
 export function getProperDeltaTime(diff, type) {

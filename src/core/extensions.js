@@ -1,5 +1,5 @@
 Array.prototype.distinct = function() {
-  return this.filter(value, index, self => self.indexOf(value) === index );
+  return this.filter(value, index, self => self.indexOf(value) === index);
 };
 
 Math.wrap = function(number, min, max) {
@@ -70,18 +70,52 @@ Decimal.prototype.copyFrom = function(decimal) {
   this.exponent = decimal.exponent;
 };
 
+Decimal.prototype.mod = function(value) {
+  const decimal = D(value).abs();
+  if (decimal.eq(Decimal.dZero)) return Decimal.dZero;
+  const numThis = this.toNumber();
+  const numDecimal = decimal.toNumber();
+  // Special case: To avoid precision issues, if both numbers are valid JS numbers, just call % on those
+
+  if (isFinite(numThis) && isFinite(numDecimal) && numThis !== 0 && numDecimal !== 0) {
+    return new Decimal(numThis % numDecimal);
+  }
+
+  if (this.sub(decimal).eq(this)) {
+    // Decimal is too small to register to this
+    return new Decimal(0);
+  }
+
+  if (decimal.sub(this).eq(decimal)) {
+    // This is too small to register to decimal
+    return this;
+  }
+
+  if (this.sign === -1) return this.abs().mod(decimal).neg();
+  return this.sub(this.div(decimal).floor().mul(decimal));
+};
+
+Decimal.prototype.modulo = Decimal.prototype.mod;
+Decimal.prototype.modular = Decimal.prototype.mod;
+
+Decimal.mod = function(value, value2) {
+  return new Decimal(value).mod(value2);
+};
+Decimal.modular = Decimal.mod;
+Decimal.modulo = Decimal.mod;
+
 window.copyToClipboard = (function() {
-  let el = document.createElement('textarea');
+  const el = document.createElement("textarea");
   document.body.appendChild(el);
   el.style.position = "absolute";
-  el.style.left = '-9999999px';
-  el.setAttribute('readonly', '');
+  el.style.left = "-9999999px";
+  el.setAttribute("readonly", "");
   return function(str) {
     try {
       el.value = str;
       el.select();
-      return document.execCommand('copy');
-    } catch(ex) {
+      return document.execCommand("copy");
+    } catch (ex) {
       console.log(ex);
       return false;
     }
@@ -89,8 +123,8 @@ window.copyToClipboard = (function() {
 }());
 
 window.safeCall = function safeCall(fn) {
-    if (fn) fn();
-}
+  if (fn) fn();
+};
 
 String.prototype.capitalize = function() {
   return this.toLowerCase().replace(/^\w/u, c => c.toUpperCase());
@@ -156,12 +190,12 @@ Array.prototype.last = function(predicate) {
 Array.prototype.mapToObject = function(keyFun, valueFun) {
   if (typeof keyFun !== "function" || typeof valueFun !== "function")
     throw "keyFun and valueFun must be functions";
-  let out = {}
+  const out = {};
   for (let idx = 0; idx < this.length; ++idx) {
     out[keyFun(this[idx], idx)] = valueFun(this[idx], idx);
   }
   return out;
-}
+};
 
 /**
  * @type {number[]}

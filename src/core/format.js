@@ -1,3 +1,4 @@
+
 function isEND() {
   const threshold = GameEnd.endState > END_STATE_MARKERS.END_NUMBERS
     ? 1
@@ -9,6 +10,19 @@ function isEND() {
 window.format = function format(value, places = 0, placesUnder1000 = 0) {
   if (isEND()) return "END";
   return Notations.current.format(value, places, placesUnder1000, 3);
+};
+
+// eslint-disable-next-line max-params
+window.formatGain = function formatGain(amt, gain, places = 0, placesUnder1000 = 0) {
+  const f = format;
+  const next = amt.add(gain);
+  let rate;
+  let ooms = next.div(amt);
+  if (ooms.gte(10) && amt.gte(1e100)) {
+    ooms = ooms.log10();
+    rate = `(+${format(ooms, places, placesUnder1000)} OoMs/sec)`;
+  } else rate = `(+${f(gain, places, placesUnder1000)}/sec)`;
+  return rate;
 };
 
 window.formatInt = function formatInt(value) {
@@ -69,6 +83,33 @@ window.formatPow = function formatPow(value, places, placesUnder1000) {
 window.formatPercents = function formatPercents(value, places) {
   return `${format((value instanceof Decimal ? value.times(100) : value * 100), 2, places)}%`;
 };
+// eslint-disable-next-line
+/* window.differentTimeDisplay = function formatTime(value, places) {
+  const time = new ExtDecimal(value).clampMax(DC.E9E15);
+  if (time.lt(Number.MIN_VALUE)) return `1 / ${format(time.reciprocate())} s`;
+  if (time.lt(5.39121e-44)) return `${format(time.times(5.39121e-44).reciprocate())} tP`;
+  if (time.lt(0.001)) return `1 / ${format(time.times(1000).reciprocate())} ms`;
+  if (time.lt(0.01)) return `${format(time.times(100))} ms`;
+  if (time.lt(1)) return `${format(time.times(1000))} cs`;
+  if (time.lt(60)) return (long ? `${format(time)} seconds` : `${format(time)} s`);
+  if (time.lt(3600)) return (long ? `${format(time.div(60))}:${format(time.mod(60))}` : `${format(time.div(60))} m`);
+  if (time.lt(86400)) return (long
+    ? `${format(time.div(3600).floor())}:${format(time.div(60).floor().mod(60))}:${format(time.mod(60))}`
+    : `${format(time.div(3600))} h`
+  );
+  if (time.lt(31536000)) return (long
+    ? `${format(time.div(86400).floor())} days, ${format(time.div(3600).floor().mod(24))} hours`
+    : `${format(time.div(86400))} d`
+  );
+  if (time.lt(4.320432e17)) return (long
+    ? `${format(time.div(31536000).floor())} years, ${format(time.div(86400).floor().mod(365))} days, ${format(time.div(3600).floor().mod(24))} hours`
+    : `${format(time.div(31536000))} y`
+  );
+  return (long
+    ? `${format(time.div(4.320432e17).floor())} uni, ${format(time.div(31536000).floor().mod(4.320432e17))} years`
+    : `${format(time.div(4.320432e17))} universes`
+  );
+} */
 
 window.formatRarity = function formatRarity(value) {
   // We can, annoyingly, have rounding error here, so even though only rarities

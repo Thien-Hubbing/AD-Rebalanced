@@ -32,6 +32,7 @@ export class DimBoost {
         TimeStudy(231),
         Achievement(117),
         Achievement(142),
+        DilationUpgrade.dtToBoosts,
         GlyphEffect.dimBoostPower,
         PelleRifts.recursion.milestones[0]
       ).powEffectsOf(InfinityUpgrade.dimboostMult.chargedEffect);
@@ -115,6 +116,7 @@ export class DimBoost {
     const discount = Effects.sum(
       TimeStudy(211),
       TimeStudy(222),
+      TimeStudy(261)
     ) + (TimeStudy(301).canBeApplied ? 2 : 0);
     if (tier === 6 && NormalChallenge(10).isRunning) {
       amount += Math.round((targetResets - 3) * (20 - discount));

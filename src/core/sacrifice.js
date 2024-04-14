@@ -9,8 +9,7 @@ export class Sacrifice {
 
   static get canSacrifice() {
     return DimBoost.purchasedBoosts > 4 && !EternityChallenge(3).isRunning && this.nextBoost.gt(1) &&
-      AntimatterDimension(8).totalAmount.gt(0) && (Currency.antimatter.lt(Player.infinityLimit) &&
-      !Player.isInAntimatterChallenge) && !Enslaved.isRunning;
+      AntimatterDimension(8).totalAmount.gt(0) && Currency.antimatter.lt(Player.infinityLimit) && !Enslaved.isRunning;
   }
 
   static get disabledCondition() {
@@ -59,6 +58,7 @@ export class Sacrifice {
     // C8 seems weaker, but it actually follows its own formula which ends up being stronger based on how it stacks
     if (NormalChallenge(8).isRunning) base = 1;
     // Pre-Reality this was 100; having ach32/57 results in 1.2x, which is brought back in line by changing to 120
+    else if (NormalChallenge(8).isCompleted && !InfinityChallenge(2).isCompleted) base = 2.05;
     else if (InfinityChallenge(2).isCompleted) base = 1 / 120;
     else base = 2;
 

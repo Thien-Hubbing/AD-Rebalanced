@@ -232,7 +232,7 @@ export const GameStorage = {
             break;
           case "string":
             // If we're attempting to import, all NaN entries will still be strings
-            thisNaN = (prop === "NaN" || prop === "Infinity");
+            thisNaN = (prop === "NaN");
             hasNaN = hasNaN || thisNaN;
             if (thisNaN) invalidProps.push(`${path}.${key}`);
             break;

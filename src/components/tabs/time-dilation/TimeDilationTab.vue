@@ -39,12 +39,14 @@ export default {
         [
           DilationUpgrade.doubleGalaxies,
           DilationUpgrade.tdMultReplicanti,
-          DilationUpgrade.ndMultDT
+          DilationUpgrade.ndMultDT,
+          DilationUpgrade.dtToBoosts
         ],
         [
           DilationUpgrade.ipMultDT,
           DilationUpgrade.timeStudySplit,
-          DilationUpgrade.dilationPenalty
+          DilationUpgrade.dilationPenalty,
+          DilationUpgrade.replicantiToDT
         ],
       ];
     },
@@ -172,7 +174,7 @@ export default {
       <span class="max-accent">
         {{ formatX(galaxyThresholdScale, 4, 4) }}
       </span>
-   </span>
+    </span>
     <div class="l-dilation-upgrades-grid">
       <div
         v-for="(upgradeRow, row) in allRebuyables"

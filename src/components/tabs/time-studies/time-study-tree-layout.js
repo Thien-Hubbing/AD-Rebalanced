@@ -57,8 +57,8 @@ export class TimeStudyTreeLayout {
     /* eslint-disable no-multi-spaces, space-in-parens, func-call-spacing */
     this.rows = [
       normalRow(                       null,   TS(11),   null                         ),
-      normalRow(                           TS(21), TS(22)                             ),
-      normalRow(                   null, TS(31), TS(32), TS(33)                       )
+      normalRow(                           TS(21), TS(22), TS(23)                     ),
+      normalRow(                   TS(31), TS(32), TS(33), TS(34)                       )
     ];
 
     if (type === STUDY_TREE_LAYOUT_TYPE.ALTERNATIVE_62 || type === STUDY_TREE_LAYOUT_TYPE.ALTERNATIVE_62_181 ||
@@ -75,12 +75,12 @@ export class TimeStudyTreeLayout {
     }
 
     this.rows.push(
-      normalRow(                       null,   TS(61),  TS(62)                        ),
+      normalRow(                      TS(61),  TS(62),  TS(63)                        ),
       normalRow(                      TS(71),  TS(72),  TS(73)                        ),
       normalRow(                      TS(81),  TS(82),  TS(83)                        ),
       normalRow(                      TS(91),  TS(92),  TS(93)                        ),
       normalRow(                      TS(101), TS(102), TS(103)                       ),
-      normalRow(                       EC(7),  TS(111),  null                         ),
+      normalRow(                       EC(7),  TS(111), TS(112)                       ),
       normalRow(                      TS(121), TS(122), TS(123)                       ),
       normalRow(               EC(6), TS(131), TS(132), TS(133), EC(8)                ),
       normalRow(                      TS(141), TS(142), TS(143)                       ),
@@ -92,13 +92,13 @@ export class TimeStudyTreeLayout {
       type === STUDY_TREE_LAYOUT_TYPE.ALTERNATIVE_TRIAD_STUDIES) {
       this.rows.push(
         normalRow(                         null, TS(171),  EC(2)                        ),
-        normalRow(                        EC(1), TS(181),  EC(3)                        )
+        normalRow(               EC(1), TS(181), TS(182), TS(183), EC(3)                )
       );
     } else {
       this.rows.push(
         normalRow(                               TS(171)                                ),
         normalRow(                         EC(1), EC(2), EC(3)                          ),
-        normalRow(                               TS(181)                                )
+        normalRow(                      TS(181), TS(182), TS(183)                       )
       );
     }
 
@@ -122,7 +122,10 @@ export class TimeStudyTreeLayout {
       normalRow(                          TimeStudy.dilation                          ),
       normalRow(          TimeStudy.timeDimension(5), TimeStudy.timeDimension(6)      ),
       normalRow(          TimeStudy.timeDimension(7), TimeStudy.timeDimension(8)      ),
-      normalRow(                          TimeStudy.reality                           )
+      normalRow(                          TimeStudy.reality                           ),
+      normalRow(                               TS(241)                                ),
+      normalRow(                      TS(251), TS(252), TS(253)                       ),
+      wideRow  (         TS(261), TS(262), TS(263), TS(264), TS(265), TS(266)         )
     );
     /* eslint-enable no-multi-spaces, space-in-parens, func-call-spacing */
 

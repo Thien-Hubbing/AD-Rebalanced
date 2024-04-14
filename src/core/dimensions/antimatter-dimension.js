@@ -169,6 +169,7 @@ function applyNDPowers(mult, tier) {
 
   multiplier = multiplier
     .powEffectsOf(
+      multiplier.lt(Decimal.NUMBER_MAX_VALUE) ? Achievement(14) : null,
       AntimatterDimension(tier).infinityUpgrade.chargedEffect,
       InfinityUpgrade.totalTimeMult.chargedEffect,
       InfinityUpgrade.thisInfinityTimeMult.chargedEffect,
@@ -350,7 +351,8 @@ export function buyMaxDimension(tier, bulk = Infinity) {
   if (buying > bulkLeft) buying = bulkLeft;
   dimension.amount = dimension.amount.plus(10 * buying).round();
   dimension.bought += 10 * buying;
-  dimension.currencyAmount = dimension.currencyAmount.minus(Decimal.pow10(maxBought.logPrice));
+  dimension.currencyAmount = dimension.currencyAmount
+    .minus(Decimal.pow10(maxBought.logPrice).timesEffectOf(TimeStudy(34)));
 }
 
 class AntimatterDimensionState extends DimensionState {
@@ -364,15 +366,21 @@ class AntimatterDimensionState extends DimensionState {
     this._c6BaseCost = C6_BASE_COSTS[tier];
     const C6_BASE_COST_MULTIPLIERS = [null, 1e3, 5e3, 1e4, 1.2e4, 1.8e4, 2.6e4, 3.2e4, 4.2e4];
     this._c6BaseCostMultiplier = C6_BASE_COST_MULTIPLIERS[tier];
+    const C6C_BASE_COST_MULTIPLIERS = [null, 1e4, 1e5, 5e5, 1e6, 1e7, 1e8, 2e9, 5e10];
+    this._c6cBaseCostMultiplier = C6C_BASE_COST_MULTIPLIERS[tier];
   }
 
   /**
    * @returns {ExponentialCostScaling}
    */
   get costScale() {
+    let baseIncrease;
+    if (NormalChallenge(6).isRunning) baseIncrease = this._c6BaseCostMultiplier;
+    else if (NormalChallenge(6).isCompleted) baseIncrease = this._c6cBaseCostMultiplier;
+    else baseIncrease = this._baseCostMultiplier;
     return new ExponentialCostScaling({
       baseCost: NormalChallenge(6).isRunning ? this._c6BaseCost : this._baseCost,
-      baseIncrease: NormalChallenge(6).isRunning ? this._c6BaseCostMultiplier : this._baseCostMultiplier,
+      baseIncrease,
       costScale: Player.dimensionMultDecrease,
       scalingCostThreshold: Number.MAX_VALUE
     });
@@ -382,7 +390,7 @@ class AntimatterDimensionState extends DimensionState {
    * @returns {Decimal}
    */
   get cost() {
-    return this.costScale.calculateCost(Math.floor(this.bought / 10) + this.costBumps);
+    return this.costScale.calculateCost(Math.floor(this.bought / 10) + this.costBumps).timesEffectOf(TimeStudy(34));
   }
 
   /** @returns {number} */

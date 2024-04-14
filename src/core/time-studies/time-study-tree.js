@@ -1,3 +1,5 @@
+import { DC } from "../constants";
+
 /**
  * Abstract representation of a full time study tree object. The intended usage is to supply the constructor with
  * an import string and a budget of time/space theorems, which it will use together to determine which studies can
@@ -27,7 +29,7 @@
 export class TimeStudyTree {
   // The first parameter will either be an import string or an array of studies (possibly with an EC at the end)
   constructor(studies) {
-    this.spentTheorems = [0, 0];
+    this.spentTheorems = [DC.D0, 0];
     this.invalidStudies = [];
     this.purchasedStudies = [];
     this.selectedStudies = [];
@@ -261,13 +263,13 @@ export class TimeStudyTree {
     if (checkCosts) {
       const maxTT = Currency.timeTheorems.value.add(GameCache.currentStudyTree.value.spentTheorems[0])
         .clampMax(Number.MAX_VALUE).toNumber();
-      const hasTT = this.spentTheorems[0] + config.cost <= maxTT;
+      const hasTT = this.spentTheorems[0].plus(config.cost).lte(maxTT);
       if (!hasTT || !hasST) return;
     }
 
     // Don't add the costs nor add the study if it is one using ST and there are none
     if (maxST === 0 && stNeeded > 0) return;
-    this.spentTheorems[0] += config.cost;
+    this.spentTheorems[0] = this.spentTheorems[0].plus(config.cost);
     this.spentTheorems[1] += stNeeded;
 
     this.purchasedStudies.push(study);

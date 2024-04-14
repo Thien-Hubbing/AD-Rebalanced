@@ -146,14 +146,21 @@ export const TimeTheorems = {
   },
 
   calculateTimeStudiesCost() {
-    let totalCost = TimeStudy.boughtNormalTS()
-      .map(ts => ts.cost)
-      .reduce(Number.sumReducer, 0);
+    let totalCost;
+    try {
+      totalCost = TimeStudy.boughtNormalTS()
+        .map(ts => ts.cost)
+        .reduce(Number.sumReducer, 0).toDecimal();
+    } catch {
+      totalCost = TimeStudy.boughtNormalTS()
+        .map(ts => ts.cost)
+        .reduce(Decimal.sumReducer, 0);
+    }
     const ecStudy = TimeStudy.eternityChallenge.current();
     if (ecStudy !== undefined) {
-      totalCost += ecStudy.cost;
+      totalCost = totalCost.plus(ecStudy.cost);
     }
-    if (Enslaved.isRunning && player.celestials.enslaved.hasSecretStudy) totalCost -= 100;
+    if (Enslaved.isRunning && player.celestials.enslaved.hasSecretStudy) totalCost = totalCost.sub(100);
     return totalCost;
   }
 };

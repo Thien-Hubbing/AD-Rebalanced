@@ -412,6 +412,7 @@ export const tabs = [
         symbol: "<i class='fas fa-map-marked-alt'></i>",
         component: "CelestialNavigationTab",
         id: 0,
+        condition: () => false,
         hidable: true,
       },
       {

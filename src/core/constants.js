@@ -207,6 +207,7 @@ export const DC = deepFreeze({
   E2E9:                 new Decimal("1e2000000000"),
   E3E9:                 new Decimal("1e3000000000"),
   E2E10:                new Decimal("1e20000000000"),
+  E5E10:                new Decimal("1e50000000000"),
   E1E11:                new Decimal("1e100000000000"),
   E1E12:                new Decimal("1e1000000000000"),
   E1_5E12:              new Decimal("1e1500000000000"),
@@ -250,7 +251,7 @@ window.RECENT_PRESTIGE_RESOURCE = {
 };
 
 // Free tickspeed multiplier with TS171. Shared here because formatting glyph effects depends on it
-window.TS171_MULTIPLIER = 1.25;
+window.TS171_MULTIPLIER = 1.15;
 
 // Used as drag and drop data type
 window.GLYPH_MIME_TYPE = "text/x-ivark-glyph";

@@ -68,7 +68,7 @@ export const normalChallenges = [
     description: () => `upgrading each Antimatter Dimension costs the Antimatter Dimension ${formatInt(2)} tiers ` +
       "below it instead of antimatter. Antimatter Dimension prices are modified.",
     name: "6th Antimatter Dimension Autobuyer",
-    reward: "Upgradeable 6th Antimatter Dimension Autobuyer",
+    reward: "Upgradeable 6th Antimatter Dimension Autobuyer and Antimatter Dimensions prices are modified",
     lockedAt: DC.D0,
   },
   {
@@ -89,7 +89,7 @@ export const normalChallenges = [
     description: `Dimension Boosts provide no multiplier and Antimatter Galaxies cannot be bought. Dimensional
       Sacrifice resets antimatter and all Antimatter Dimensions, but also gives a significantly stronger multiplier.`,
     name: "8th Antimatter Dimension Autobuyer",
-    reward: "Upgradeable 8th Antimatter Dimension Autobuyer",
+    reward: "Upgradeable 8th Antimatter Dimension Autobuyer and slighty improve the Sacrifice formula",
     lockedAt: DC.D0,
   },
   {
